@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_navigator"
+    app:startDestination="@id/nav_home">
+
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.csm.projectcsm.ui.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/nav_counties"
+        android:name="com.csm.projectcsm.ui.CountiesListFragment"
+        android:label="fragment_counties_list"
+        tools:layout="@layout/fragment_counties_list" />
+    <fragment
+        android:id="@+id/nav_facilities"
+        android:name="com.csm.projectcsm.ui.FacilitiesListFragment"
+        android:label="fragment_facilities_list"
+        tools:layout="@layout/fragment_facilities_list" />
+    <fragment
+        android:id="@+id/nav_services"
+        android:name="com.csm.projectcsm.ui.ServicesFragment"
+        android:label="fragment_services"
+        tools:layout="@layout/fragment_services" />
+    <fragment
+        android:id="@+id/nav_doctors"
+        android:name="com.csm.projectcsm.ui.DoctorsListFragment"
+        android:label="fragment_doctors_list"
+        tools:layout="@layout/fragment_doctors_list" />
+    <fragment
+        android:id="@+id/nav_doctor_details"
+        android:name="com.csm.projectcsm.ui.DoctorDetailFragment"
+        android:label="fragment_doctor_detail"
+        tools:layout="@layout/fragment_doctor_detail" />
+</navigation>

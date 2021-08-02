@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Project CSM</string>
+    <string name="et_search">Search…</string>
+    <string name="btn_search">Search</string>
+    <string name="btn_doctors">Doctors</string>
+    <string name="btn_counties">Counties</string>
+    <string name="btn_services">Services</string>
+    <string name="btn_facilities">Facilities</string>
+</resources>
