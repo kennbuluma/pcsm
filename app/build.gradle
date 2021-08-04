@@ -46,7 +46,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     implementation platform("com.squareup.okhttp3:okhttp-bom:4.9.0")
-    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
 
     implementation 'com.google.firebase:firebase-config'
     implementation 'com.google.firebase:firebase-messaging'

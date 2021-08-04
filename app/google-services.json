@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "24990645857",
+    "project_id": "exttestbase",
+    "storage_bucket": "exttestbase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24990645857:android:4dd455330b24c79e057420",
+        "android_client_info": {
+          "package_name": "com.csm.projectcsm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "24990645857-906prva9pipp9kgtie00fhcqa8812o2h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHXu1XECckhHikLqBXUcbU0zKgICIDKwE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "24990645857-906prva9pipp9kgtie00fhcqa8812o2h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
