@@ -1,10 +1,15 @@
 package com.csm.projectcsm.adapter;
 
+import static com.csm.projectcsm.util.Common.SYSTAG;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.csm.projectcsm.R;
@@ -32,7 +37,15 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
     @Override
     public void onBindViewHolder(@NonNull @NotNull DoctorViewHolder holder, int position) {
         if(null==doctors) return;
-        holder.crd_doctor_item.setOnClickListener();
+        Doctor thisDoctor = doctors.get(position);
+        holder.txDoctorItemCode.setText(thisDoctor.id);
+        holder.txDoctorItemName.setText(thisDoctor.name);
+        holder.crdDoctorItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.w(SYSTAG, "Doctor "+thisDoctor.id+": "+thisDoctor.name);
+            }
+        });
     }
     @Override
     public int getItemCount() {
@@ -41,8 +54,13 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
     }
 
     class DoctorViewHolder extends RecyclerView.ViewHolder{
+        public final CardView crdDoctorItem;
+        public final TextView txDoctorItemCode, txDoctorItemName;
         public DoctorViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
+            crdDoctorItem = (CardView) itemView.findViewById(R.id.crd_doctor_item);
+            txDoctorItemCode = (TextView) itemView.findViewById(R.id.tx_doctor_item_id);
+            txDoctorItemName = (TextView) itemView.findViewById(R.id.tx_doctor_item_name);
         }
     }
 }

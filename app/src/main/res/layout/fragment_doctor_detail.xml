@@ -30,6 +30,7 @@
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
+        android:contentDescription="Call"
         android:src="@android:drawable/stat_sys_phone_call"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
