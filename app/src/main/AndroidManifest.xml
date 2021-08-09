@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.csm.projectcsm">
+    package="com.foreverdevelopers.m_daktari">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectCSM">
-        <activity android:name=".AppActivity">
+        <activity android:name="com.foreverdevelopers.m_daktari.AppActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -30,7 +30,7 @@
             android:resource="@color/black" />
         <!--github token : "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"-->
         <service
-            android:name=".util.Messaging"
+            android:name="com.foreverdevelopers.m_daktari.util.Messaging"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

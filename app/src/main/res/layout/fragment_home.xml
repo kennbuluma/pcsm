@@ -15,7 +15,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:text="@string/btn_doctors"
+        android:text="@string/lbl_doctors"
         app:layout_constraintBottom_toTopOf="@+id/btn_main_counties"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -29,7 +29,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:text="@string/btn_counties"
+        android:text="@string/lbl_counties"
         app:layout_constraintBottom_toTopOf="@+id/btn_main_services"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -43,7 +43,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="24dp"
-        android:text="@string/btn_services"
+        android:text="@string/lbl_services"
         app:layout_constraintBottom_toTopOf="@+id/btn_main_facilities"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -57,7 +57,7 @@
         android:layout_marginEnd="24dp"
         android:layout_marginRight="24dp"
         android:layout_marginBottom="48dp"
-        android:text="@string/btn_facilities"
+        android:text="@string/lbl_facilities"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

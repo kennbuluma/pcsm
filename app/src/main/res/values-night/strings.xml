@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="base_url">http://192.168.1.12</string>
+    <string name="counties_ep">/counties</string>
+    <string name="facilities_ep">/facilities</string>
+    <string name="services_ep">/services</string>
+    <string name="doctors_ep">/doctors</string>
+</resources>
