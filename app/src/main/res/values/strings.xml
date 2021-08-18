@@ -11,4 +11,6 @@
     <string name="facilities_ep">/facilities</string>
     <string name="services_ep">/services</string>
     <string name="doctors_ep">/doctors</string>
+    <string name="fetch_doctors">/fetch-doctors</string>
+    <string name="add_doctors">/add-doctors</string>
 </resources>

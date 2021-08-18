@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Project CSM</string>
+    <string name="et_search">Search…</string>
+    <string name="btn_search">Search</string>
+    <string name="lbl_doctors">Doctors</string>
+    <string name="lbl_counties">Counties</string>
+    <string name="lbl_services">Services</string>
+    <string name="lbl_facilities">Facilities</string>
     <string name="base_url">http://192.168.1.12</string>
     <string name="counties_ep">/counties</string>
     <string name="facilities_ep">/facilities</string>
     <string name="services_ep">/services</string>
     <string name="doctors_ep">/doctors</string>
+    <string name="fetch_doctors">/fetch-doctors</string>
+    <string name="add_doctors">/add-doctors</string>
 </resources>
