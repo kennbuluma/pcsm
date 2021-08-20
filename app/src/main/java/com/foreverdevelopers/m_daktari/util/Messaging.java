@@ -1,51 +1,47 @@
 package com.foreverdevelopers.m_daktari.util;
 
-import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
-
 import android.content.Intent;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.foreverdevelopers.m_daktari.AppViewModel;
+import com.foreverdevelopers.m_daktari.data.FireMessageSendError;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class Messaging extends FirebaseMessagingService {
+    private AppViewModel viewModel = null;
+    public Messaging(){}
+    public Messaging(AppViewModel viewModel){
+        this.viewModel = viewModel;
+    }
     @Override
     public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
-        final String msg = "Token received: "+s;
-        Log.d(SYSTAG, msg);
+        if(null!=viewModel) viewModel.setFireMessageToken(s);
     }
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        if(!remoteMessage.getData().isEmpty()){
-            Log.d(SYSTAG, "Message received: \n-----Start message-----");
-            /*for(Map<String, String> messageItem : remoteMessage.getData()){
-                Log.d(SYSTAG, "${messageItem.key} : ${messageItem.value}")
-            }
-            Log.d(SYSTAG, "-----End message-----");*/
-        }
+        if(null!=viewModel) viewModel.setFireMessage(remoteMessage);
     }
 
     @Override
     public void onDeletedMessages() {
         super.onDeletedMessages();
-        Log.d(SYSTAG, "Message deleted");
     }
 
     @Override
     public void onSendError(@NonNull String s, @NonNull Exception e) {
         super.onSendError(s, e);
-        Log.d(SYSTAG, "Message Send Error: "+ s);
+        if(null!=viewModel) viewModel.setFireMessageSendError(new FireMessageSendError(s,e));
     }
 
     @Override
     public void onMessageSent(@NonNull String s) {
         super.onMessageSent(s);
-        Log.d(SYSTAG, "Message sent: "+s);
+        if(null!=viewModel) viewModel.setFireMessageSent(s);
     }
 
     @NonNull

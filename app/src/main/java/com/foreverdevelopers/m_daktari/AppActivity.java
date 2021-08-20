@@ -10,7 +10,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.foreverdevelopers.m_daktari.data.HttpClient;
-import com.foreverdevelopers.m_daktari.data.RemoteActions;
+import com.foreverdevelopers.m_daktari.remote.Remote;
+import com.foreverdevelopers.m_daktari.remote.Requests;
 import com.foreverdevelopers.m_daktari.util.InitializeApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -48,18 +49,30 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void onChanged(HashMap<String, FirebaseRemoteConfigValue> remoteConfigs) {
                 String baseUrl = Objects.requireNonNull(remoteConfigs.get("base_url")).asString(),
-                        countiesEp = Objects.requireNonNull(remoteConfigs.get("counties_ep")).asString(),
-                        facilitiesEp = Objects.requireNonNull(remoteConfigs.get("facilities_ep")).asString(),
-                        servicesEp = Objects.requireNonNull(remoteConfigs.get("services_ep")).asString(),
-                        doctorsEp = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString();
-                appViewModel.setRemoteActions(new RemoteActions(baseUrl, countiesEp, facilitiesEp, servicesEp, doctorsEp));
+                        doctorsAll = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        doctorsByFacility = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        doctorsByService = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        countiesAll = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        countiesByService = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        countiesByFacility = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        facilitiesAll = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        facilitiesByCounty = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        serviceAll = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        serviceByCounty = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
+                        serviceByFacility = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString();
                 final HttpClient appRemoteClient = InitializeApp.httpClient(AppActivity.this);
-                appViewModel. setRemoteClient(appRemoteClient);
+                final Remote appRemote = new Remote(appRemoteClient);
+                final Requests appRequests = new Requests(appRemoteClient, appRemote, baseUrl,
+                        doctorsAll, doctorsByFacility, doctorsByService,
+                        countiesAll, countiesByService, countiesByFacility,
+                        facilitiesAll, facilitiesByCounty,
+                        serviceAll, serviceByCounty, serviceByFacility);
+                appViewModel.setRemoteRequests(appRequests);
             }
         });
-        appViewModel.remoteClient.observe(this, new Observer<HttpClient>() {
+        appViewModel.remoteRequests.observe(this, new Observer<Requests>() {
             @Override
-            public void onChanged(HttpClient httpClient) {
+            public void onChanged(Requests httpClient) {
                 loadComponents();
             }
         });

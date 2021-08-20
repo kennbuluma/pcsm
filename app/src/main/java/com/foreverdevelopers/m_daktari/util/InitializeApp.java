@@ -84,7 +84,6 @@ public class InitializeApp {
         final Map<String, Object> defaultConfig = (Map<String, Object>) defaultConfigs((Context) activity);
         remoteConfig.setDefaultsAsync(defaultConfig);
     }
-
     private static void fetchFireConfig(FirebaseRemoteConfig remoteConfig,
                                         AppViewModel appViewModel,
                                         Activity activity){
@@ -97,8 +96,8 @@ public class InitializeApp {
             }
         });
     }
-    private static Map<String, String> defaultConfigs(Context context){
-        final HashMap<String,String> remoteConfigs = new HashMap<String, String>();
+    private static Map<String, Object> defaultConfigs(Context context){
+        final HashMap<String,Object> remoteConfigs = new HashMap<String, Object>();
         remoteConfigs.put("base_url", context.getResources().getString(R.string.base_url));
         remoteConfigs.put("counties_ep", context.getResources().getString(R.string.counties_ep));
         remoteConfigs.put("facilities_ep", context.getResources().getString(R.string.facilities_ep));
