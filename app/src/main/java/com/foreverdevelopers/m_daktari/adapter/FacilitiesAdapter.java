@@ -14,17 +14,16 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.m_daktari.R;
-import com.foreverdevelopers.m_daktari.data.entity.Facility;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder>{
-    private ArrayList<Facility> facilities;
+    private ArrayList<String> facilities;
     private Context context;
 
-    public FacilitiesAdapter(Context context, ArrayList<Facility> facilities){
+    public FacilitiesAdapter(Context context, ArrayList<String> facilities){
         this.context = context;
         this.facilities = facilities;
     }
@@ -40,13 +39,12 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
     @Override
     public void onBindViewHolder(@NonNull @NotNull FacilityViewHolder holder, int position) {
         if(null==facilities) return;
-        Facility thisFacility = facilities.get(position);
-        holder.txFacilityItemCode.setText(thisFacility.code);
-        holder.txFacilityItemName.setText(thisFacility.name);
+        String thisFacility = facilities.get(position);
+        holder.txFacilityItemName.setText(thisFacility);
         holder.crdFacilityItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w(SYSTAG, "Facility "+thisFacility.code+": "+thisFacility.name);
+                Log.w(SYSTAG, "Facility "+thisFacility);
             }
         });
     }
@@ -56,13 +54,12 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
         return facilities.size();
     }
 
-    class FacilityViewHolder extends RecyclerView.ViewHolder{
+    public static class FacilityViewHolder extends RecyclerView.ViewHolder{
         public final CardView crdFacilityItem;
-        public final TextView txFacilityItemCode, txFacilityItemName;
+        public final TextView txFacilityItemName;
         public FacilityViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             crdFacilityItem = (CardView) itemView.findViewById(R.id.crd_facility_item);
-            txFacilityItemCode = (TextView) itemView.findViewById(R.id.tx_facility_item_code);
             txFacilityItemName = (TextView) itemView.findViewById(R.id.tx_facility_item_name);
         }
     }

@@ -49,17 +49,17 @@ public class AppActivity extends AppCompatActivity {
             @Override
             public void onChanged(HashMap<String, FirebaseRemoteConfigValue> remoteConfigs) {
                 String baseUrl = Objects.requireNonNull(remoteConfigs.get("base_url")).asString(),
-                        doctorsAll = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        doctorsByFacility = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        doctorsByService = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        countiesAll = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        countiesByService = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        countiesByFacility = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        facilitiesAll = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        facilitiesByCounty = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        serviceAll = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        serviceByCounty = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString(),
-                        serviceByFacility = Objects.requireNonNull(remoteConfigs.get("doctors_ep")).asString();
+                        doctorsAll = Objects.requireNonNull(remoteConfigs.get("doctors_all_ep")).asString(),
+                        doctorsByFacility = Objects.requireNonNull(remoteConfigs.get("doctors_facility_ep")).asString(),
+                        doctorsByService = Objects.requireNonNull(remoteConfigs.get("doctors_service_ep")).asString(),
+                        countiesAll = Objects.requireNonNull(remoteConfigs.get("counties_all_ep")).asString(),
+                        countiesByService = Objects.requireNonNull(remoteConfigs.get("counties_service_ep")).asString(),
+                        countiesByFacility = Objects.requireNonNull(remoteConfigs.get("counties_facility_ep")).asString(),
+                        facilitiesAll = Objects.requireNonNull(remoteConfigs.get("facilities_all_ep")).asString(),
+                        facilitiesByCounty = Objects.requireNonNull(remoteConfigs.get("facilities_county_ep")).asString(),
+                        serviceAll = Objects.requireNonNull(remoteConfigs.get("services_all_ep")).asString(),
+                        serviceByCounty = Objects.requireNonNull(remoteConfigs.get("services_county_ep")).asString(),
+                        serviceByFacility = Objects.requireNonNull(remoteConfigs.get("services_facility_ep")).asString();
                 final HttpClient appRemoteClient = InitializeApp.httpClient(AppActivity.this);
                 final Remote appRemote = new Remote(appRemoteClient);
                 final Requests appRequests = new Requests(appRemoteClient, appRemote, baseUrl,

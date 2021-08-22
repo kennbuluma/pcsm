@@ -39,7 +39,7 @@ public class Remote {
         this.unsecureRequest = new RequestProcessor(this.httpClient.unsecureClient);
     }
 
-    class RequestProcessor{
+    static class RequestProcessor{
         private OkHttpClient client;
         private Request mainRequest;
 
@@ -75,12 +75,14 @@ public class Remote {
                 JSONObject params,
                 Header headers
         ) throws IllegalArgumentException {
-            final RequestBody requestBody = RequestBody.create(params.toString(), Common.Network.JSON_CONTENT_TYPE);
-            final Request.Builder thisRequestBuilder = (null== headers)
+            final RequestBody requestBody = (method.trim().toLowerCase().equals("get") ||
+                    method.trim().toLowerCase().equals("delete")) ?
+                    null : RequestBody.create(params.toString(), Common.Network.JSON_CONTENT_TYPE);
+            final Request.Builder thisRequestBuilder = (null != headers)
                     ? new Request.Builder()
                         .addHeader(Common.Network.AUTH_HEADER, Common.Network.AUTH_CONTENT+" "+headers.token)
                         .url(url)
-                    : new  Request.Builder().url(url);
+                    : new Request.Builder().url(url);
             switch(method.trim().toLowerCase()){
                 case "get":
                     return thisRequestBuilder.get().build();
@@ -154,7 +156,7 @@ public class Remote {
         }
 
     }
-    class ResponseProcessor{
+    static class ResponseProcessor{
         private Call call;
         private Response response;
         private RemoteCallback callback;

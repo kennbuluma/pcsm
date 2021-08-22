@@ -38,6 +38,7 @@ public class SSLOps {
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
         tmf.init(keyStore);
         TrustManager[] trustManagers = getWrappedTrustManagers(tmf.getTrustManagers());
+        if(null == trustManagers) return null;
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, trustManagers, null);
         if(trustManagers.length > 0 && trustManagers[0] instanceof X509TrustManager){

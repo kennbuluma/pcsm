@@ -22,7 +22,7 @@
         tools:layout="@layout/fragment_facilities_list" />
     <fragment
         android:id="@+id/nav_services"
-        android:name="com.foreverdevelopers.m_daktari.ui.ServicesFragment"
+        android:name="com.foreverdevelopers.m_daktari.ui.ServicesListFragment"
         android:label="fragment_services"
         tools:layout="@layout/fragment_services" />
     <fragment

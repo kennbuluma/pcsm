@@ -7,10 +7,15 @@
     <string name="lbl_services">Services</string>
     <string name="lbl_facilities">Facilities</string>
     <string name="base_url">http://52.213.11.45:8080</string>
-    <string name="counties_ep">/counties</string>
-    <string name="facilities_ep">/facilities</string>
-    <string name="services_ep">/services</string>
-    <string name="doctors_ep">/doctors</string>
-    <string name="fetch_doctors">/fetch-doctors</string>
-    <string name="add_doctors">/add-doctors</string>
+    <string name="doctors_all_ep">/doc/fetch-doctors</string>
+    <string name="doctors_facility_ep">/doc/fetch-doctors-by-facility</string>
+    <string name="doctors_service_ep">/doc/fetch-doctors</string>
+    <string name="counties_all_ep">/doc/fetch-counties</string>
+    <string name="counties_service_ep">/doc/fetch-counties</string>
+    <string name="counties_facility_ep">/doc/fetch-counties-by-facility</string>
+    <string name="facilities_all_ep">/doc/fetch-facilities</string>
+    <string name="facilities_county_ep">/doc/fetch-facilities</string>
+    <string name="services_all_ep">/doc/fetch-specialties</string>
+    <string name="services_county_ep">/doc/fetch-specialty-by-county</string>
+    <string name="services_facility_ep">/doc/fetch-specialty</string>
 </resources>

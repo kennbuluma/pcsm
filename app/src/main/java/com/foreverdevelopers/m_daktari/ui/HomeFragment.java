@@ -1,5 +1,17 @@
 package com.foreverdevelopers.m_daktari.ui;
 
+import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_FACILITY;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_SERVICE;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_FACILITY;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_SERVICE;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_FACILITY;
+
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,10 +29,12 @@ import android.widget.Toast;
 
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
+import com.foreverdevelopers.m_daktari.data.ActivePath;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment {
@@ -84,20 +98,49 @@ public class HomeFragment extends Fragment {
         @Override
         public void onClick(View v) {
             if(null==appNavController) return;
+            HashMap<Integer, ActivePath> pathMapper;
             switch(v.getId()){
                 case R.id.btn_main_counties:{
+                    pathMapper = new HashMap<>();
+                    pathMapper.put(0, new ActivePath("counties", RA_COUNTIES));
+                    pathMapper.put(1, new ActivePath("facilities", RA_FACILITIES_BY_COUNTY));
+                    pathMapper.put(2, new ActivePath("services", RA_SERVICES_BY_FACILITY));
+                    pathMapper.put(3, new ActivePath("doctors", RA_DOCTORS_BY_SERVICE));
+                    pathMapper.put(4, new ActivePath("doctor", ""));
+                    appViewModel.setActivePathMap(pathMapper);
                     appNavController.navigate(R.id.nav_counties);
                     return;
                 }
                 case R.id.btn_main_doctors:{
+                    pathMapper = new HashMap<>();
+                    pathMapper.put(0, new ActivePath("doctors", RA_DOCTORS));
+                    pathMapper.put(1, new ActivePath("doctor", ""));
+                    appViewModel.setActivePathMap(pathMapper);
                     appNavController.navigate(R.id.nav_doctors);
                     return;
                 }
                 case R.id.btn_main_facilities:{
+                    pathMapper = new HashMap<>();
+                    pathMapper.put(0, new ActivePath("facilities", RA_FACILITIES));
+                    pathMapper.put(1, new ActivePath("counties", RA_COUNTIES_BY_FACILITY));
+                    pathMapper.put(2, new ActivePath("services", RA_SERVICES_BY_COUNTY));
+                    pathMapper.put(3, new ActivePath("doctors", RA_DOCTORS_BY_SERVICE));
+                    pathMapper.put(4, new ActivePath("doctor", ""));
+                    appViewModel.setActivePathMap(pathMapper);
                     appNavController.navigate(R.id.nav_facilities);
                     return;
                 }
-                case R.id.btn_main_services: appNavController.navigate(R.id.nav_services);
+                case R.id.btn_main_services:{
+                    pathMapper = new HashMap<>();
+                    pathMapper.put(0, new ActivePath("services", RA_SERVICES));
+                    pathMapper.put(1, new ActivePath("counties", RA_COUNTIES_BY_SERVICE));
+                    pathMapper.put(2, new ActivePath("facilities", RA_FACILITIES_BY_COUNTY));
+                    pathMapper.put(3, new ActivePath("doctors", RA_DOCTORS_BY_FACILITY));
+                    pathMapper.put(4, new ActivePath("doctor", ""));
+                    appViewModel.setActivePathMap(pathMapper);
+                    appNavController.navigate(R.id.nav_services);
+                    return;
+                }
             }
         }
     };

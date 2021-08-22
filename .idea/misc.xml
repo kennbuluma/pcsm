@@ -16,6 +16,9 @@
         <entry key="..\:/Projects/Features/Ext/pcsm/app/src/main/res/layout/list_item_service.xml" value="0.36666666666666664" />
         <entry key="..\:/Projects/Features/Ext/pcsm/app/src/main/res/xml/backup_rules.xml" value="0.1" />
         <entry key="..\:/Projects/Features/Ext/pcsm/app/src/main/res/xml/network_config.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_counties_list.xml" value="0.1875" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1875" />
+        <entry key="app/src/main/res/layout/fragment_services.xml" value="0.1875" />
       </map>
     </option>
   </component>

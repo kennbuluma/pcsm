@@ -13,16 +13,15 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.m_daktari.R;
-import com.foreverdevelopers.m_daktari.data.entity.County;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> {
-    private ArrayList<County> counties;
+    private ArrayList<String> counties;
 
-    public CountiesAdapter(ArrayList<County> counties){
+    public CountiesAdapter(ArrayList<String> counties){
         this.counties = counties;
     }
 
@@ -37,13 +36,12 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
     @Override
     public void onBindViewHolder(@NonNull @NotNull CountiesAdapter.CountyViewHolder holder, int position) {
         if(null==counties) return;
-        County thisCounty = counties.get(position);
-        holder.txCountyItemCode.setText(thisCounty.code);
-        holder.txCountyItemName.setText(thisCounty.name);
+        String thisCounty = counties.get(position);
+        holder.txCountyItemName.setText(thisCounty);
         holder.crdCountyItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.w(SYSTAG, "County "+thisCounty.code+": "+thisCounty.name);
+                Log.w(SYSTAG, "County "+thisCounty);
             }
         });
     }
@@ -53,13 +51,12 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
         return counties.size();
     }
 
-    class CountyViewHolder extends RecyclerView.ViewHolder {
+    public static class CountyViewHolder extends RecyclerView.ViewHolder {
         public final CardView crdCountyItem;
-        public final TextView txCountyItemCode, txCountyItemName;
+        public final TextView txCountyItemName;
         public CountyViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
             crdCountyItem = (CardView) itemView.findViewById(R.id.crd_county_item);
-            txCountyItemCode = (TextView) itemView.findViewById(R.id.tx_county_item_code);
             txCountyItemName = (TextView) itemView.findViewById(R.id.tx_county_item_name);
         }
     }

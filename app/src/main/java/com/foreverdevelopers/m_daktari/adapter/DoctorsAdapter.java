@@ -53,7 +53,7 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         return doctors.size();
     }
 
-    class DoctorViewHolder extends RecyclerView.ViewHolder{
+    public static class DoctorViewHolder extends RecyclerView.ViewHolder{
         public final CardView crdDoctorItem;
         public final TextView txDoctorItemCode, txDoctorItemName;
         public DoctorViewHolder(@NonNull @NotNull View itemView) {

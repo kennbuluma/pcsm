@@ -1,7 +1,8 @@
 package com.foreverdevelopers.m_daktari.ui;
 
-import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES;
-import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_FACILITY;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
 import com.foreverdevelopers.m_daktari.adapter.CountiesAdapter;
-import com.foreverdevelopers.m_daktari.adapter.FacilitiesAdapter;
+import com.foreverdevelopers.m_daktari.adapter.ServicesAdapter;
 import com.foreverdevelopers.m_daktari.data.ActivePath;
 import com.foreverdevelopers.m_daktari.remote.Requests;
 
@@ -30,33 +31,33 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class FacilitiesListFragment extends Fragment {
+public class ServicesListFragment extends Fragment {
 
-    private FacilitiesListViewModel mViewModel;
+    private ServicesListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
     private HashMap<Integer, ActivePath> pathMapper = null;
     private String activeBaseItem = null;
     private Requests mainRequests;
 
-    public static FacilitiesListFragment newInstance() {
-        return new FacilitiesListFragment();
+    public static ServicesListFragment newInstance() {
+        return new ServicesListFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mViewModel = new ViewModelProvider(this).get(FacilitiesListViewModel.class);
+        mViewModel = new ViewModelProvider(this).get(ServicesListViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_facilities_list, container, false);
-        RecyclerView.LayoutManager facilitiesLayoutManager = new LinearLayoutManager(root.getContext());
-        RecyclerView facilitiesView = root.findViewById(R.id.rcv_facilities);
-        TextView title = root.findViewById(R.id.lbl_facility_list);
+        View root  = inflater.inflate(R.layout.fragment_services, container, false);
+        RecyclerView.LayoutManager servicesLayoutManager = new LinearLayoutManager(root.getContext());
+        RecyclerView servicesView = root.findViewById(R.id.rcv_services);
+        TextView title = root.findViewById(R.id.lbl_service_list);
         appViewModel.remoteRequests.observe(getViewLifecycleOwner(), new Observer<Requests>() {
             @Override
             public void onChanged(Requests requests) {
                 mainRequests = requests;
-                mainRequests.setFacilitiesViewModel(mViewModel);
+                mainRequests.setServicesViewModel(mViewModel);
             }
         });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
@@ -76,16 +77,21 @@ public class FacilitiesListFragment extends Fragment {
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
                 pathMapper = integerActivePathHashMap;
                 for (Map.Entry<Integer, ActivePath> pathItem : pathMapper.entrySet()) {
-                    if (pathItem.getValue().path.trim().toLowerCase(Locale.ROOT).equals("facilities")) {
+                    if (pathItem.getValue().path.trim().toLowerCase(Locale.ROOT).equals("services")) {
                         switch (pathItem.getValue().remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                            case RA_FACILITIES: {
-                                title.setText("Facilities");
-                                mainRequests.facilitiesAll();
+                            case RA_SERVICES: {
+                                title.setText("Services");
+                                mainRequests.servicesAll();
                                 break;
                             }
-                            case RA_FACILITIES_BY_COUNTY: {
-                                title.setText("Facilities in County " + activeBaseItem);
-                                mainRequests.facilitiesByCounty(activeBaseItem);
+                            case RA_SERVICES_BY_COUNTY: {
+                                title.setText("Services in County " + activeBaseItem);
+                                mainRequests.servicesByCounty(activeBaseItem);
+                                break;
+                            }
+                            case RA_SERVICES_BY_FACILITY: {
+                                title.setText("Services in Facility " + activeBaseItem);
+                                mainRequests.servicesByFacility(activeBaseItem);
                                 break;
                             }
                         };
@@ -94,17 +100,16 @@ public class FacilitiesListFragment extends Fragment {
                 }
             }
         });
-        mViewModel.facilities.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+        mViewModel.services.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> strings) {
                 if(null==strings || strings.size() == 0) return;
-                RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder> facilitiesAdapter = new FacilitiesAdapter(getContext(),strings);
-                facilitiesView.setHasFixedSize(true);
-                facilitiesView.setLayoutManager(facilitiesLayoutManager);
-                facilitiesView.setAdapter(facilitiesAdapter);
+                RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder> servicesAdapter = new ServicesAdapter(strings);
+                servicesView.setHasFixedSize(true);
+                servicesView.setLayoutManager(servicesLayoutManager);
+                servicesView.setAdapter(servicesAdapter);
             }
         });
         return root;
     }
-
 }
