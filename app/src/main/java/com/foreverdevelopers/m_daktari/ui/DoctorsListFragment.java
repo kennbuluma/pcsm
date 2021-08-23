@@ -40,6 +40,7 @@ public class DoctorsListFragment extends Fragment {
     private HashMap<Integer, ActivePath> pathMapper = null;
     private String activeBaseItem = null;
     private Requests mainRequests;
+    private Integer currentIndex = -1;
 
     public static DoctorsListFragment newInstance() {
         return new DoctorsListFragment();
@@ -82,17 +83,23 @@ public class DoctorsListFragment extends Fragment {
                         switch (pathItem.getValue().remoteAction.trim().toLowerCase(Locale.ROOT)) {
                             case RA_DOCTORS: {
                                 title.setText("Doctors");
-                                mainRequests.doctorsAll();
+                                currentIndex = pathItem.getKey();
+                                 mainRequests.doctorsAll();
+                                 appViewModel.setCurrentPath(pathItem.getValue());
                                 break;
                             }
                             case RA_DOCTORS_BY_FACILITY: {
                                 title.setText("Doctors in Facility " + activeBaseItem);
+                                currentIndex = pathItem.getKey();
                                 mainRequests.doctorsByFacility(activeBaseItem);
+                                appViewModel.setCurrentPath(pathItem.getValue());
                                 break;
                             }
                             case RA_DOCTORS_BY_SERVICE: {
                                 title.setText("Doctors in Service " + activeBaseItem);
+                                currentIndex = pathItem.getKey();
                                 mainRequests.doctorsByService(activeBaseItem);
+                                appViewModel.setCurrentPath(pathItem.getValue());
                                 break;
                             }
                         }
@@ -106,7 +113,7 @@ public class DoctorsListFragment extends Fragment {
             @Override
             public void onChanged(ArrayList<Doctor> doctors) {
                 if(null==doctors || doctors.size() == 0) return;
-                RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> doctorsAdapter = new DoctorsAdapter(doctors);
+                RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> doctorsAdapter = new DoctorsAdapter(doctors, appViewModel, currentIndex);
                 doctorsView.setHasFixedSize(true);
                 doctorsView.setLayoutManager(doctorsLayoutManager);
                 doctorsView.setAdapter(doctorsAdapter);

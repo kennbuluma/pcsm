@@ -14,8 +14,14 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 import java.util.HashMap;
 
 public class AppViewModel extends ViewModel {
+    private final MutableLiveData<Integer> _currentIndex = new MutableLiveData<Integer>();
+    public LiveData<Integer> currentIndex = _currentIndex;
+
     private final MutableLiveData<NavController> _navController = new MutableLiveData<NavController>();
     public LiveData<NavController> navController = _navController;
+
+    private final MutableLiveData<ActivePath> _currentPath = new MutableLiveData<ActivePath>();
+    public LiveData<ActivePath> currentPath = _currentPath;
 
     private final MutableLiveData<HashMap<Integer, ActivePath>> _activePathMap = new MutableLiveData<>();
     public LiveData<HashMap<Integer, ActivePath>> activePathMap = _activePathMap;
@@ -41,8 +47,10 @@ public class AppViewModel extends ViewModel {
     private final MutableLiveData<FireMessageSendError> _fireMessageSendError = new MutableLiveData<>();
     public LiveData<FireMessageSendError> fireMessageSendError = _fireMessageSendError;
 
+    public void setCurrentIndex(Integer currentIndex){ this._currentIndex.postValue(currentIndex); }
     public void setNavController(NavController controller){ this._navController.postValue(controller); }
     public void setActivePathMap(HashMap<Integer, ActivePath> pathMap){ this._activePathMap.postValue(pathMap); }
+    public void setCurrentPath(ActivePath path){ this._currentPath.postValue(path); }
     public void setActiveBaseItem(String baseItem){ this._activeBaseItem.postValue(baseItem); }
     public void setRemoteSettings(HashMap<String, FirebaseRemoteConfigValue> settings){ this._remoteSettings.postValue(settings); }
     public void setRemoteRequests(Requests requests){ this._remoteRequests.postValue(requests); }
