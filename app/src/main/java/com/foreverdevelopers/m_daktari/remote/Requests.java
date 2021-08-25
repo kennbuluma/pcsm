@@ -26,7 +26,7 @@ public class Requests {
             serviceAll, serviceByCounty, serviceByFacility;
     private final HttpClient httpClient;
     private final Remote remote;
-    private final Remote.RequestProcessor requestProcessor;
+    private Remote.RequestProcessor requestProcessor;
 
     private CountiesListViewModel countiesViewModel;
     private FacilitiesListViewModel facilitiesViewModel;
@@ -60,7 +60,6 @@ public class Requests {
         this.serviceAll = serviceAll;
         this.serviceByCounty = serviceByCounty;
         this.serviceByFacility = serviceByFacility;
-        this.requestProcessor = new Remote.RequestProcessor(this.httpClient.unsecureClient);
     }
 
     public void setCountiesViewModel(CountiesListViewModel viewModel){
@@ -77,8 +76,15 @@ public class Requests {
     }
 
     public void countiesAll(){
-            String url = baseUrl+countiesAll;
-            requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
+        String url = baseUrl+countiesAll;
+        requestProcessor = url.trim().startsWith("https://") ?
+                remote.secureRequest :
+                (url.trim().startsWith("http://") ?
+                        remote.unsecureRequest :
+                        null
+                );
+        if(null==requestProcessor) return;
+        requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
                     if(null==result || result.trim().length() == 0) return;
@@ -113,6 +119,13 @@ public class Requests {
         }
         public void countiesByFacility(String facility){
             String url = baseUrl+countiesByFacility+"/"+facility;
+            requestProcessor = url.trim().startsWith("https://") ?
+                    remote.secureRequest :
+                    (url.trim().startsWith("http://") ?
+                            remote.unsecureRequest :
+                            null
+                    );
+            if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -148,6 +161,13 @@ public class Requests {
         }
         public void countiesByService(String service){
             String url = baseUrl+countiesByService+"/"+service;
+            requestProcessor = url.trim().startsWith("https://") ?
+                    remote.secureRequest :
+                    (url.trim().startsWith("http://") ?
+                            remote.unsecureRequest :
+                            null
+                    );
+            if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -182,7 +202,14 @@ public class Requests {
             });
         }
     public void facilitiesAll(){
-            String url = baseUrl+facilitiesAll;
+        String url = baseUrl+facilitiesAll;
+        requestProcessor = url.trim().startsWith("https://") ?
+                remote.secureRequest :
+                (url.trim().startsWith("http://") ?
+                        remote.unsecureRequest :
+                        null
+                );
+        if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -218,6 +245,13 @@ public class Requests {
         }
         public void facilitiesByCounty(String county){
             String url = baseUrl+facilitiesByCounty+"/"+county;
+            requestProcessor = url.trim().startsWith("https://") ?
+                    remote.secureRequest :
+                    (url.trim().startsWith("http://") ?
+                            remote.unsecureRequest :
+                            null
+                    );
+            if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -252,7 +286,14 @@ public class Requests {
             });
         }
     public void servicesAll(){
-            String url = baseUrl+serviceAll;
+        String url = baseUrl+serviceAll;
+        requestProcessor = url.trim().startsWith("https://") ?
+                remote.secureRequest :
+                (url.trim().startsWith("http://") ?
+                        remote.unsecureRequest :
+                        null
+                );
+        if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -288,6 +329,13 @@ public class Requests {
         }
         public void servicesByFacility(String facility){
             String url = baseUrl+serviceByFacility+"/"+facility;
+            requestProcessor = url.trim().startsWith("https://") ?
+                    remote.secureRequest :
+                    (url.trim().startsWith("http://") ?
+                            remote.unsecureRequest :
+                            null
+                    );
+            if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -323,6 +371,13 @@ public class Requests {
         }
         public void servicesByCounty(String county){
             String url = baseUrl+serviceByCounty+"/"+county;
+            requestProcessor = url.trim().startsWith("https://") ?
+                    remote.secureRequest :
+                    (url.trim().startsWith("http://") ?
+                            remote.unsecureRequest :
+                            null
+                    );
+            if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -355,8 +410,16 @@ public class Requests {
                     Log.e(SYSTAG, jsonException.getLocalizedMessage());
                 }
             });
-        }public void doctorsAll(){
+        }
+        public void doctorsAll(){
             String url = baseUrl+doctorsAll;
+            requestProcessor = url.trim().startsWith("https://") ?
+                    remote.secureRequest :
+                    (url.trim().startsWith("http://") ?
+                            remote.unsecureRequest :
+                            null
+                    );
+            if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -392,6 +455,13 @@ public class Requests {
         }
         public void doctorsByFacility(String facility){
             String url = baseUrl+doctorsByFacility+"/"+facility;
+            requestProcessor = url.trim().startsWith("https://") ?
+                    remote.secureRequest :
+                    (url.trim().startsWith("http://") ?
+                            remote.unsecureRequest :
+                            null
+                    );
+            if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
@@ -427,6 +497,13 @@ public class Requests {
         }
         public void doctorsByService(String service){
             String url = baseUrl+doctorsByService+"/"+service;
+            requestProcessor = url.trim().startsWith("https://") ?
+                    remote.secureRequest :
+                    (url.trim().startsWith("http://") ?
+                            remote.unsecureRequest :
+                            null
+                    );
+            if(null==requestProcessor) return;
             requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
