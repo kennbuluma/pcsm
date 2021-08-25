@@ -1,5 +1,7 @@
 package com.foreverdevelopers.m_daktari.adapter;
 
+import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
 import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
 import android.util.Log;
@@ -11,10 +13,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
+import com.foreverdevelopers.m_daktari.data.ActivePath;
 import com.foreverdevelopers.m_daktari.data.entity.Doctor;
 import com.foreverdevelopers.m_daktari.ui.DoctorsListViewModel;
 import com.foreverdevelopers.m_daktari.util.Converter;
@@ -22,16 +28,25 @@ import com.foreverdevelopers.m_daktari.util.Converter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> {
-    private ArrayList<Doctor> doctors;
-    private AppViewModel viewModel;
-    private Integer currentIndex;
+    private final ArrayList<Doctor> doctors;
+    private final AppViewModel viewModel;
+    private final Integer currentIndex;
+    private final NavController navController;
+    private final HashMap<Integer, ActivePath> activePathMap;
 
-    public DoctorsAdapter(ArrayList<Doctor> doctors, AppViewModel viewModel, Integer currentIndex){
-        this.viewModel = viewModel;
+    public DoctorsAdapter(AppViewModel viewModel,
+                          ArrayList<Doctor> doctors,
+                          Integer currentIndex,
+                          NavController navController,
+                          HashMap<Integer, ActivePath> activePathMap){
         this.doctors = doctors;
+        this.viewModel = viewModel;
         this.currentIndex = currentIndex;
+        this.navController = navController;
+        this.activePathMap = activePathMap;
     }
 
     @NonNull
@@ -53,9 +68,12 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         holder.crdDoctorItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.setCurrentIndex(currentIndex);
+                Integer nextIndex = currentIndex + 1;
+                ActivePath path = activePathMap.get(nextIndex);
+                navController.navigate(R.id.nav_doctor_details);
                 viewModel.setActiveBaseItem(thisDoctor.id);
-                Log.w(SYSTAG, "Doctor "+thisDoctor.id+": "+thisDoctor.name);
+                viewModel.setCurrentIndex(nextIndex);
+                viewModel.setCurrentPath(path);
             }
         });
     }

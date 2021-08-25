@@ -3,23 +3,23 @@ package com.foreverdevelopers.m_daktari.ui;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_FACILITY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_SERVICE;
-
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
@@ -29,19 +29,17 @@ import com.foreverdevelopers.m_daktari.remote.Requests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
 public class CountiesListFragment extends Fragment {
 
     private CountiesListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
-    private HashMap<Integer, ActivePath> pathMapper = null;
     private String activeBaseItem = null;
     private Requests mainRequests;
+    private Integer currentIndex;
+    private HashMap<Integer, ActivePath> pathMap;
 
     public static CountiesListFragment newInstance() {
         return new CountiesListFragment();
@@ -75,40 +73,48 @@ public class CountiesListFragment extends Fragment {
                 activeBaseItem = s;
             }
         });
-        appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
+        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
             @Override
-            public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
-                pathMapper = integerActivePathHashMap;
-                for (Map.Entry<Integer, ActivePath> pathItem : pathMapper.entrySet()) {
-                    if (pathItem.getValue().path.trim().toLowerCase(Locale.ROOT).equals("counties")) {
-                        switch (pathItem.getValue().remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                            case RA_COUNTIES: {
-                                title.setText("Counties");
-                                mainRequests.countiesAll();
-                                break;
-                            }
-                            case RA_COUNTIES_BY_FACILITY: {
-                                title.setText("County with Facility " + activeBaseItem);
-                                mainRequests.countiesByFacility(activeBaseItem);
-                                break;
-                            }
-                            case RA_COUNTIES_BY_SERVICE: {
-                                title.setText("Counties with Service " + activeBaseItem);
-                                mainRequests.countiesByService(activeBaseItem);
-                                break;
-                            }
-                        }
-                        ;
+            public void onChanged(ActivePath activePath) {
+                switch (activePath.remoteAction.trim().toLowerCase(Locale.ROOT)) {
+                    case RA_COUNTIES: {
+                        title.setText("Counties");
+                        mainRequests.countiesAll();
+                        Log.w(SYSTAG, "All Counties");
+                        break;
+                    }
+                    case RA_COUNTIES_BY_FACILITY: {
+                        title.setText("County with Facility " + activeBaseItem);
+                        mainRequests.countiesByFacility(activeBaseItem);
+                        Log.w(SYSTAG, "Counties By Facility");
+                        break;
+                    }
+                    case RA_COUNTIES_BY_SERVICE: {
+                        title.setText("Counties with Service " + activeBaseItem);
+                        mainRequests.countiesByService(activeBaseItem);
+                        Log.w(SYSTAG, "Counties by Service");
                         break;
                     }
                 }
+            }
+        });
+        appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
+            @Override
+            public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
+                pathMap = integerActivePathHashMap;
+            }
+        });
+        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                currentIndex = integer;
             }
         });
         mViewModel.counties.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> strings) {
                 if(null==strings || strings.size() == 0) return;
-                RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> countiesAdapter = new CountiesAdapter(strings);
+                RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> countiesAdapter = new CountiesAdapter(appViewModel, strings, currentIndex, appNavController, pathMap);
                 countiesView.setHasFixedSize(true);
                 countiesView.setLayoutManager(countiesLayoutManager);
                 countiesView.setAdapter(countiesAdapter);

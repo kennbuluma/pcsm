@@ -108,6 +108,8 @@ public class HomeFragment extends Fragment {
                     pathMapper.put(3, new ActivePath("doctors", RA_DOCTORS_BY_SERVICE));
                     pathMapper.put(4, new ActivePath("doctor", ""));
                     appViewModel.setActivePathMap(pathMapper);
+                    appViewModel.setCurrentIndex(0);
+                    appViewModel.setCurrentPath(new ActivePath("counties", RA_COUNTIES));
                     appNavController.navigate(R.id.nav_counties);
                     return;
                 }
@@ -116,6 +118,8 @@ public class HomeFragment extends Fragment {
                     pathMapper.put(0, new ActivePath("doctors", RA_DOCTORS));
                     pathMapper.put(1, new ActivePath("doctor", ""));
                     appViewModel.setActivePathMap(pathMapper);
+                    appViewModel.setCurrentIndex(0);
+                    appViewModel.setCurrentPath(new ActivePath("doctors", RA_DOCTORS));
                     appNavController.navigate(R.id.nav_doctors);
                     return;
                 }
@@ -127,6 +131,8 @@ public class HomeFragment extends Fragment {
                     pathMapper.put(3, new ActivePath("doctors", RA_DOCTORS_BY_SERVICE));
                     pathMapper.put(4, new ActivePath("doctor", ""));
                     appViewModel.setActivePathMap(pathMapper);
+                    appViewModel.setCurrentIndex(0);
+                    appViewModel.setCurrentPath(new ActivePath("facilities", RA_FACILITIES));
                     appNavController.navigate(R.id.nav_facilities);
                     return;
                 }
@@ -138,6 +144,8 @@ public class HomeFragment extends Fragment {
                     pathMapper.put(3, new ActivePath("doctors", RA_DOCTORS_BY_FACILITY));
                     pathMapper.put(4, new ActivePath("doctor", ""));
                     appViewModel.setActivePathMap(pathMapper);
+                    appViewModel.setCurrentIndex(0);
+                    appViewModel.setCurrentPath(new ActivePath("services", RA_SERVICES));
                     appNavController.navigate(R.id.nav_services);
                     return;
                 }
