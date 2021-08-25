@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class Requests {
     private final String baseUrl,
-            doctorsAll, doctorsByFacility, doctorsByService,
+            doctorsAll, doctorsByFacility, doctorsByService, doctorsSearch,
             countiesAll, countiesByService, countiesByFacility,
             facilitiesAll, facilitiesByCounty,
             serviceAll, serviceByCounty, serviceByFacility;
@@ -38,6 +38,7 @@ public class Requests {
                     String doctorsAll,
                     String doctorsByFacility,
                     String doctorsByService,
+                    String doctorsSearch,
                     String countiesAll,
                     String countiesByService,
                     String countiesByFacility,
@@ -52,6 +53,7 @@ public class Requests {
         this.doctorsAll = doctorsAll;
         this.doctorsByFacility = doctorsByFacility;
         this.doctorsByService = doctorsByService;
+        this.doctorsSearch = doctorsSearch;
         this.countiesAll = countiesAll;
         this.countiesByService = countiesByService;
         this.countiesByFacility = countiesByFacility;
@@ -117,7 +119,7 @@ public class Requests {
                 }
             });
         }
-        public void countiesByFacility(String facility){
+    public void countiesByFacility(String facility){
             String url = baseUrl+countiesByFacility+"/"+facility;
             requestProcessor = url.trim().startsWith("https://") ?
                     remote.secureRequest :
@@ -159,7 +161,7 @@ public class Requests {
                 }
             });
         }
-        public void countiesByService(String service){
+    public void countiesByService(String service){
             String url = baseUrl+countiesByService+"/"+service;
             requestProcessor = url.trim().startsWith("https://") ?
                     remote.secureRequest :
@@ -243,7 +245,7 @@ public class Requests {
                 }
             });
         }
-        public void facilitiesByCounty(String county){
+    public void facilitiesByCounty(String county){
             String url = baseUrl+facilitiesByCounty+"/"+county;
             requestProcessor = url.trim().startsWith("https://") ?
                     remote.secureRequest :
@@ -327,7 +329,7 @@ public class Requests {
                 }
             });
         }
-        public void servicesByFacility(String facility){
+    public void servicesByFacility(String facility){
             String url = baseUrl+serviceByFacility+"/"+facility;
             requestProcessor = url.trim().startsWith("https://") ?
                     remote.secureRequest :
@@ -369,7 +371,7 @@ public class Requests {
                 }
             });
         }
-        public void servicesByCounty(String county){
+    public void servicesByCounty(String county){
             String url = baseUrl+serviceByCounty+"/"+county;
             requestProcessor = url.trim().startsWith("https://") ?
                     remote.secureRequest :
@@ -411,16 +413,16 @@ public class Requests {
                 }
             });
         }
-        public void doctorsAll(){
-            String url = baseUrl+doctorsAll;
-            requestProcessor = url.trim().startsWith("https://") ?
+    public void doctorsAll(){
+        String url = baseUrl+doctorsAll;
+        requestProcessor = url.trim().startsWith("https://") ?
                     remote.secureRequest :
                     (url.trim().startsWith("http://") ?
                             remote.unsecureRequest :
                             null
                     );
-            if(null==requestProcessor) return;
-            requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
+        if(null==requestProcessor) return;
+        requestProcessor.processRequest("get", url, null, null, new RemoteCallback() {
                 @Override
                 public void onSuccess(String result) {
                     if(null==result || result.trim().length() == 0) return;
@@ -451,9 +453,51 @@ public class Requests {
                 public void onJSONException(JSONException jsonException) {
                     Log.e(SYSTAG, jsonException.getLocalizedMessage());
                 }
-            });
-        }
-        public void doctorsByFacility(String facility){
+        });
+    }
+    public void doctorsSearch(JSONObject searchValue){
+        String url = baseUrl+doctorsSearch;
+        requestProcessor = url.trim().startsWith("https://") ?
+                remote.secureRequest :
+                (url.trim().startsWith("http://") ?
+                        remote.unsecureRequest :
+                        null
+                );
+        if(null==requestProcessor) return;
+        requestProcessor.processRequest("post", url, searchValue, null, new RemoteCallback() {
+            @Override
+            public void onSuccess(String result) {
+                if(null==result || result.trim().length() == 0) return;
+                Responses.MainResponse mainResponse = Responses.mainResponse(result);
+                if(null==mainResponse || mainResponse.code < 0) return;
+                try{
+                    ArrayList<Doctor> doctors = new ArrayList<>();
+                    for(int i = 0; i < mainResponse.data.length(); i ++){
+                        doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
+                    }
+                    doctorsViewModel.setDoctors(doctors);
+                }catch (JSONException ex){
+                    Log.e(SYSTAG, ex.getLocalizedMessage());
+                }
+            }
+
+            @Override
+            public void onIOException(IOException ioException) {
+                Log.e(SYSTAG, ioException.getLocalizedMessage());
+            }
+
+            @Override
+            public void onServerError(JSONObject serverError) {
+                Log.e(SYSTAG, serverError.toString());
+            }
+
+            @Override
+            public void onJSONException(JSONException jsonException) {
+                Log.e(SYSTAG, jsonException.getLocalizedMessage());
+            }
+        });
+    }
+    public void doctorsByFacility(String facility){
             String url = baseUrl+doctorsByFacility+"/"+facility;
             requestProcessor = url.trim().startsWith("https://") ?
                     remote.secureRequest :
@@ -495,7 +539,7 @@ public class Requests {
                 }
             });
         }
-        public void doctorsByService(String service){
+    public void doctorsByService(String service){
             String url = baseUrl+doctorsByService+"/"+service;
             requestProcessor = url.trim().startsWith("https://") ?
                     remote.secureRequest :

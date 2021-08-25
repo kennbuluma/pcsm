@@ -52,6 +52,7 @@ public class AppActivity extends AppCompatActivity {
                         doctorsAll = Objects.requireNonNull(remoteConfigs.get("doctors_all_ep")).asString(),
                         doctorsByFacility = Objects.requireNonNull(remoteConfigs.get("doctors_facility_ep")).asString(),
                         doctorsByService = Objects.requireNonNull(remoteConfigs.get("doctors_service_ep")).asString(),
+                        doctorsSearch = Objects.requireNonNull(remoteConfigs.get("doctors_search_ep")).asString(),
                         countiesAll = Objects.requireNonNull(remoteConfigs.get("counties_all_ep")).asString(),
                         countiesByService = Objects.requireNonNull(remoteConfigs.get("counties_service_ep")).asString(),
                         countiesByFacility = Objects.requireNonNull(remoteConfigs.get("counties_facility_ep")).asString(),
@@ -63,7 +64,7 @@ public class AppActivity extends AppCompatActivity {
                 final HttpClient appRemoteClient = InitializeApp.httpClient(AppActivity.this);
                 final Remote appRemote = new Remote(appRemoteClient);
                 final Requests appRequests = new Requests(appRemoteClient, appRemote, baseUrl,
-                        doctorsAll, doctorsByFacility, doctorsByService,
+                        doctorsAll, doctorsByFacility, doctorsByService, doctorsSearch,
                         countiesAll, countiesByService, countiesByFacility,
                         facilitiesAll, facilitiesByCounty,
                         serviceAll, serviceByCounty, serviceByFacility);

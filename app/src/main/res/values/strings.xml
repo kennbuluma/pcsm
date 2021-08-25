@@ -10,6 +10,7 @@
     <string name="doctors_all_ep">/doc/fetch-doctors</string>
     <string name="doctors_facility_ep">/doc/fetch-doctors-by-facility</string>
     <string name="doctors_service_ep">/doc/fetch-doctors</string>
+    <string name="doctors_search_ep">/doc/fetch-doctors</string>
     <string name="counties_all_ep">/doc/fetch-counties</string>
     <string name="counties_service_ep">/doc/fetch-counties</string>
     <string name="counties_facility_ep">/doc/fetch-counties-by-facility</string>
