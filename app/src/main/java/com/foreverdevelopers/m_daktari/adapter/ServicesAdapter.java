@@ -1,5 +1,6 @@
 package com.foreverdevelopers.m_daktari.adapter;
 
+import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_FACILITY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_SERVICE;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_SERVICE;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
@@ -66,16 +67,12 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                switch (path.remoteAction){
-                    case RA_COUNTIES_BY_SERVICE:
-                        navController.navigate(R.id.nav_counties);
-                        break;
-                    case RA_DOCTORS_BY_SERVICE:
-                        navController.navigate(R.id.nav_doctors);
-                }
                 viewModel.setActiveBaseItem(thisService);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
+                Log.w(SYSTAG, path.remoteAction.trim());
+                if(path.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)) navController.navigate(R.id.nav_counties);
+                if(path.remoteAction.trim().equals(RA_DOCTORS_BY_SERVICE)) navController.navigate(R.id.nav_doctors);
             }
         });
     }

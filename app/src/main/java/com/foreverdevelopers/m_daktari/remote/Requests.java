@@ -342,6 +342,7 @@ public class Requests {
                 @Override
                 public void onSuccess(String result) {
                     if(null==result || result.trim().length() == 0) return;
+                    Log.w(SYSTAG, result);
                     Responses.MainResponse mainResponse = Responses.mainResponse(result);
                     if(null==mainResponse || mainResponse.code < 0) return;
                     try{
@@ -384,6 +385,7 @@ public class Requests {
                 @Override
                 public void onSuccess(String result) {
                     if(null==result || result.trim().length() == 0) return;
+                    Log.w(SYSTAG, result);
                     Responses.MainResponse mainResponse = Responses.mainResponse(result);
                     if(null==mainResponse || mainResponse.code < 0) return;
                     try{
@@ -426,6 +428,7 @@ public class Requests {
                 @Override
                 public void onSuccess(String result) {
                     if(null==result || result.trim().length() == 0) return;
+                    Log.w(SYSTAG, result);
                     Responses.MainResponse mainResponse = Responses.mainResponse(result);
                     if(null==mainResponse || mainResponse.code < 0) return;
                     try{
@@ -435,7 +438,7 @@ public class Requests {
                         }
                         doctorsViewModel.setDoctors(doctors);
                     }catch (JSONException ex){
-                        Log.e(SYSTAG, ex.getLocalizedMessage());
+                        Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                     }
                 }
 
@@ -468,6 +471,7 @@ public class Requests {
             @Override
             public void onSuccess(String result) {
                 if(null==result || result.trim().length() == 0) return;
+                Log.w(SYSTAG, result);
                 Responses.MainResponse mainResponse = Responses.mainResponse(result);
                 if(null==mainResponse || mainResponse.code < 0) return;
                 try{
@@ -477,7 +481,7 @@ public class Requests {
                     }
                     doctorsViewModel.setDoctors(doctors);
                 }catch (JSONException ex){
-                    Log.e(SYSTAG, ex.getLocalizedMessage());
+                    Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                 }
             }
 
@@ -510,6 +514,7 @@ public class Requests {
                 @Override
                 public void onSuccess(String result) {
                     if(null==result || result.trim().length() == 0) return;
+                    Log.w(SYSTAG, result);
                     Responses.MainResponse mainResponse = Responses.mainResponse(result);
                     if(null==mainResponse || mainResponse.code < 0) return;
                     try{
@@ -519,7 +524,7 @@ public class Requests {
                         }
                         doctorsViewModel.setDoctors(doctors);
                     }catch (JSONException ex){
-                        Log.e(SYSTAG, ex.getLocalizedMessage());
+                        Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                     }
                 }
 
@@ -561,7 +566,7 @@ public class Requests {
                         }
                         doctorsViewModel.setDoctors(doctors);
                     }catch (JSONException ex){
-                        Log.e(SYSTAG, ex.getLocalizedMessage());
+                        Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                     }
                 }
 

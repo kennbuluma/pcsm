@@ -4,7 +4,6 @@ import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNT
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
 import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +12,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -63,16 +60,12 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                switch (path.remoteAction){
-                    case RA_SERVICES_BY_COUNTY:
-                        navController.navigate(R.id.nav_services);
-                        break;
-                    case RA_FACILITIES_BY_COUNTY:
-                        navController.navigate(R.id.nav_facilities);
-                }
                 viewModel.setActiveBaseItem(thisCounty);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
+                Log.w(SYSTAG, path.remoteAction.trim());
+                if(path.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)) navController.navigate(R.id.nav_services);
+                if(path.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)) navController.navigate(R.id.nav_facilities);
             }
         });
     }

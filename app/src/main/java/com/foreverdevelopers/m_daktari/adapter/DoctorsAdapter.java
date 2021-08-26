@@ -70,10 +70,10 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                navController.navigate(R.id.nav_doctor_details);
                 viewModel.setActiveBaseItem(thisDoctor.id);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
+                navController.navigate(R.id.nav_doctor_details);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.foreverdevelopers.m_daktari.ui;
 
+import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_FACILITY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_SERVICE;
@@ -81,22 +82,17 @@ public class DoctorsListFragment extends Fragment {
         appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
             @Override
             public void onChanged(ActivePath activePath) {
-                switch (activePath.remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                    case RA_DOCTORS: {
-                        title.setText("Doctors");
-                        mainRequests.doctorsAll();
-                        break;
-                    }
-                    case RA_DOCTORS_BY_FACILITY: {
-                        title.setText("Doctors in Facility " + activeBaseItem);
-                        mainRequests.doctorsByFacility(activeBaseItem);
-                        break;
-                    }
-                    case RA_DOCTORS_BY_SERVICE: {
-                        title.setText("Doctors in Service " + activeBaseItem);
-                        mainRequests.doctorsByService(activeBaseItem);
-                        break;
-                    }
+                if(activePath.remoteAction.trim().equals(RA_DOCTORS)){
+                    title.setText("Doctors");
+                    mainRequests.doctorsAll();
+                }
+                if(activePath.remoteAction.trim().equals(RA_DOCTORS_BY_FACILITY)){
+                    title.setText("Doctors in Facility " + activeBaseItem);
+                    mainRequests.doctorsByFacility(activeBaseItem);
+                }
+                if(activePath.remoteAction.trim().equals(RA_DOCTORS_BY_SERVICE)){
+                    title.setText("Doctors in Service " + activeBaseItem);
+                    mainRequests.doctorsByService(activeBaseItem);
                 }
             }
         });

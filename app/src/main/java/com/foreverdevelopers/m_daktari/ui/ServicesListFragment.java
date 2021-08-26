@@ -1,5 +1,6 @@
 package com.foreverdevelopers.m_daktari.ui;
 
+import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_FACILITY;
@@ -80,22 +81,17 @@ public class ServicesListFragment extends Fragment {
         appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
             @Override
             public void onChanged(ActivePath activePath) {
-                switch (activePath.remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                    case RA_SERVICES: {
-                        title.setText("Services");
-                        mainRequests.servicesAll();
-                        break;
-                    }
-                    case RA_SERVICES_BY_COUNTY: {
-                        title.setText("Services in County " + activeBaseItem);
-                        mainRequests.servicesByCounty(activeBaseItem);
-                        break;
-                    }
-                    case RA_SERVICES_BY_FACILITY: {
-                        title.setText("Services in Facility " + activeBaseItem);
-                        mainRequests.servicesByFacility(activeBaseItem);
-                        break;
-                    }
+                if(activePath.remoteAction.trim().equals(RA_SERVICES)){
+                    title.setText("Services");
+                    mainRequests.servicesAll();
+                }
+                if(activePath.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)){
+                    title.setText("Services in County " + activeBaseItem);
+                    mainRequests.servicesByCounty(activeBaseItem);
+                }
+                if(activePath.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)){
+                    title.setText("Services in Facility " + activeBaseItem);
+                    mainRequests.servicesByFacility(activeBaseItem);
                 }
             }
         });

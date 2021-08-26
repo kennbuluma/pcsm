@@ -3,6 +3,7 @@ package com.foreverdevelopers.m_daktari.ui;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_FACILITY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_SERVICE;
+import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
 import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
 import android.os.Bundle;
@@ -76,25 +77,20 @@ public class CountiesListFragment extends Fragment {
         appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
             @Override
             public void onChanged(ActivePath activePath) {
-                switch (activePath.remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                    case RA_COUNTIES: {
-                        title.setText("Counties");
-                        mainRequests.countiesAll();
-                        Log.w(SYSTAG, "All Counties");
-                        break;
-                    }
-                    case RA_COUNTIES_BY_FACILITY: {
-                        title.setText("County with Facility " + activeBaseItem);
-                        mainRequests.countiesByFacility(activeBaseItem);
-                        Log.w(SYSTAG, "Counties By Facility");
-                        break;
-                    }
-                    case RA_COUNTIES_BY_SERVICE: {
-                        title.setText("Counties with Service " + activeBaseItem);
-                        mainRequests.countiesByService(activeBaseItem);
-                        Log.w(SYSTAG, "Counties by Service");
-                        break;
-                    }
+                if(activePath.remoteAction.trim().equals(RA_COUNTIES)){
+                    title.setText("Counties");
+                    mainRequests.countiesAll();
+                    Log.w(SYSTAG, "All Counties");
+                }
+                if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)){
+                    title.setText("County with Facility " + activeBaseItem);
+                    mainRequests.countiesByFacility(activeBaseItem);
+                    Log.w(SYSTAG, "Counties By Facility");
+                }
+                if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)){
+                    title.setText("Counties with Service " + activeBaseItem);
+                    mainRequests.countiesByService(activeBaseItem);
+                    Log.w(SYSTAG, "Counties by Service");
                 }
             }
         });

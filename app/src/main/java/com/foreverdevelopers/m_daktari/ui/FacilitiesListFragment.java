@@ -81,19 +81,15 @@ public class FacilitiesListFragment extends Fragment {
         appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
             @Override
             public void onChanged(ActivePath activePath) {
-                switch (activePath.remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                    case RA_FACILITIES: {
-                        title.setText("Facilities");
-                        mainRequests.facilitiesAll();
-                        Log.w(SYSTAG, "All Facilities");
-                        break;
-                    }
-                    case RA_FACILITIES_BY_COUNTY: {
-                        title.setText("Facilities in County " + activeBaseItem);
-                        mainRequests.facilitiesByCounty(activeBaseItem);
-                        Log.w(SYSTAG, "Facilities By County");
-                        break;
-                    }
+                if(activePath.remoteAction.trim().equals(RA_FACILITIES)){
+                    title.setText("Facilities");
+                    mainRequests.facilitiesAll();
+                    Log.w(SYSTAG, "All Facilities");
+                }
+                if(activePath.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)){
+                    title.setText("Facilities in " + activeBaseItem+ " County");
+                    mainRequests.facilitiesByCounty(activeBaseItem);
+                    Log.w(SYSTAG, "Facilities By County");
                 }
             }
         });

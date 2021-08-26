@@ -67,19 +67,13 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                switch (path.remoteAction){
-                    case RA_COUNTIES_BY_FACILITY:
-                        navController.navigate(R.id.nav_counties);
-                        break;
-                    case RA_SERVICES_BY_FACILITY:
-                        navController.navigate(R.id.nav_services);
-                        break;
-                    case RA_DOCTORS_BY_FACILITY:
-                        navController.navigate(R.id.nav_doctors);
-                }
                 viewModel.setActiveBaseItem(thisFacility);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
+                Log.w(SYSTAG, path.remoteAction.trim());
+                if(path.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)) navController.navigate(R.id.nav_counties);
+                if(path.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)) navController.navigate(R.id.nav_services);
+                if(path.remoteAction.trim().equals(RA_DOCTORS_BY_FACILITY)) navController.navigate(R.id.nav_doctors);
             }
         });
     }
