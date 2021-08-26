@@ -26,9 +26,6 @@ public class AppViewModel extends ViewModel {
     private final MutableLiveData<HashMap<Integer, ActivePath>> _activePathMap = new MutableLiveData<>();
     public LiveData<HashMap<Integer, ActivePath>> activePathMap = _activePathMap;
 
-    private final MutableLiveData<String> _activeBaseItem = new MutableLiveData<>();
-    public LiveData<String> activeBaseItem = _activeBaseItem;
-
     private final MutableLiveData<HashMap<String, FirebaseRemoteConfigValue>> _remoteSettings = new MutableLiveData<HashMap<String, FirebaseRemoteConfigValue>>();
     public LiveData<HashMap<String, FirebaseRemoteConfigValue>> remoteSettings = _remoteSettings;
 
@@ -51,7 +48,6 @@ public class AppViewModel extends ViewModel {
     public void setNavController(NavController controller){ this._navController.postValue(controller); }
     public void setActivePathMap(HashMap<Integer, ActivePath> pathMap){ this._activePathMap.postValue(pathMap); }
     public void setCurrentPath(ActivePath path){ this._currentPath.postValue(path); }
-    public void setActiveBaseItem(String baseItem){ this._activeBaseItem.postValue(baseItem); }
     public void setRemoteSettings(HashMap<String, FirebaseRemoteConfigValue> settings){ this._remoteSettings.postValue(settings); }
     public void setRemoteRequests(Requests requests){ this._remoteRequests.postValue(requests); }
     public void setFireMessageToken(String token){ this._fireMessageToken.postValue(token); }

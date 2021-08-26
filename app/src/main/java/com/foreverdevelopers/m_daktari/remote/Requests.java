@@ -8,6 +8,7 @@ import com.foreverdevelopers.m_daktari.callback.RemoteCallback;
 import com.foreverdevelopers.m_daktari.data.HttpClient;
 import com.foreverdevelopers.m_daktari.data.entity.Doctor;
 import com.foreverdevelopers.m_daktari.ui.CountiesListViewModel;
+import com.foreverdevelopers.m_daktari.ui.DoctorDetailViewModel;
 import com.foreverdevelopers.m_daktari.ui.DoctorsListViewModel;
 import com.foreverdevelopers.m_daktari.ui.FacilitiesListViewModel;
 import com.foreverdevelopers.m_daktari.ui.ServicesListViewModel;
@@ -32,6 +33,7 @@ public class Requests {
     private FacilitiesListViewModel facilitiesViewModel;
     private ServicesListViewModel servicesViewModel;
     private DoctorsListViewModel doctorsViewModel;
+    private DoctorDetailViewModel doctorViewModel;
     public Requests(HttpClient httpClient,
                     Remote remote,
                     String baseUrl,
@@ -75,6 +77,9 @@ public class Requests {
     }
     public void setDoctorsViewModel(DoctorsListViewModel viewModel){
         this.doctorsViewModel = viewModel;
+    }
+    public void setDoctorViewModel(DoctorDetailViewModel viewModel){
+        this.doctorViewModel = viewModel;
     }
 
     public void countiesAll(){
@@ -432,7 +437,7 @@ public class Requests {
                     Responses.MainResponse mainResponse = Responses.mainResponse(result);
                     if(null==mainResponse || mainResponse.code < 0) return;
                     try{
-                        ArrayList<Doctor> doctors = new ArrayList<>();
+                        ArrayList<Object> doctors = new ArrayList<>();
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
                         }
@@ -475,7 +480,7 @@ public class Requests {
                 Responses.MainResponse mainResponse = Responses.mainResponse(result);
                 if(null==mainResponse || mainResponse.code < 0) return;
                 try{
-                    ArrayList<Doctor> doctors = new ArrayList<>();
+                    ArrayList<Object> doctors = new ArrayList<>();
                     for(int i = 0; i < mainResponse.data.length(); i ++){
                         doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
                     }
@@ -518,9 +523,9 @@ public class Requests {
                     Responses.MainResponse mainResponse = Responses.mainResponse(result);
                     if(null==mainResponse || mainResponse.code < 0) return;
                     try{
-                        ArrayList<Doctor> doctors = new ArrayList<>();
+                        ArrayList<Object> doctors = new ArrayList<>();
                         for(int i = 0; i < mainResponse.data.length(); i ++){
-                            doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
+                            doctors.add(mainResponse.data.getString(i));
                         }
                         doctorsViewModel.setDoctors(doctors);
                     }catch (JSONException ex){
@@ -560,9 +565,9 @@ public class Requests {
                     Responses.MainResponse mainResponse = Responses.mainResponse(result);
                     if(null==mainResponse || mainResponse.code < 0) return;
                     try{
-                        ArrayList<Doctor> doctors = new ArrayList<>();
+                        ArrayList<Object> doctors = new ArrayList<>();
                         for(int i = 0; i < mainResponse.data.length(); i ++){
-                            doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
+                            doctors.add(mainResponse.data.getString(i));
                         }
                         doctorsViewModel.setDoctors(doctors);
                     }catch (JSONException ex){
@@ -586,4 +591,5 @@ public class Requests {
                 }
             });
         }
+
 }

@@ -8,6 +8,7 @@ import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,6 @@ public class CountiesListFragment extends Fragment {
     private CountiesListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
-    private String activeBaseItem = null;
     private Requests mainRequests;
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
@@ -68,12 +68,6 @@ public class CountiesListFragment extends Fragment {
                 appNavController = navController;
             }
         });
-        appViewModel.activeBaseItem.observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                activeBaseItem = s;
-            }
-        });
         appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
             @Override
             public void onChanged(ActivePath activePath) {
@@ -83,13 +77,13 @@ public class CountiesListFragment extends Fragment {
                     Log.w(SYSTAG, "All Counties");
                 }
                 if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)){
-                    title.setText("County with Facility " + activeBaseItem);
-                    mainRequests.countiesByFacility(activeBaseItem);
+                    title.setText("County with Facility " + activePath.baseItem);
+                    mainRequests.countiesByFacility(activePath.baseItem);
                     Log.w(SYSTAG, "Counties By Facility");
                 }
                 if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)){
-                    title.setText("Counties with Service " + activeBaseItem);
-                    mainRequests.countiesByService(activeBaseItem);
+                    title.setText("Counties with Service " + activePath.baseItem);
+                    mainRequests.countiesByService(activePath.baseItem);
                     Log.w(SYSTAG, "Counties by Service");
                 }
             }
@@ -114,6 +108,18 @@ public class CountiesListFragment extends Fragment {
                 countiesView.setHasFixedSize(true);
                 countiesView.setLayoutManager(countiesLayoutManager);
                 countiesView.setAdapter(countiesAdapter);
+            }
+        });
+        root.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    Integer mindex = (currentIndex == 0) ? 0 : currentIndex-1;
+                    appViewModel.setCurrentIndex(mindex);
+                    appViewModel.setCurrentPath(pathMap.get(mindex));
+                    return true;
+                }
+                return false;
             }
         });
         return root;

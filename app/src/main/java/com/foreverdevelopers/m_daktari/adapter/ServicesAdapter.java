@@ -67,7 +67,9 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                viewModel.setActiveBaseItem(thisService);
+                //viewModel.setActiveBaseItem(thisService);
+                path.baseItem = thisService;
+                activePathMap.put(nextIndex, path);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
                 Log.w(SYSTAG, path.remoteAction.trim());

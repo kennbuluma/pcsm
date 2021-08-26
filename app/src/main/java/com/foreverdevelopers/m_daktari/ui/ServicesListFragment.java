@@ -6,6 +6,7 @@ import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_FACILITY;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,6 @@ public class ServicesListFragment extends Fragment {
     private ServicesListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
-    private String activeBaseItem = null;
     private Requests mainRequests;
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
@@ -66,12 +66,6 @@ public class ServicesListFragment extends Fragment {
                 appNavController = navController;
             }
         });
-        appViewModel.activeBaseItem.observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                activeBaseItem = s;
-            }
-        });
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
             @Override
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
@@ -86,12 +80,12 @@ public class ServicesListFragment extends Fragment {
                     mainRequests.servicesAll();
                 }
                 if(activePath.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)){
-                    title.setText("Services in County " + activeBaseItem);
-                    mainRequests.servicesByCounty(activeBaseItem);
+                    title.setText("Services in County " + activePath.baseItem);
+                    mainRequests.servicesByCounty(activePath.baseItem);
                 }
                 if(activePath.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)){
-                    title.setText("Services in Facility " + activeBaseItem);
-                    mainRequests.servicesByFacility(activeBaseItem);
+                    title.setText("Services in Facility " + activePath.baseItem);
+                    mainRequests.servicesByFacility(activePath.baseItem);
                 }
             }
         });
@@ -109,6 +103,19 @@ public class ServicesListFragment extends Fragment {
                 servicesView.setHasFixedSize(true);
                 servicesView.setLayoutManager(servicesLayoutManager);
                 servicesView.setAdapter(servicesAdapter);
+            }
+        });
+
+        root.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    Integer mindex = (currentIndex == 0) ? 0 : currentIndex-1;
+                    appViewModel.setCurrentIndex(mindex);
+                    appViewModel.setCurrentPath(pathMap.get(mindex));
+                    return true;
+                }
+                return false;
             }
         });
 

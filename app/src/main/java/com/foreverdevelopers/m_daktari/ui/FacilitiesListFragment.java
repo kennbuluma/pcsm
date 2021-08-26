@@ -6,6 +6,7 @@ import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,6 @@ public class FacilitiesListFragment extends Fragment {
     private FacilitiesListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
-    private String activeBaseItem = null;
     private Requests mainRequests;
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
@@ -66,12 +66,6 @@ public class FacilitiesListFragment extends Fragment {
                 appNavController = navController;
             }
         });
-        appViewModel.activeBaseItem.observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                activeBaseItem = s;
-            }
-        });
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
             @Override
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
@@ -87,8 +81,8 @@ public class FacilitiesListFragment extends Fragment {
                     Log.w(SYSTAG, "All Facilities");
                 }
                 if(activePath.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)){
-                    title.setText("Facilities in " + activeBaseItem+ " County");
-                    mainRequests.facilitiesByCounty(activeBaseItem);
+                    title.setText("Facilities in " + activePath.baseItem+ " County");
+                    mainRequests.facilitiesByCounty(activePath.baseItem);
                     Log.w(SYSTAG, "Facilities By County");
                 }
             }
@@ -107,6 +101,19 @@ public class FacilitiesListFragment extends Fragment {
                 facilitiesView.setHasFixedSize(true);
                 facilitiesView.setLayoutManager(facilitiesLayoutManager);
                 facilitiesView.setAdapter(facilitiesAdapter);
+            }
+        });
+
+        root.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    Integer mindex = (currentIndex == 0) ? 0 : currentIndex-1;
+                    appViewModel.setCurrentIndex(mindex);
+                    appViewModel.setCurrentPath(pathMap.get(mindex));
+                    return true;
+                }
+                return false;
             }
         });
         return root;

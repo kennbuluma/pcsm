@@ -67,7 +67,9 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                viewModel.setActiveBaseItem(thisFacility);
+                //viewModel.setActiveBaseItem(thisFacility);
+                path.baseItem = thisFacility;
+                activePathMap.put(nextIndex, path);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
                 Log.w(SYSTAG, path.remoteAction.trim());

@@ -1,10 +1,5 @@
 package com.foreverdevelopers.m_daktari.adapter;
 
-import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
-import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
-import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +15,6 @@ import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
 import com.foreverdevelopers.m_daktari.data.ActivePath;
 import com.foreverdevelopers.m_daktari.data.entity.Doctor;
-import com.foreverdevelopers.m_daktari.ui.DoctorsListViewModel;
 import com.foreverdevelopers.m_daktari.util.Converter;
 
 import org.jetbrains.annotations.NotNull;
@@ -31,14 +23,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> {
-    private final ArrayList<Doctor> doctors;
+    private final ArrayList<Object> doctors;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
     private final HashMap<Integer, ActivePath> activePathMap;
-
     public DoctorsAdapter(AppViewModel viewModel,
-                          ArrayList<Doctor> doctors,
+                          ArrayList<Object> doctors,
                           Integer currentIndex,
                           NavController navController,
                           HashMap<Integer, ActivePath> activePathMap){
@@ -60,17 +51,32 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
     @Override
     public void onBindViewHolder(@NonNull @NotNull DoctorViewHolder holder, int position) {
         if(null==doctors) return;
-        Doctor thisDoctor = doctors.get(position);
-        holder.txDoctorItemCounty.setText(thisDoctor.county);
-        holder.txDoctorItemFacility.setText(thisDoctor.facility);
-        holder.txDoctorItemName.setText(thisDoctor.name);
-        holder.imgDoctorPhoto.setImageBitmap(Converter.stringToBitmap(thisDoctor.profilePhoto));
+        final Doctor thisDoctor = (doctors.get(position) instanceof Doctor) ?
+                (Doctor)doctors.get(position) :
+                null;
+        final String thisDoctorString = (doctors.get(position) instanceof String) ?
+                (String) doctors.get(position) :
+                null;
+        if(null!=thisDoctor){
+            holder.txDoctorItemCounty.setText(thisDoctor.county);
+            holder.txDoctorItemFacility.setText(thisDoctor.facility);
+            holder.txDoctorItemName.setText(thisDoctor.name);
+            holder.imgDoctorPhoto.setImageBitmap(Converter.stringToBitmap(thisDoctor.profilePhoto));
+        }
+        if(null!=thisDoctorString){
+            holder.txDoctorItemName.setText(thisDoctorString);
+        }
+
         holder.crdDoctorItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                viewModel.setActiveBaseItem(thisDoctor.id);
+                //viewModel.setActiveBaseItem(thisDoctor.id);
+                if(null!=thisDoctor) path.baseItem = thisDoctor.id;
+                if(null!=thisDoctorString) path.baseItem = thisDoctorString;
+
+                activePathMap.put(nextIndex, path);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
                 navController.navigate(R.id.nav_doctor_details);

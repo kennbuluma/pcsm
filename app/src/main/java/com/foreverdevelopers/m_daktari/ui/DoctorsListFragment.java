@@ -6,6 +6,7 @@ import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_FACILITY
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_SERVICE;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,6 @@ public class DoctorsListFragment extends Fragment {
     private DoctorsListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
-    private String activeBaseItem = null;
     private Requests mainRequests;
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
@@ -67,12 +67,6 @@ public class DoctorsListFragment extends Fragment {
                 appNavController = navController;
             }
         });
-        appViewModel.activeBaseItem.observe(getViewLifecycleOwner(), new Observer<String>() {
-            @Override
-            public void onChanged(String s) {
-                activeBaseItem = s;
-            }
-        });
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
             @Override
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
@@ -87,12 +81,12 @@ public class DoctorsListFragment extends Fragment {
                     mainRequests.doctorsAll();
                 }
                 if(activePath.remoteAction.trim().equals(RA_DOCTORS_BY_FACILITY)){
-                    title.setText("Doctors in Facility " + activeBaseItem);
-                    mainRequests.doctorsByFacility(activeBaseItem);
+                    title.setText("Doctors in Facility " + activePath.baseItem);
+                    mainRequests.doctorsByFacility(activePath.baseItem);
                 }
                 if(activePath.remoteAction.trim().equals(RA_DOCTORS_BY_SERVICE)){
-                    title.setText("Doctors in Service " + activeBaseItem);
-                    mainRequests.doctorsByService(activeBaseItem);
+                    title.setText("Doctors in Service " + activePath.baseItem);
+                    mainRequests.doctorsByService(activePath.baseItem);
                 }
             }
         });
@@ -102,14 +96,28 @@ public class DoctorsListFragment extends Fragment {
                 currentIndex = integer;
             }
         });
-        mViewModel.doctors.observe(getViewLifecycleOwner(), new Observer<ArrayList<Doctor>>() {
+        mViewModel.doctors.observe(getViewLifecycleOwner(), new Observer<ArrayList<Object>>() {
             @Override
-            public void onChanged(ArrayList<Doctor> doctors) {
+            public void onChanged(ArrayList<Object> doctors) {
                 if(null==doctors || doctors.size() == 0) return;
                 RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> doctorsAdapter = new DoctorsAdapter(appViewModel, doctors, currentIndex, appNavController, pathMap);
                 doctorsView.setHasFixedSize(true);
                 doctorsView.setLayoutManager(doctorsLayoutManager);
                 doctorsView.setAdapter(doctorsAdapter);
+            }
+        });
+
+
+        root.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                    Integer mindex = (currentIndex == 0) ? 0 : currentIndex-1;
+                    appViewModel.setCurrentIndex(mindex);
+                    appViewModel.setCurrentPath(pathMap.get(mindex));
+                    return true;
+                }
+                return false;
             }
         });
 
