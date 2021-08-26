@@ -2,8 +2,10 @@ package com.foreverdevelopers.m_daktari.ui;
 
 import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
+import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
-import com.foreverdevelopers.m_daktari.adapter.CountiesAdapter;
 import com.foreverdevelopers.m_daktari.adapter.FacilitiesAdapter;
 import com.foreverdevelopers.m_daktari.data.ActivePath;
 import com.foreverdevelopers.m_daktari.remote.Requests;
@@ -28,16 +29,16 @@ import com.foreverdevelopers.m_daktari.remote.Requests;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class FacilitiesListFragment extends Fragment {
 
     private FacilitiesListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
-    private HashMap<Integer, ActivePath> pathMapper = null;
     private String activeBaseItem = null;
     private Requests mainRequests;
+    private Integer currentIndex;
+    private HashMap<Integer, ActivePath> pathMap;
 
     public static FacilitiesListFragment newInstance() {
         return new FacilitiesListFragment();
@@ -74,31 +75,39 @@ public class FacilitiesListFragment extends Fragment {
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
             @Override
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
-                pathMapper = integerActivePathHashMap;
-                for (Map.Entry<Integer, ActivePath> pathItem : pathMapper.entrySet()) {
-                    if (pathItem.getValue().path.trim().toLowerCase(Locale.ROOT).equals("facilities")) {
-                        switch (pathItem.getValue().remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                            case RA_FACILITIES: {
-                                title.setText("Facilities");
-                                mainRequests.facilitiesAll();
-                                break;
-                            }
-                            case RA_FACILITIES_BY_COUNTY: {
-                                title.setText("Facilities in County " + activeBaseItem);
-                                mainRequests.facilitiesByCounty(activeBaseItem);
-                                break;
-                            }
-                        };
+                pathMap = integerActivePathHashMap;
+            }
+        });
+        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
+            @Override
+            public void onChanged(ActivePath activePath) {
+                switch (activePath.remoteAction.trim().toLowerCase(Locale.ROOT)) {
+                    case RA_FACILITIES: {
+                        title.setText("Facilities");
+                        mainRequests.facilitiesAll();
+                        Log.w(SYSTAG, "All Facilities");
+                        break;
+                    }
+                    case RA_FACILITIES_BY_COUNTY: {
+                        title.setText("Facilities in County " + activeBaseItem);
+                        mainRequests.facilitiesByCounty(activeBaseItem);
+                        Log.w(SYSTAG, "Facilities By County");
                         break;
                     }
                 }
+            }
+        });
+        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                currentIndex = integer;
             }
         });
         mViewModel.facilities.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> strings) {
                 if(null==strings || strings.size() == 0) return;
-                RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder> facilitiesAdapter = new FacilitiesAdapter(getContext(),strings);
+                RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder> facilitiesAdapter = new FacilitiesAdapter(appViewModel, strings, currentIndex, appNavController, pathMap);
                 facilitiesView.setHasFixedSize(true);
                 facilitiesView.setLayoutManager(facilitiesLayoutManager);
                 facilitiesView.setAdapter(facilitiesAdapter);
@@ -106,5 +115,4 @@ public class FacilitiesListFragment extends Fragment {
         });
         return root;
     }
-
 }

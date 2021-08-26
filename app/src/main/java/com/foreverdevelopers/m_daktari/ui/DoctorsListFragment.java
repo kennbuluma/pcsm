@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
-import com.foreverdevelopers.m_daktari.adapter.CountiesAdapter;
 import com.foreverdevelopers.m_daktari.adapter.DoctorsAdapter;
 import com.foreverdevelopers.m_daktari.data.ActivePath;
 import com.foreverdevelopers.m_daktari.data.entity.Doctor;
@@ -30,17 +29,16 @@ import com.foreverdevelopers.m_daktari.remote.Requests;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class DoctorsListFragment extends Fragment {
 
     private DoctorsListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
-    private HashMap<Integer, ActivePath> pathMapper = null;
     private String activeBaseItem = null;
     private Requests mainRequests;
-    private Integer currentIndex = -1;
+    private Integer currentIndex;
+    private HashMap<Integer, ActivePath> pathMap;
 
     public static DoctorsListFragment newInstance() {
         return new DoctorsListFragment();
@@ -77,48 +75,48 @@ public class DoctorsListFragment extends Fragment {
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
             @Override
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
-                pathMapper = integerActivePathHashMap;
-                for (Map.Entry<Integer, ActivePath> pathItem : pathMapper.entrySet()) {
-                    if (pathItem.getValue().path.trim().toLowerCase(Locale.ROOT).equals("doctors")) {
-                        switch (pathItem.getValue().remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                            case RA_DOCTORS: {
-                                title.setText("Doctors");
-                                currentIndex = pathItem.getKey();
-                                 mainRequests.doctorsAll();
-                                 appViewModel.setCurrentPath(pathItem.getValue());
-                                break;
-                            }
-                            case RA_DOCTORS_BY_FACILITY: {
-                                title.setText("Doctors in Facility " + activeBaseItem);
-                                currentIndex = pathItem.getKey();
-                                mainRequests.doctorsByFacility(activeBaseItem);
-                                appViewModel.setCurrentPath(pathItem.getValue());
-                                break;
-                            }
-                            case RA_DOCTORS_BY_SERVICE: {
-                                title.setText("Doctors in Service " + activeBaseItem);
-                                currentIndex = pathItem.getKey();
-                                mainRequests.doctorsByService(activeBaseItem);
-                                appViewModel.setCurrentPath(pathItem.getValue());
-                                break;
-                            }
-                        }
-                        ;
+                pathMap = integerActivePathHashMap;
+            }
+        });
+        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
+            @Override
+            public void onChanged(ActivePath activePath) {
+                switch (activePath.remoteAction.trim().toLowerCase(Locale.ROOT)) {
+                    case RA_DOCTORS: {
+                        title.setText("Doctors");
+                        mainRequests.doctorsAll();
+                        break;
+                    }
+                    case RA_DOCTORS_BY_FACILITY: {
+                        title.setText("Doctors in Facility " + activeBaseItem);
+                        mainRequests.doctorsByFacility(activeBaseItem);
+                        break;
+                    }
+                    case RA_DOCTORS_BY_SERVICE: {
+                        title.setText("Doctors in Service " + activeBaseItem);
+                        mainRequests.doctorsByService(activeBaseItem);
                         break;
                     }
                 }
+            }
+        });
+        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                currentIndex = integer;
             }
         });
         mViewModel.doctors.observe(getViewLifecycleOwner(), new Observer<ArrayList<Doctor>>() {
             @Override
             public void onChanged(ArrayList<Doctor> doctors) {
                 if(null==doctors || doctors.size() == 0) return;
-                RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> doctorsAdapter = new DoctorsAdapter(doctors, appViewModel, currentIndex);
+                RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> doctorsAdapter = new DoctorsAdapter(appViewModel, doctors, currentIndex, appNavController, pathMap);
                 doctorsView.setHasFixedSize(true);
                 doctorsView.setLayoutManager(doctorsLayoutManager);
                 doctorsView.setAdapter(doctorsAdapter);
             }
         });
+
         return root;
     }
 

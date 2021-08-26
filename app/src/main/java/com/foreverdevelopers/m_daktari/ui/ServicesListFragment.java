@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
-import com.foreverdevelopers.m_daktari.adapter.CountiesAdapter;
 import com.foreverdevelopers.m_daktari.adapter.ServicesAdapter;
 import com.foreverdevelopers.m_daktari.data.ActivePath;
 import com.foreverdevelopers.m_daktari.remote.Requests;
@@ -29,16 +28,16 @@ import com.foreverdevelopers.m_daktari.remote.Requests;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class ServicesListFragment extends Fragment {
 
     private ServicesListViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController = null;
-    private HashMap<Integer, ActivePath> pathMapper = null;
     private String activeBaseItem = null;
     private Requests mainRequests;
+    private Integer currentIndex;
+    private HashMap<Integer, ActivePath> pathMap;
 
     public static ServicesListFragment newInstance() {
         return new ServicesListFragment();
@@ -75,41 +74,48 @@ public class ServicesListFragment extends Fragment {
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
             @Override
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
-                pathMapper = integerActivePathHashMap;
-                for (Map.Entry<Integer, ActivePath> pathItem : pathMapper.entrySet()) {
-                    if (pathItem.getValue().path.trim().toLowerCase(Locale.ROOT).equals("services")) {
-                        switch (pathItem.getValue().remoteAction.trim().toLowerCase(Locale.ROOT)) {
-                            case RA_SERVICES: {
-                                title.setText("Services");
-                                mainRequests.servicesAll();
-                                break;
-                            }
-                            case RA_SERVICES_BY_COUNTY: {
-                                title.setText("Services in County " + activeBaseItem);
-                                mainRequests.servicesByCounty(activeBaseItem);
-                                break;
-                            }
-                            case RA_SERVICES_BY_FACILITY: {
-                                title.setText("Services in Facility " + activeBaseItem);
-                                mainRequests.servicesByFacility(activeBaseItem);
-                                break;
-                            }
-                        };
+                pathMap = integerActivePathHashMap;
+            }
+        });
+        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
+            @Override
+            public void onChanged(ActivePath activePath) {
+                switch (activePath.remoteAction.trim().toLowerCase(Locale.ROOT)) {
+                    case RA_SERVICES: {
+                        title.setText("Services");
+                        mainRequests.servicesAll();
+                        break;
+                    }
+                    case RA_SERVICES_BY_COUNTY: {
+                        title.setText("Services in County " + activeBaseItem);
+                        mainRequests.servicesByCounty(activeBaseItem);
+                        break;
+                    }
+                    case RA_SERVICES_BY_FACILITY: {
+                        title.setText("Services in Facility " + activeBaseItem);
+                        mainRequests.servicesByFacility(activeBaseItem);
                         break;
                     }
                 }
+            }
+        });
+        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+            @Override
+            public void onChanged(Integer integer) {
+                currentIndex = integer;
             }
         });
         mViewModel.services.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> strings) {
                 if(null==strings || strings.size() == 0) return;
-                RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder> servicesAdapter = new ServicesAdapter(strings);
+                RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder> servicesAdapter = new ServicesAdapter(appViewModel, strings, currentIndex, appNavController, pathMap);
                 servicesView.setHasFixedSize(true);
                 servicesView.setLayoutManager(servicesLayoutManager);
                 servicesView.setAdapter(servicesAdapter);
             }
         });
+
         return root;
     }
 }
