@@ -67,12 +67,14 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                //viewModel.setActiveBaseItem(thisFacility);
-                path.baseItem = thisFacility;
+                try{
+                    path.baseItem = thisFacility;
+                }catch(NullPointerException ex){
+                    //TODO: Vitisho vya null
+                }
                 activePathMap.put(nextIndex, path);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
-                Log.w(SYSTAG, path.remoteAction.trim());
                 if(path.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)) navController.navigate(R.id.nav_counties);
                 if(path.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)) navController.navigate(R.id.nav_services);
                 if(path.remoteAction.trim().equals(RA_DOCTORS_BY_FACILITY)) navController.navigate(R.id.nav_doctors);

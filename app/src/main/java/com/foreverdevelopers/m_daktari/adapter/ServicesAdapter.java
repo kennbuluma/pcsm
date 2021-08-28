@@ -60,19 +60,21 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
     @Override
     public void onBindViewHolder(@NonNull @NotNull ServiceViewHolder holder, int position) {
         if(null==services) return;
-        String thisService = services.get(position);
+        String thisService = null == services.get(position) ? null : services.get(position);
         holder.txServiceItemName.setText(thisService.toUpperCase(Locale.ROOT).trim());
         holder.crdServiceItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                //viewModel.setActiveBaseItem(thisService);
-                path.baseItem = thisService;
+                try{
+                    path.baseItem = thisService;
+                }catch(NullPointerException ex){
+                    //TODO: Vitisho vya null
+                }
                 activePathMap.put(nextIndex, path);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
-                Log.w(SYSTAG, path.remoteAction.trim());
                 if(path.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)) navController.navigate(R.id.nav_counties);
                 if(path.remoteAction.trim().equals(RA_DOCTORS_BY_SERVICE)) navController.navigate(R.id.nav_doctors);
             }

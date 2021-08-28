@@ -1,5 +1,6 @@
 package com.foreverdevelopers.m_daktari.adapter;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,7 +50,7 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         return new DoctorsAdapter.DoctorViewHolder(view);
     }
     @Override
-    public void onBindViewHolder(@NonNull @NotNull DoctorViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull @NotNull DoctorViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if(null==doctors) return;
         final Doctor thisDoctor = (doctors.get(position) instanceof Doctor) ?
                 (Doctor)doctors.get(position) :
@@ -72,10 +73,16 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
-                //viewModel.setActiveBaseItem(thisDoctor.id);
-                if(null!=thisDoctor) path.baseItem = thisDoctor.id;
-                if(null!=thisDoctorString) path.baseItem = thisDoctorString;
-
+                try{
+                    if(doctors.get(position) instanceof Doctor) {
+                        if(null!=thisDoctor) path.baseItem = thisDoctor.id;
+                    }
+                    if(doctors.get(position) instanceof String) {
+                        if (null!=thisDoctorString) path.baseItem = thisDoctorString;
+                    }
+                }catch(NullPointerException ex){
+                   //TODO: Vitisho vya null
+                }
                 activePathMap.put(nextIndex, path);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);

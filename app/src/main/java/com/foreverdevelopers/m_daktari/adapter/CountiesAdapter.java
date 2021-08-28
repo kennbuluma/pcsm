@@ -64,7 +64,6 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
                 activePathMap.put(nextIndex, path);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
-                Log.w(SYSTAG, path.remoteAction.trim());
                 if(path.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)) navController.navigate(R.id.nav_services);
                 if(path.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)) navController.navigate(R.id.nav_facilities);
             }

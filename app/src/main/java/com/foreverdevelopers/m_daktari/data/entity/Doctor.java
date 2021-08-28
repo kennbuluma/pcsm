@@ -3,7 +3,7 @@ package com.foreverdevelopers.m_daktari.data.entity;
 import java.util.List;
 
 public class Doctor {
-    public String id, name, county, profilePhoto, facility;
+    public String id, name, county, profilePhoto, facility, email;
     public List<String> specialty;
     public Integer phone;
 
