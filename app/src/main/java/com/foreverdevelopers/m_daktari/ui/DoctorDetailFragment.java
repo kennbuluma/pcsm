@@ -85,14 +85,15 @@ public class DoctorDetailFragment extends Fragment {
                 //mainRequests.doctorDetails(activePath.baseItem);
             }
         });
-        mViewModel.doctor.observe(getViewLifecycleOwner(), new Observer<Doctor>() {
+        appViewModel.currentDoctor.observe(getViewLifecycleOwner(), new Observer<Doctor>() {
             @Override
             public void onChanged(Doctor doctor) {
-                name.setText(doctor.name);
-                county.setText(doctor.county);
-                facility.setText(doctor.facility);
-                phone.setText(doctor.phone);
-                email.setText(doctor.email);
+                if(null==doctor) return;
+                if(null!=name && null!=doctor.name) name.setText(doctor.name);
+                if(null!=county && null!=doctor.county) county.setText(doctor.county);
+                if(null!=facility && null!=doctor.facility) facility.setText(doctor.facility);
+                if(null!=phone && null!=doctor.phone) phone.setText(doctor.phone);
+                if(null!=email && null!=doctor.email) email.setText(doctor.email);
             }
         });
         root.setOnKeyListener(new View.OnKeyListener() {

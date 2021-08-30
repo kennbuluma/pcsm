@@ -73,12 +73,19 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 ActivePath path = activePathMap.get(nextIndex);
+                Doctor doctor = new Doctor();
                 try{
                     if(doctors.get(position) instanceof Doctor) {
-                        if(null!=thisDoctor) path.baseItem = thisDoctor.id;
+                        if(null!=thisDoctor){
+                            path.baseItem = thisDoctor.id;
+                            doctor = thisDoctor;
+                        }
                     }
                     if(doctors.get(position) instanceof String) {
-                        if (null!=thisDoctorString) path.baseItem = thisDoctorString;
+                        if (null!=thisDoctorString){
+                            doctor.name = thisDoctorString;
+                            path.baseItem = thisDoctorString;
+                        }
                     }
                 }catch(NullPointerException ex){
                    //TODO: Vitisho vya null
@@ -86,6 +93,7 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
                 activePathMap.put(nextIndex, path);
                 viewModel.setCurrentIndex(nextIndex);
                 viewModel.setCurrentPath(path);
+                viewModel.setCurrentDoctor(doctor);
                 navController.navigate(R.id.nav_doctor_details);
             }
         });

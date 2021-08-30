@@ -7,6 +7,7 @@ import androidx.navigation.NavController;
 
 import com.foreverdevelopers.m_daktari.data.ActivePath;
 import com.foreverdevelopers.m_daktari.data.FireMessageSendError;
+import com.foreverdevelopers.m_daktari.data.entity.Doctor;
 import com.foreverdevelopers.m_daktari.remote.Requests;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
@@ -44,6 +45,9 @@ public class AppViewModel extends ViewModel {
     private final MutableLiveData<FireMessageSendError> _fireMessageSendError = new MutableLiveData<>();
     public LiveData<FireMessageSendError> fireMessageSendError = _fireMessageSendError;
 
+    private final MutableLiveData<Doctor> _currentDoctor = new MutableLiveData<>();
+    public LiveData<Doctor> currentDoctor = _currentDoctor;
+
     public void setCurrentIndex(Integer currentIndex){ this._currentIndex.postValue(currentIndex); }
     public void setNavController(NavController controller){ this._navController.postValue(controller); }
     public void setActivePathMap(HashMap<Integer, ActivePath> pathMap){ this._activePathMap.postValue(pathMap); }
@@ -54,4 +58,5 @@ public class AppViewModel extends ViewModel {
     public void setFireMessageSent(String message){ this._fireMessage.postValue(message); }
     public void setFireMessage(RemoteMessage remoteMessage){ this._fireRemoteMessage.postValue(remoteMessage); }
     public void setFireMessageSendError(FireMessageSendError fireSendError){ this._fireMessageSendError.postValue(fireSendError); }
+    public void setCurrentDoctor(Doctor doctor){ this._currentDoctor.postValue(doctor); }
 }
