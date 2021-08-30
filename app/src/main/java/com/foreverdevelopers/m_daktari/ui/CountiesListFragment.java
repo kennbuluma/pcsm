@@ -3,11 +3,8 @@ package com.foreverdevelopers.m_daktari.ui;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_FACILITY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_SERVICE;
-import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
-import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +28,6 @@ import com.foreverdevelopers.m_daktari.remote.Requests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class CountiesListFragment extends Fragment {
 
@@ -51,10 +47,12 @@ public class CountiesListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(CountiesListViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_counties_list, container, false);
+
+        final View root = inflater.inflate(R.layout.fragment_counties_list, container, false);
         RecyclerView.LayoutManager countiesLayoutManager = new LinearLayoutManager(root.getContext());
         RecyclerView countiesView = root.findViewById(R.id.rcv_counties);
         TextView title = root.findViewById(R.id.lbl_counties);
+
         appViewModel.remoteRequests.observe(getViewLifecycleOwner(), new Observer<Requests>() {
             @Override
             public void onChanged(Requests requests) {
@@ -68,26 +66,6 @@ public class CountiesListFragment extends Fragment {
                 appNavController = navController;
             }
         });
-        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
-            @Override
-            public void onChanged(ActivePath activePath) {
-                if(activePath.remoteAction.trim().equals(RA_COUNTIES)){
-                    title.setText("Counties");
-                    mainRequests.countiesAll();
-                    Log.w(SYSTAG, "All Counties");
-                }
-                if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)){
-                    title.setText("County with Facility " + activePath.baseItem);
-                    mainRequests.countiesByFacility(activePath.baseItem);
-                    Log.w(SYSTAG, "Counties By Facility");
-                }
-                if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)){
-                    title.setText("Counties with Service " + activePath.baseItem);
-                    mainRequests.countiesByService(activePath.baseItem);
-                    Log.w(SYSTAG, "Counties by Service");
-                }
-            }
-        });
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
             @Override
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
@@ -98,6 +76,30 @@ public class CountiesListFragment extends Fragment {
             @Override
             public void onChanged(Integer integer) {
                 currentIndex = integer;
+                ActivePath activePath = pathMap.get(currentIndex);
+                assert activePath != null;
+                if(activePath.baseItem instanceof String){
+                    String titleStr = activePath.remoteAction.trim().equals(RA_COUNTIES) ?
+                            "Counties" :
+                            ( activePath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY) ?
+                                    "County with Facility " + activePath.baseItem :
+                                    (activePath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE) ?
+                                            "Counties with Service " + activePath.baseItem: "Counties"));
+                    title.setText(titleStr);
+                    if(activePath.remoteAction.trim().equals(RA_COUNTIES)) mainRequests.countiesAll();
+                    if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)) mainRequests.countiesByFacility((String) activePath.baseItem);
+                    if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)) mainRequests.countiesByService((String) activePath.baseItem);
+                }
+                root.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                            appViewModel.setCurrentIndex((currentIndex == 0) ? 0 : currentIndex-1);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
         });
         mViewModel.counties.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
@@ -110,18 +112,7 @@ public class CountiesListFragment extends Fragment {
                 countiesView.setAdapter(countiesAdapter);
             }
         });
-        root.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
-                    Integer mindex = (currentIndex == 0) ? 0 : currentIndex-1;
-                    appViewModel.setCurrentIndex(mindex);
-                    appViewModel.setCurrentPath(pathMap.get(mindex));
-                    return true;
-                }
-                return false;
-            }
-        });
+
         return root;
     }
 

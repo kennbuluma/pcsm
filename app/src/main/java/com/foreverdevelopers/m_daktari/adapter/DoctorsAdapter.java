@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> {
     private final ArrayList<Object> doctors;
@@ -72,29 +73,18 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
-                ActivePath path = activePathMap.get(nextIndex);
-                Doctor doctor = new Doctor();
-                try{
-                    if(doctors.get(position) instanceof Doctor) {
-                        if(null!=thisDoctor){
-                            path.baseItem = thisDoctor.id;
-                            doctor = thisDoctor;
-                        }
+                if(doctors.get(position) instanceof Doctor) {
+                        Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = thisDoctor;
+                        viewModel.setCurrentIndex(nextIndex);
+                        navController.navigate(R.id.nav_doctor_details);
                     }
-                    if(doctors.get(position) instanceof String) {
-                        if (null!=thisDoctorString){
-                            doctor.name = thisDoctorString;
-                            path.baseItem = thisDoctorString;
-                        }
+                if(doctors.get(position) instanceof String) {
+                        Doctor doctor = new Doctor();
+                        doctor.name = thisDoctorString;
+                        Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = doctor;
+                        viewModel.setCurrentIndex(nextIndex);
+                        navController.navigate(R.id.nav_doctor_details);
                     }
-                }catch(NullPointerException ex){
-                   //TODO: Vitisho vya null
-                }
-                activePathMap.put(nextIndex, path);
-                viewModel.setCurrentIndex(nextIndex);
-                viewModel.setCurrentPath(path);
-                viewModel.setCurrentDoctor(doctor);
-                navController.navigate(R.id.nav_doctor_details);
             }
         });
     }

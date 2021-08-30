@@ -1,9 +1,10 @@
 package com.foreverdevelopers.m_daktari.data;
 
 public class ActivePath {
-    public String baseItem, remoteAction;
+    public Object baseItem;
+    public String remoteAction;
     public ActivePath(){}
-    public ActivePath(String baseItem, String remoteAction){
+    public ActivePath(Object baseItem, String remoteAction){
         this.baseItem = baseItem;
         this.remoteAction = remoteAction;
     }

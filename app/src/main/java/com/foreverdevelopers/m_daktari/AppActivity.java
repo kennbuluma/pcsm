@@ -17,6 +17,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -73,7 +74,14 @@ public class AppActivity extends AppCompatActivity {
         });
         appViewModel.remoteRequests.observe(this, new Observer<Requests>() {
             @Override
-            public void onChanged(Requests httpClient) {
+            public void onChanged(Requests request) {
+                request.setAppViewModel(appViewModel);
+                request.doctorsAll();
+            }
+        });
+        appViewModel.allDoctors.observe(this, new Observer<ArrayList<Object>>() {
+            @Override
+            public void onChanged(ArrayList<Object> objects) {
                 loadComponents();
             }
         });

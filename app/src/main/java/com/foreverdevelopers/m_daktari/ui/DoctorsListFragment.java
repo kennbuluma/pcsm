@@ -1,6 +1,5 @@
 package com.foreverdevelopers.m_daktari.ui;
 
-import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_FACILITY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_SERVICE;
@@ -25,12 +24,10 @@ import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
 import com.foreverdevelopers.m_daktari.adapter.DoctorsAdapter;
 import com.foreverdevelopers.m_daktari.data.ActivePath;
-import com.foreverdevelopers.m_daktari.data.entity.Doctor;
 import com.foreverdevelopers.m_daktari.remote.Requests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class DoctorsListFragment extends Fragment {
 
@@ -50,15 +47,17 @@ public class DoctorsListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(DoctorsListViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_doctors_list, container, false);
+
+        final View root = inflater.inflate(R.layout.fragment_doctors_list, container, false);
         RecyclerView.LayoutManager doctorsLayoutManager = new LinearLayoutManager(root.getContext());
         RecyclerView doctorsView = root.findViewById(R.id.rcv_doctors);
         TextView title = root.findViewById(R.id.lbl_doc_list);
+
         appViewModel.remoteRequests.observe(getViewLifecycleOwner(), new Observer<Requests>() {
             @Override
             public void onChanged(Requests requests) {
                 mainRequests = requests;
-                mainRequests.setDoctorsViewModel(mViewModel);
+                mainRequests.setAppViewModel(appViewModel);
             }
         });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
@@ -73,30 +72,36 @@ public class DoctorsListFragment extends Fragment {
                 pathMap = integerActivePathHashMap;
             }
         });
-        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
+        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
-            public void onChanged(ActivePath activePath) {
+            public void onChanged(Integer integer) {
+                currentIndex = integer;
+                ActivePath activePath = pathMap.get(currentIndex);
                 if(activePath.remoteAction.trim().equals(RA_DOCTORS)){
                     title.setText("Doctors");
                     mainRequests.doctorsAll();
                 }
                 if(activePath.remoteAction.trim().equals(RA_DOCTORS_BY_FACILITY)){
                     title.setText("Doctors in Facility " + activePath.baseItem);
-                    mainRequests.doctorsByFacility(activePath.baseItem);
+                    mainRequests.doctorsByFacility((String) activePath.baseItem);
                 }
                 if(activePath.remoteAction.trim().equals(RA_DOCTORS_BY_SERVICE)){
                     title.setText("Doctors in Service " + activePath.baseItem);
-                    mainRequests.doctorsByService(activePath.baseItem);
+                    mainRequests.doctorsByService((String) activePath.baseItem);
                 }
+                root.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                            appViewModel.setCurrentIndex((currentIndex == 0) ? 0 : currentIndex-1);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
         });
-        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                currentIndex = integer;
-            }
-        });
-        mViewModel.doctors.observe(getViewLifecycleOwner(), new Observer<ArrayList<Object>>() {
+        appViewModel.allDoctors.observe(getViewLifecycleOwner(), new Observer<ArrayList<Object>>() {
             @Override
             public void onChanged(ArrayList<Object> doctors) {
                 if(null==doctors || doctors.size() == 0) return;
@@ -104,20 +109,6 @@ public class DoctorsListFragment extends Fragment {
                 doctorsView.setHasFixedSize(true);
                 doctorsView.setLayoutManager(doctorsLayoutManager);
                 doctorsView.setAdapter(doctorsAdapter);
-            }
-        });
-
-
-        root.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
-                    Integer mindex = (currentIndex == 0) ? 0 : currentIndex-1;
-                    appViewModel.setCurrentIndex(mindex);
-                    appViewModel.setCurrentPath(pathMap.get(mindex));
-                    return true;
-                }
-                return false;
             }
         });
 

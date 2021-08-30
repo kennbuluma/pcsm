@@ -1,24 +1,18 @@
 package com.foreverdevelopers.m_daktari.ui;
 
-import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS;
-import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_FACILITY;
-import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_SERVICE;
-
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
@@ -46,19 +40,24 @@ public class DoctorDetailFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(DoctorDetailViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_doctor_detail, container, false);
+
+        final View root = inflater.inflate(R.layout.fragment_doctor_detail, container, false);
+        loadUI(root);
+
+        return root;
+    }
+
+    private void loadUI(View root){
         TextView title = root.findViewById(R.id.txt_doc_detail_title),
                 name = root.findViewById(R.id.txt_doc_detail_highlight_name),
                 county = root.findViewById(R.id.txt_doc_detail_highlight_county),
-                facility = root.findViewById(R.id.txt_doc_detail_highlight_facility),
-                phone = root.findViewById(R.id.txt_doc_detail_contact_phone),
-                email = root.findViewById(R.id.txt_doc_detail_contact_email);
+                facility = root.findViewById(R.id.txt_doc_detail_highlight_facility);
         title.setText("Doctor's Detail");
+
         appViewModel.remoteRequests.observe(getViewLifecycleOwner(), new Observer<Requests>() {
             @Override
             public void onChanged(Requests requests) {
                 mainRequests = requests;
-                mainRequests.setDoctorViewModel(mViewModel);
             }
         });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
@@ -67,48 +66,35 @@ public class DoctorDetailFragment extends Fragment {
                 appNavController = navController;
             }
         });
-        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                currentIndex = integer;
-            }
-        });
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
             @Override
             public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
                 pathMap = integerActivePathHashMap;
             }
         });
-        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
+        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
-            public void onChanged(ActivePath activePath) {
-                //mainRequests.doctorDetails(activePath.baseItem);
-            }
-        });
-        appViewModel.currentDoctor.observe(getViewLifecycleOwner(), new Observer<Doctor>() {
-            @Override
-            public void onChanged(Doctor doctor) {
-                if(null==doctor) return;
-                if(null!=name && null!=doctor.name) name.setText(doctor.name);
-                if(null!=county && null!=doctor.county) county.setText(doctor.county);
-                if(null!=facility && null!=doctor.facility) facility.setText(doctor.facility);
-                if(null!=phone && null!=doctor.phone) phone.setText(doctor.phone);
-                if(null!=email && null!=doctor.email) email.setText(doctor.email);
-            }
-        });
-        root.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
-                    Integer mindex = (currentIndex == 0) ? 0 : currentIndex-1;
-                    appViewModel.setCurrentIndex(mindex);
-                    appViewModel.setCurrentPath(pathMap.get(mindex));
-                    return true;
+            public void onChanged(Integer integer) {
+                currentIndex = integer;
+                ActivePath activePath = pathMap.get(currentIndex);
+                if(activePath.baseItem instanceof Doctor){
+                    Doctor dr = (Doctor) activePath.baseItem;
+                    if(null!=name && null!=dr.name) name.setText(dr.name);
+                    if(null!=county && null!=dr.county) county.setText(dr.county);
+                    if(null!=facility && null!=dr.facility) facility.setText(dr.facility);
                 }
-                return false;
+                root.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                            appViewModel.setCurrentIndex((currentIndex == 0) ? 0 : currentIndex-1);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
         });
-        return root;
     }
 
 }

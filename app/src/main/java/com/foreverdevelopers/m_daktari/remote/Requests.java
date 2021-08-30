@@ -4,6 +4,7 @@ import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
 import android.util.Log;
 
+import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.callback.RemoteCallback;
 import com.foreverdevelopers.m_daktari.data.HttpClient;
 import com.foreverdevelopers.m_daktari.data.entity.Doctor;
@@ -30,10 +31,10 @@ public class Requests {
     private Remote.RequestProcessor requestProcessor;
 
     private CountiesListViewModel countiesViewModel;
+    private AppViewModel appViewModel;
     private FacilitiesListViewModel facilitiesViewModel;
     private ServicesListViewModel servicesViewModel;
-    private DoctorsListViewModel doctorsViewModel;
-    private DoctorDetailViewModel doctorViewModel;
+
     public Requests(HttpClient httpClient,
                     Remote remote,
                     String baseUrl,
@@ -75,11 +76,8 @@ public class Requests {
     public void setServicesViewModel(ServicesListViewModel viewModel){
         this.servicesViewModel = viewModel;
     }
-    public void setDoctorsViewModel(DoctorsListViewModel viewModel){
-        this.doctorsViewModel = viewModel;
-    }
-    public void setDoctorViewModel(DoctorDetailViewModel viewModel){
-        this.doctorViewModel = viewModel;
+    public void setAppViewModel(AppViewModel viewModel){
+        this.appViewModel = viewModel;
     }
 
     public void countiesAll(){
@@ -441,7 +439,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
                         }
-                        doctorsViewModel.setDoctors(doctors);
+                        appViewModel.setAllDoctors(doctors);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                     }
@@ -484,7 +482,7 @@ public class Requests {
                     for(int i = 0; i < mainResponse.data.length(); i ++){
                         doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
                     }
-                    doctorsViewModel.setDoctors(doctors);
+                    appViewModel.setAllDoctors(doctors);
                 }catch (JSONException ex){
                     Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                 }
@@ -527,7 +525,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             doctors.add(mainResponse.data.getString(i));
                         }
-                        doctorsViewModel.setDoctors(doctors);
+                        appViewModel.setAllDoctors(doctors);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                     }
@@ -569,7 +567,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             doctors.add(mainResponse.data.getString(i));
                         }
-                        doctorsViewModel.setDoctors(doctors);
+                        appViewModel.setAllDoctors(doctors);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                     }

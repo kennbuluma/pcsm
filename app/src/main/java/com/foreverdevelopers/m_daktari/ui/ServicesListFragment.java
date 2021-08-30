@@ -1,6 +1,5 @@
 package com.foreverdevelopers.m_daktari.ui;
 
-import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_FACILITY;
@@ -29,7 +28,6 @@ import com.foreverdevelopers.m_daktari.remote.Requests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 
 public class ServicesListFragment extends Fragment {
 
@@ -49,10 +47,12 @@ public class ServicesListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(ServicesListViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        View root  = inflater.inflate(R.layout.fragment_services, container, false);
+
+        final View root  = inflater.inflate(R.layout.fragment_services, container, false);
         RecyclerView.LayoutManager servicesLayoutManager = new LinearLayoutManager(root.getContext());
         RecyclerView servicesView = root.findViewById(R.id.rcv_services);
         TextView title = root.findViewById(R.id.lbl_service_list);
+
         appViewModel.remoteRequests.observe(getViewLifecycleOwner(), new Observer<Requests>() {
             @Override
             public void onChanged(Requests requests) {
@@ -72,27 +72,33 @@ public class ServicesListFragment extends Fragment {
                 pathMap = integerActivePathHashMap;
             }
         });
-        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<ActivePath>() {
+        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
             @Override
-            public void onChanged(ActivePath activePath) {
+            public void onChanged(Integer integer) {
+                currentIndex = integer;
+                ActivePath activePath = pathMap.get(currentIndex);
                 if(activePath.remoteAction.trim().equals(RA_SERVICES)){
                     title.setText("Services");
                     mainRequests.servicesAll();
                 }
                 if(activePath.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)){
                     title.setText("Services in County " + activePath.baseItem);
-                    mainRequests.servicesByCounty(activePath.baseItem);
+                    mainRequests.servicesByCounty((String) activePath.baseItem);
                 }
                 if(activePath.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)){
                     title.setText("Services in Facility " + activePath.baseItem);
-                    mainRequests.servicesByFacility(activePath.baseItem);
+                    mainRequests.servicesByFacility((String) activePath.baseItem);
                 }
-            }
-        });
-        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
-            @Override
-            public void onChanged(Integer integer) {
-                currentIndex = integer;
+                root.setOnKeyListener(new View.OnKeyListener() {
+                    @Override
+                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                        if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                            appViewModel.setCurrentIndex((currentIndex == 0) ? 0 : currentIndex-1);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
             }
         });
         mViewModel.services.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
@@ -103,19 +109,6 @@ public class ServicesListFragment extends Fragment {
                 servicesView.setHasFixedSize(true);
                 servicesView.setLayoutManager(servicesLayoutManager);
                 servicesView.setAdapter(servicesAdapter);
-            }
-        });
-
-        root.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
-                    Integer mindex = (currentIndex == 0) ? 0 : currentIndex-1;
-                    appViewModel.setCurrentIndex(mindex);
-                    appViewModel.setCurrentPath(pathMap.get(mindex));
-                    return true;
-                }
-                return false;
             }
         });
 

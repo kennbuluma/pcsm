@@ -2,13 +2,8 @@ package com.foreverdevelopers.m_daktari.adapter;
 
 import static com.foreverdevelopers.m_daktari.util.Common.RA_COUNTIES_BY_FACILITY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_DOCTORS_BY_FACILITY;
-import static com.foreverdevelopers.m_daktari.util.Common.RA_FACILITIES_BY_COUNTY;
-import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_COUNTY;
 import static com.foreverdevelopers.m_daktari.util.Common.RA_SERVICES_BY_FACILITY;
-import static com.foreverdevelopers.m_daktari.util.Common.SYSTAG;
 
-import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.Observer;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder>{
     private final ArrayList<String> facilities;
@@ -66,18 +60,21 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
-                ActivePath path = activePathMap.get(nextIndex);
-                try{
-                    path.baseItem = thisFacility;
-                }catch(NullPointerException ex){
-                    //TODO: Vitisho vya null
-                }
-                activePathMap.put(nextIndex, path);
+                Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = thisFacility;
                 viewModel.setCurrentIndex(nextIndex);
-                viewModel.setCurrentPath(path);
-                if(path.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)) navController.navigate(R.id.nav_counties);
-                if(path.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)) navController.navigate(R.id.nav_services);
-                if(path.remoteAction.trim().equals(RA_DOCTORS_BY_FACILITY)) navController.navigate(R.id.nav_doctors);
+                switch(Objects.requireNonNull(activePathMap.get(nextIndex)).remoteAction.trim()){
+                    case RA_COUNTIES_BY_FACILITY: {
+                        navController.navigate(R.id.nav_counties);
+                        return;
+                    }
+                    case RA_SERVICES_BY_FACILITY: {
+                        navController.navigate(R.id.nav_services);
+                        return;
+                    }
+                    case RA_DOCTORS_BY_FACILITY:{
+                        navController.navigate(R.id.nav_doctors);
+                    }
+                }
             }
         });
     }
