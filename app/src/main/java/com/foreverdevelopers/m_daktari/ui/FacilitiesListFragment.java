@@ -58,7 +58,6 @@ public class FacilitiesListFragment extends Fragment {
             @Override
             public void onChanged(Requests requests) {
                 mainRequests = requests;
-                mainRequests.setFacilitiesViewModel(mViewModel);
             }
         });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
@@ -100,7 +99,7 @@ public class FacilitiesListFragment extends Fragment {
                 });
             }
         });
-        mViewModel.facilities.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+        appViewModel.facilities.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> strings) {
                 if(null==strings || strings.size() == 0) return;

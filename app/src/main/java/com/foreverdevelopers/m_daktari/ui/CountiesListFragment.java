@@ -57,7 +57,6 @@ public class CountiesListFragment extends Fragment {
             @Override
             public void onChanged(Requests requests) {
                 mainRequests = requests;
-                mainRequests.setCountiesViewModel(mViewModel);
             }
         });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
@@ -102,7 +101,7 @@ public class CountiesListFragment extends Fragment {
                 });
             }
         });
-        mViewModel.counties.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+        appViewModel.counties.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> strings) {
                 if(null==strings || strings.size() == 0) return;

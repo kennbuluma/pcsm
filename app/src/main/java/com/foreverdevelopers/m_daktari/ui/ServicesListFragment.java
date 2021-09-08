@@ -57,7 +57,6 @@ public class ServicesListFragment extends Fragment {
             @Override
             public void onChanged(Requests requests) {
                 mainRequests = requests;
-                mainRequests.setServicesViewModel(mViewModel);
             }
         });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
@@ -101,7 +100,7 @@ public class ServicesListFragment extends Fragment {
                 });
             }
         });
-        mViewModel.services.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+        appViewModel.services.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
             @Override
             public void onChanged(ArrayList<String> strings) {
                 if(null==strings || strings.size() == 0) return;

@@ -7,12 +7,6 @@ import android.util.Log;
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.callback.RemoteCallback;
 import com.foreverdevelopers.m_daktari.data.HttpClient;
-import com.foreverdevelopers.m_daktari.data.entity.Doctor;
-import com.foreverdevelopers.m_daktari.ui.CountiesListViewModel;
-import com.foreverdevelopers.m_daktari.ui.DoctorDetailViewModel;
-import com.foreverdevelopers.m_daktari.ui.DoctorsListViewModel;
-import com.foreverdevelopers.m_daktari.ui.FacilitiesListViewModel;
-import com.foreverdevelopers.m_daktari.ui.ServicesListViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,10 +24,7 @@ public class Requests {
     private final Remote remote;
     private Remote.RequestProcessor requestProcessor;
 
-    private CountiesListViewModel countiesViewModel;
     private AppViewModel appViewModel;
-    private FacilitiesListViewModel facilitiesViewModel;
-    private ServicesListViewModel servicesViewModel;
 
     public Requests(HttpClient httpClient,
                     Remote remote,
@@ -66,16 +57,6 @@ public class Requests {
         this.serviceByCounty = serviceByCounty;
         this.serviceByFacility = serviceByFacility;
     }
-
-    public void setCountiesViewModel(CountiesListViewModel viewModel){
-        this.countiesViewModel = viewModel;
-    }
-    public void setFacilitiesViewModel(FacilitiesListViewModel viewModel){
-        this.facilitiesViewModel = viewModel;
-    }
-    public void setServicesViewModel(ServicesListViewModel viewModel){
-        this.servicesViewModel = viewModel;
-    }
     public void setAppViewModel(AppViewModel viewModel){
         this.appViewModel = viewModel;
     }
@@ -100,7 +81,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             counties.add(mainResponse.data.getString(i));
                         }
-                        countiesViewModel.setCounties(counties);
+                        appViewModel.setCounties(counties);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, ex.getLocalizedMessage());
                     }
@@ -142,7 +123,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             counties.add(mainResponse.data.getString(i));
                         }
-                        countiesViewModel.setCounties(counties);
+                        appViewModel.setCounties(counties);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, ex.getLocalizedMessage());
                     }
@@ -184,7 +165,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             counties.add(mainResponse.data.getString(i));
                         }
-                        countiesViewModel.setCounties(counties);
+                        appViewModel.setCounties(counties);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, ex.getLocalizedMessage());
                     }
@@ -226,7 +207,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             facilities.add(mainResponse.data.getString(i));
                         }
-                        facilitiesViewModel.setFacilities(facilities);
+                        appViewModel.setFacilities(facilities);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, ex.getLocalizedMessage());
                     }
@@ -268,7 +249,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             facilities.add(mainResponse.data.getString(i));
                         }
-                        facilitiesViewModel.setFacilities(facilities);
+                        appViewModel.setFacilities(facilities);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, ex.getLocalizedMessage());
                     }
@@ -310,7 +291,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             services.add(mainResponse.data.getString(i));
                         }
-                        servicesViewModel.setServices(services);
+                        appViewModel.setServices(services);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, ex.getLocalizedMessage());
                     }
@@ -353,7 +334,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             services.add(mainResponse.data.getString(i));
                         }
-                        servicesViewModel.setServices(services);
+                        appViewModel.setServices(services);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, ex.getLocalizedMessage());
                     }
@@ -396,7 +377,7 @@ public class Requests {
                         for(int i = 0; i < mainResponse.data.length(); i ++){
                             services.add(mainResponse.data.getString(i));
                         }
-                        servicesViewModel.setServices(services);
+                        appViewModel.setServices(services);
                     }catch (JSONException ex){
                         Log.e(SYSTAG, ex.getLocalizedMessage());
                     }

@@ -46,6 +46,22 @@ public class AppViewModel extends ViewModel {
     private final MutableLiveData<FireMessageSendError> _fireMessageSendError = new MutableLiveData<>();
     public LiveData<FireMessageSendError> fireMessageSendError = _fireMessageSendError;
 
+    private MutableLiveData<ArrayList<String>> _services = new MutableLiveData<>();
+    public LiveData<ArrayList<String>> services = _services;
+
+    private MutableLiveData<ArrayList<String>> _facilities = new MutableLiveData<>();
+    public LiveData<ArrayList<String>> facilities = _facilities;
+
+    private final MutableLiveData<Doctor> _doctor = new MutableLiveData<>();
+    public LiveData<Doctor> doctor = _doctor;
+
+    private MutableLiveData<ArrayList<String>> _counties = new MutableLiveData<>();
+    public LiveData<ArrayList<String>> counties = _counties;
+
+    public void setCounties(ArrayList<String> counties){ _counties.postValue(counties); }
+    public void setFacilities(ArrayList<String> facilities){ _facilities.postValue(facilities); }
+    public void setDoctor(Doctor doctor){ this._doctor.postValue(doctor); }
+    public void setServices(ArrayList<String> services){ _services.postValue(services); }
     public void setCurrentIndex(Integer currentIndex){ this._currentIndex.postValue(currentIndex); }
     public void setAllDoctors(ArrayList<Object> doctors){ this._allDoctors.postValue(doctors); }
     public void setNavController(NavController controller){ this._navController.postValue(controller); }
