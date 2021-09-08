@@ -32,6 +32,7 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/black" />
         <!--github token : "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"-->
+        <!--github token : "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"-->
         <service
             android:name="com.foreverdevelopers.m_daktari.util.Messaging"
             android:exported="false">
