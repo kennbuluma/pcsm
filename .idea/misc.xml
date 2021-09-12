@@ -25,6 +25,7 @@
         <entry key="app/src/main/res/layout/list_item_county.xml" value="0.1875" />
         <entry key="app/src/main/res/layout/list_item_doctor.xml" value="0.67" />
         <entry key="app/src/main/res/layout/list_item_facility.xml" value="0.1875" />
+        <entry key="app/src/main/res/layout/list_item_name.xml" value="0.1" />
         <entry key="app/src/main/res/layout/list_item_service.xml" value="0.1875" />
       </map>
     </option>

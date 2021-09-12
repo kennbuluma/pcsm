@@ -46,7 +46,7 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
     @Override
     public CountiesAdapter.CountyViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_county, parent, false);
+                .inflate(R.layout.list_item_name, parent, false);
         return new CountyViewHolder(view);
     }
     @Override
@@ -76,8 +76,8 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
         public final TextView txCountyItemName;
         public CountyViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            crdCountyItem = (CardView) itemView.findViewById(R.id.crd_county_item);
-            txCountyItemName = (TextView) itemView.findViewById(R.id.tx_county_item_name);
+            crdCountyItem = (CardView) itemView.findViewById(R.id.crd_item_name);
+            txCountyItemName = (TextView) itemView.findViewById(R.id.tx_item_name);
         }
     }
 }

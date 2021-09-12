@@ -1,22 +1,28 @@
 package com.foreverdevelopers.m_daktari.data.entity;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
+@Entity
 public class Doctor {
-    public String id, name, county, profilePhoto, facility, email;
-    public List<String> specialty;
+    @PrimaryKey
+    @ColumnInfo(name = "phone")
     public Integer phone;
-
-    public Doctor(){}
-    public Doctor(String id, String name, String county,
-                  String profilePhoto, String facility,
-                  Integer phone, List<String> specialty){
-        this.id = id;
-        this.name = name;
-        this.county = county;
-        this.profilePhoto = profilePhoto;
-        this.facility = facility;
-        this.phone = phone;
-        this.specialty = specialty;
-    }
+    @ColumnInfo(name = "id")
+    public String id;
+    @ColumnInfo(name = "doctor_name")
+    public String name;
+    @ColumnInfo(name = "county")
+    public String county;
+    @ColumnInfo(name = "photo")
+    public String profilePhoto;
+    @ColumnInfo(name = "facility")
+    public String facility;
+    @ColumnInfo(name = "email")
+    public String email;
+    @ColumnInfo(name = "specialty")
+    public List<String> specialty;
 }

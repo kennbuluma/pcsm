@@ -4,13 +4,43 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
+import androidx.room.TypeConverter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.ByteArrayOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Converter {
+
+    @TypeConverter
+    public static String arrayToString(List<String> input){
+        if(null==input || input.size() == 0) return "";
+        JSONArray array = new JSONArray();
+        for(String value : input){ array.put(value); }
+        return array.toString();
+    }
+    @TypeConverter
+    public static List<String> stringToArray(String input){
+        if(null==input || input.trim().length() == 0) return null;
+        ArrayList<String> array = new ArrayList<>();
+        try {
+            JSONArray jsonArray = new JSONArray(input);
+            for (int x = 0; x < jsonArray.length(); x++) {
+                array.add(jsonArray.getString(x));
+            }
+            return array;
+        }catch (JSONException ex){
+            return null;
+        }
+    }
+
     public static String bytesToString(byte[] input){
         if(null==input || input.length == 0) return null;
         return Base64.encodeToString(input, Base64.NO_WRAP);

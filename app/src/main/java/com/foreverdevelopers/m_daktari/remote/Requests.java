@@ -13,8 +13,16 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RunnableFuture;
 
 public class Requests {
+    private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+    private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
+    private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
+    private static final int KEEP_ALIVE = 1;
     private final String baseUrl,
             doctorsAll, doctorsByFacility, doctorsByService, doctorsSearch,
             countiesAll, countiesByService, countiesByFacility,
@@ -23,6 +31,7 @@ public class Requests {
     private final HttpClient httpClient;
     private final Remote remote;
     private Remote.RequestProcessor requestProcessor;
+    private ExecutorService requestService = Executors.newFixedThreadPool(8);
 
     private AppViewModel appViewModel;
 
@@ -57,6 +66,10 @@ public class Requests {
         this.serviceByCounty = serviceByCounty;
         this.serviceByFacility = serviceByFacility;
     }
+    public void runTest(){
+        //requestService.submit()
+    }
+
     public void setAppViewModel(AppViewModel viewModel){
         this.appViewModel = viewModel;
     }
@@ -570,4 +583,10 @@ public class Requests {
                 }
             });
         }
+    class RequestExecutorRunnable implements Runnable{
+        @Override
+        public void run() {
+            //
+        }
+    }
 }

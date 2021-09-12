@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
 
 import com.foreverdevelopers.m_daktari.data.ActivePath;
+import com.foreverdevelopers.m_daktari.data.DataDB;
 import com.foreverdevelopers.m_daktari.data.FireMessageSendError;
 import com.foreverdevelopers.m_daktari.data.entity.Doctor;
 import com.foreverdevelopers.m_daktari.remote.Requests;
@@ -16,6 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AppViewModel extends ViewModel {
+    private final MutableLiveData<DataDB> _dbInstance = new MutableLiveData<DataDB>();
+    public LiveData<DataDB> dbInstance = _dbInstance;
+
     private final MutableLiveData<Integer> _currentIndex = new MutableLiveData<Integer>();
     public LiveData<Integer> currentIndex = _currentIndex;
 
@@ -58,6 +62,7 @@ public class AppViewModel extends ViewModel {
     private MutableLiveData<ArrayList<String>> _counties = new MutableLiveData<>();
     public LiveData<ArrayList<String>> counties = _counties;
 
+    public void setDbInstance(DataDB dbInstance){ _dbInstance.postValue(dbInstance); }
     public void setCounties(ArrayList<String> counties){ _counties.postValue(counties); }
     public void setFacilities(ArrayList<String> facilities){ _facilities.postValue(facilities); }
     public void setDoctor(Doctor doctor){ this._doctor.postValue(doctor); }

@@ -48,7 +48,7 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
     @Override
     public FacilityViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_facility, parent, false);
+                .inflate(R.layout.list_item_name, parent, false);
         return new FacilitiesAdapter.FacilityViewHolder(view);
     }
     @Override
@@ -89,8 +89,8 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
         public final TextView txFacilityItemName;
         public FacilityViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            crdFacilityItem = (CardView) itemView.findViewById(R.id.crd_facility_item);
-            txFacilityItemName = (TextView) itemView.findViewById(R.id.tx_facility_item_name);
+            crdFacilityItem = (CardView) itemView.findViewById(R.id.crd_item_name);
+            txFacilityItemName = (TextView) itemView.findViewById(R.id.tx_item_name);
         }
     }
 }

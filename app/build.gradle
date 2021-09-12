@@ -45,6 +45,12 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.2.0'
     implementation 'androidx.multidex:multidex:2.0.1'
 
+    // https://mvnrepository.com/artifact/androidx.room/
+    implementation 'androidx.room:room-runtime:2.3.0'
+    implementation 'androidx.room:room-migration:2.3.0'
+    annotationProcessor 'androidx.room:room-compiler:2.3.0'
+    runtimeOnly 'androidx.room:room-common:2.3.0'
+
     implementation platform("com.squareup.okhttp3:okhttp-bom:4.9.0")
     implementation platform('com.google.firebase:firebase-bom:28.3.0')
 

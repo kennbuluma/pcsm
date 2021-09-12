@@ -7,8 +7,17 @@ import androidx.annotation.NonNull;
 
 import com.foreverdevelopers.m_daktari.AppViewModel;
 import com.foreverdevelopers.m_daktari.R;
+import com.foreverdevelopers.m_daktari.data.DataDB;
 import com.foreverdevelopers.m_daktari.data.HttpClient;
 import com.foreverdevelopers.m_daktari.data.SSLItem;
+import com.foreverdevelopers.m_daktari.data.dao.CountyDao;
+import com.foreverdevelopers.m_daktari.data.dao.DoctorDao;
+import com.foreverdevelopers.m_daktari.data.dao.FacilityDao;
+import com.foreverdevelopers.m_daktari.data.dao.ServiceDao;
+import com.foreverdevelopers.m_daktari.data.entity.County;
+import com.foreverdevelopers.m_daktari.data.entity.Doctor;
+import com.foreverdevelopers.m_daktari.data.entity.Facility;
+import com.foreverdevelopers.m_daktari.data.entity.Service;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
@@ -87,6 +96,12 @@ public class InitializeApp {
         final Map<String, Object> defaultConfig = (Map<String, Object>) defaultConfigs((Context) activity);
         remoteConfig.setDefaultsAsync(defaultConfig);
     }
+    public static void UpdateLocalData(DataDB db){
+        fetchCounties(db.countyDao());
+        fetchFacilities(db.facilityDao());
+        fetchServices(db.serviceDao());
+        fetchDoctors(db.doctorDao());
+    }
     private static void fetchFireConfig(FirebaseRemoteConfig remoteConfig,
                                         AppViewModel appViewModel,
                                         Activity activity){
@@ -122,5 +137,21 @@ public class InitializeApp {
     private static void updateRemoteConfig(FirebaseRemoteConfig remoteConfig, AppViewModel appViewModel){
         final Map<String, FirebaseRemoteConfigValue> currentConfig = remoteConfig.getAll();
         appViewModel.setRemoteSettings((HashMap<String, FirebaseRemoteConfigValue>) currentConfig);
+    }
+    private static void fetchCounties(CountyDao countyDao){
+        ArrayList<County> counties = new ArrayList<>();
+        countyDao.addAllCounties(counties);
+    }
+    private static void fetchFacilities(FacilityDao facilityDao){
+        ArrayList<Facility> facilities = new ArrayList<>();
+        facilityDao.addAllFacility(facilities);
+    }
+    private static void fetchServices(ServiceDao serviceDao){
+        ArrayList<Service> services = new ArrayList<>();
+        serviceDao.addAllServices(services);
+    }
+    private static void fetchDoctors(DoctorDao doctorDao){
+        ArrayList<Doctor> doctors = new ArrayList<Doctor>();
+        doctorDao.addAllDoctor(doctors);
     }
 }

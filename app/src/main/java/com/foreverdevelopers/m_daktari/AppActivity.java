@@ -8,7 +8,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.room.Room;
 
+import com.foreverdevelopers.m_daktari.data.DataDB;
 import com.foreverdevelopers.m_daktari.data.HttpClient;
 import com.foreverdevelopers.m_daktari.remote.Remote;
 import com.foreverdevelopers.m_daktari.remote.Requests;
@@ -42,10 +44,18 @@ public class AppActivity extends AppCompatActivity {
         appViewModel.setNavController(navController);
     }
     private void initializeApp(){
+        DataDB db = Room.databaseBuilder(getApplicationContext(),DataDB.class,"mdkt-db").build();
         appViewModel = new ViewModelProvider(this).get(AppViewModel.class);
+        appViewModel.setDbInstance(db);
         InitializeApp.firebase(firebaseRemoteConfig, appViewModel, this);
     }
     private void viewListeners(){
+        appViewModel.dbInstance.observe(this, new Observer<DataDB>() {
+            @Override
+            public void onChanged(DataDB dataDB) {
+                InitializeApp.UpdateLocalData(dataDB);
+            }
+        });
         appViewModel.remoteSettings.observe(this, new Observer<HashMap<String, FirebaseRemoteConfigValue>>() {
             @Override
             public void onChanged(HashMap<String, FirebaseRemoteConfigValue> remoteConfigs) {

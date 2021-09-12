@@ -48,7 +48,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
     @Override
     public ServiceViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_service, parent, false);
+                .inflate(R.layout.list_item_name, parent, false);
         return new ServicesAdapter.ServiceViewHolder(view);
     }
     @Override
@@ -78,8 +78,8 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         public final TextView txServiceItemName;
         public ServiceViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            crdServiceItem = (CardView) itemView.findViewById(R.id.crd_service_item);
-            txServiceItemName = (TextView) itemView.findViewById(R.id.tx_service_item_name);
+            crdServiceItem = (CardView) itemView.findViewById(R.id.crd_item_name);
+            txServiceItemName = (TextView) itemView.findViewById(R.id.tx_item_name);
         }
     }
 }

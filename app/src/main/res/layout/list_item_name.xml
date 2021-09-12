@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/crd_facility_item"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/crd_item_name"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="24dp"
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/tx_facility_item_name"
+            android:id="@+id/tx_item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
