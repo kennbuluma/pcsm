@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.foreverdevelopers.m_daktari">
+    package="com.foreverdevelopers.doctors_directory_kenya">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProjectCSM">
         <activity
-            android:name="com.foreverdevelopers.m_daktari.AppActivity"
+            android:name="com.foreverdevelopers.doctors_directory_kenya.AppActivity"
             android:exported="true"
             >
             <intent-filter>
@@ -34,7 +34,7 @@
         <!--github token : "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"-->
         <!--github token : "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"-->
         <service
-            android:name="com.foreverdevelopers.m_daktari.util.Messaging"
+            android:name="com.foreverdevelopers.doctors_directory_kenya.util.Messaging"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

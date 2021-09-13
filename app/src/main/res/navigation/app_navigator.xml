@@ -7,32 +7,32 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.foreverdevelopers.m_daktari.ui.HomeFragment"
+        android:name="com.foreverdevelopers.doctors_directory_kenya.ui.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/nav_counties"
-        android:name="com.foreverdevelopers.m_daktari.ui.CountiesListFragment"
+        android:name="com.foreverdevelopers.doctors_directory_kenya.ui.CountiesListFragment"
         android:label="fragment_counties_list"
         tools:layout="@layout/fragment_counties_list" />
     <fragment
         android:id="@+id/nav_facilities"
-        android:name="com.foreverdevelopers.m_daktari.ui.FacilitiesListFragment"
+        android:name="com.foreverdevelopers.doctors_directory_kenya.ui.FacilitiesListFragment"
         android:label="fragment_facilities_list"
         tools:layout="@layout/fragment_facilities_list" />
     <fragment
         android:id="@+id/nav_services"
-        android:name="com.foreverdevelopers.m_daktari.ui.ServicesListFragment"
+        android:name="com.foreverdevelopers.doctors_directory_kenya.ui.ServicesListFragment"
         android:label="fragment_services"
         tools:layout="@layout/fragment_services" />
     <fragment
         android:id="@+id/nav_doctors"
-        android:name="com.foreverdevelopers.m_daktari.ui.DoctorsListFragment"
+        android:name="com.foreverdevelopers.doctors_directory_kenya.ui.DoctorsListFragment"
         android:label="fragment_doctors_list"
         tools:layout="@layout/fragment_doctors_list" />
     <fragment
         android:id="@+id/nav_doctor_details"
-        android:name="com.foreverdevelopers.m_daktari.ui.DoctorDetailFragment"
+        android:name="com.foreverdevelopers.doctors_directory_kenya.ui.DoctorDetailFragment"
         android:label="fragment_doctor_detail"
         tools:layout="@layout/fragment_doctor_detail" />
 </navigation>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">M-Daktari</string>
+    <string name="app_name">Doctors Directory Kenya</string>
     <string name="et_search">Search…</string>
     <string name="btn_search">Search</string>
     <string name="lbl_doctors">Doctors</string>
