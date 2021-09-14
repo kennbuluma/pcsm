@@ -37,8 +37,7 @@ public class CountyRepo {
         this.countiesByFacility = countiesByFacility;
         this.countyViewModel = new ViewModelProvider(context).get(CountyViewModel.class);
     }
-    void initialiseCounties(){}
-    void counties(){
+    public void counties(){
         String url = baseUrl+countiesAll;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :
@@ -82,7 +81,7 @@ public class CountyRepo {
             }
         });
     }
-    void countiesByFacility(String facility){
+    public void countiesByFacility(String facility){
         String url = baseUrl+countiesByFacility+"/"+facility;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :
@@ -126,7 +125,7 @@ public class CountyRepo {
             }
         });
     }
-    void countiesByService(String service){
+    public void countiesByService(String service){
         String url = baseUrl+countiesByService+"/"+service;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :

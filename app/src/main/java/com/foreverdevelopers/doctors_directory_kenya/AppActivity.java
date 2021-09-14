@@ -12,14 +12,16 @@ import androidx.room.Room;
 
 import com.foreverdevelopers.doctors_directory_kenya.data.DataDB;
 import com.foreverdevelopers.doctors_directory_kenya.data.HttpClient;
+import com.foreverdevelopers.doctors_directory_kenya.data.repository.CountyRepo;
+import com.foreverdevelopers.doctors_directory_kenya.data.repository.DoctorRepo;
+import com.foreverdevelopers.doctors_directory_kenya.data.repository.FacilityRepo;
+import com.foreverdevelopers.doctors_directory_kenya.data.repository.ServiceRepo;
 import com.foreverdevelopers.doctors_directory_kenya.remote.Remote;
-import com.foreverdevelopers.doctors_directory_kenya.remote.Requests;
 import com.foreverdevelopers.doctors_directory_kenya.util.InitializeApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -48,13 +50,6 @@ public class AppActivity extends AppCompatActivity {
         InitializeApp.firebase(firebaseRemoteConfig, appViewModel, this);
     }
     private void viewListeners(){
-        appViewModel.dbInstance.observe(this, new Observer<DataDB>() {
-            @Override
-            public void onChanged(DataDB dataDB) {
-                InitializeApp.UpdateLocalData(dataDB);
-                loadComponents();
-            }
-        });
         appViewModel.remoteSettings.observe(this, new Observer<HashMap<String, FirebaseRemoteConfigValue>>() {
             @Override
             public void onChanged(HashMap<String, FirebaseRemoteConfigValue> remoteConfigs) {
@@ -73,19 +68,26 @@ public class AppActivity extends AppCompatActivity {
                         serviceByFacility = Objects.requireNonNull(remoteConfigs.get("services_facility_ep")).asString();
                 final HttpClient appRemoteClient = InitializeApp.httpClient(AppActivity.this);
                 final Remote appRemote = new Remote(appRemoteClient);
-                final Requests appRequests = new Requests(appRemoteClient, appRemote, baseUrl,
-                        doctorsAll, doctorsByFacility, doctorsByService, doctorsSearch,
-                        countiesAll, countiesByService, countiesByFacility,
-                        facilitiesAll, facilitiesByCounty,
-                        serviceAll, serviceByCounty, serviceByFacility);
-                appViewModel.setRemoteRequests(appRequests);
-            }
-        });
-        appViewModel.remoteRequests.observe(this, new Observer<Requests>() {
-            @Override
-            public void onChanged(Requests request) {
-                request.setAppViewModel(appViewModel);
                 Room.databaseBuilder(getApplicationContext(),DataDB.class,"mdkt-db").build();
+                CountyRepo countyRepo = new CountyRepo(AppActivity.this,
+                        appRemote, baseUrl, countiesAll,
+                        countiesByService, countiesByFacility);
+                FacilityRepo facilityRepo = new FacilityRepo(AppActivity.this,
+                        appRemote, baseUrl, facilitiesAll, facilitiesByCounty);
+                ServiceRepo serviceRepo = new ServiceRepo(AppActivity.this,
+                        appRemote, baseUrl, serviceAll, serviceByCounty, serviceByFacility);
+                DoctorRepo doctorRepo = new DoctorRepo(AppActivity.this,
+                        appRemote, baseUrl, doctorsAll, doctorsByFacility,
+                        doctorsByService, doctorsSearch);
+                countyRepo.counties();
+                facilityRepo.facilities();
+                serviceRepo.services();
+                doctorRepo.doctors();
+                appViewModel.setCountyRepo(countyRepo);
+                appViewModel.setFacilityRepo(facilityRepo);
+                appViewModel.setServiceRepo(serviceRepo);
+                appViewModel.setDoctorRepo(doctorRepo);
+                loadComponents();
             }
         });
     }

@@ -41,8 +41,7 @@ public class DoctorRepo {
         this.doctorsSearch = doctorsSearch;
         this.doctorViewModel = new ViewModelProvider(context).get(DoctorViewModel.class);
     }
-    void initialiseDoctors(){}
-    void doctors(){
+    public void doctors(){
         String url = baseUrl+doctorsAll;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :
@@ -85,7 +84,7 @@ public class DoctorRepo {
             }
         });
     }
-    void doctorsByFacility(String facility){
+    public void doctorsByFacility(String facility){
         String url = baseUrl+doctorsByFacility+"/"+facility;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :
@@ -130,7 +129,7 @@ public class DoctorRepo {
             }
         });
     }
-    void doctorsByService(String service){
+    public void doctorsByService(String service){
         String url = baseUrl+doctorsByService+"/"+service;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :

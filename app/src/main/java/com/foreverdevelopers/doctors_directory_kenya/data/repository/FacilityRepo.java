@@ -35,8 +35,7 @@ public class FacilityRepo {
         this.facilitiesByCounty = facilitiesByCounty;
         this.facilityViewModel = new ViewModelProvider(context).get(FacilityViewModel.class);
     }
-    void initialiseFacilities(){}
-    void facilities(){
+    public void facilities(){
         String url = baseUrl+facilitiesAll;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :
@@ -80,7 +79,7 @@ public class FacilityRepo {
             }
         });
     }
-    void facilityByCounty(String county){
+    public void facilityByCounty(String county){
         String url = baseUrl+facilitiesByCounty+"/"+county;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :

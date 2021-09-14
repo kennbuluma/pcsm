@@ -16,6 +16,7 @@ import java.util.List;
 public class DoctorViewModel extends AndroidViewModel {
     private final DoctorDao doctorDao;
     private final MutableLiveData<List<Doctor>> _filteredDoctors = new MutableLiveData<>();
+    private final MutableLiveData<Doctor> _doctor = new MutableLiveData<>();
     public final LiveData<List<Doctor>> doctors;
     public final LiveData<List<Doctor>> filteredDoctors = this._filteredDoctors;
 
@@ -62,4 +63,5 @@ public class DoctorViewModel extends AndroidViewModel {
     public LiveData<List<Doctor>> getAll(){ return doctorDao.getAllDoctor();}
     public LiveData<List<Doctor>> search(String searchValue){ return doctorDao.searchDoctor(searchValue);}
     public LiveData<Doctor> getByPhone(Integer doctor){return doctorDao.getDoctor(doctor);}
+    public LiveData<Doctor> getDoctor = _doctor;
 }

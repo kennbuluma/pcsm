@@ -18,7 +18,6 @@ import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
-import com.foreverdevelopers.doctors_directory_kenya.remote.Requests;
 
 import java.util.HashMap;
 

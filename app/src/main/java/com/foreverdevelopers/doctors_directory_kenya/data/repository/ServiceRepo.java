@@ -37,8 +37,7 @@ public class ServiceRepo {
         this.serviceByFacility = serviceByFacility;
         this.serviceViewModel = new ViewModelProvider(context).get(ServiceViewModel.class);
     }
-    void initialiseServices(){}
-    void services(){
+    public void services(){
         String url = baseUrl+serviceAll;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :
@@ -82,7 +81,7 @@ public class ServiceRepo {
             }
         });
     }
-    void serviceByFacility(String facility){
+    public void serviceByFacility(String facility){
         String url = baseUrl+serviceByFacility+"/"+facility;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :
@@ -127,7 +126,7 @@ public class ServiceRepo {
             }
         });
     }
-    void serviceByCounty(String county){
+    public void serviceByCounty(String county){
         String url = baseUrl+serviceByCounty+"/"+county;
         requestProcessor = url.trim().startsWith("https://") ?
                 remote.secureRequest :
