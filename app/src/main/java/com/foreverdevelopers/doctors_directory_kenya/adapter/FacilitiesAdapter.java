@@ -17,22 +17,24 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder>{
-    private final ArrayList<String> facilities;
+    private final List<Facility> facilities;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
     private final HashMap<Integer, ActivePath> activePathMap;
 
     public FacilitiesAdapter(AppViewModel viewModel,
-                             ArrayList<String> facilities,
+                             List<Facility> facilities,
                              Integer currentIndex,
                              NavController navController,
                              HashMap<Integer, ActivePath> activePathMap){
@@ -54,8 +56,8 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
     @Override
     public void onBindViewHolder(@NonNull @NotNull FacilityViewHolder holder, int position) {
         if(null==facilities) return;
-        String thisFacility = facilities.get(position);
-        holder.txFacilityItemName.setText(thisFacility);
+        Facility thisFacility = facilities.get(position);
+        holder.txFacilityItemName.setText(thisFacility.name);
         holder.crdFacilityItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

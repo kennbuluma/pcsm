@@ -24,16 +24,19 @@ import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.DoctorsAdapter;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
+import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class DoctorsListFragment extends Fragment {
 
     private DoctorsListViewModel mViewModel;
     private AppViewModel appViewModel;
+    private DoctorViewModel doctorViewModel;
     private NavController appNavController = null;
-    private Requests mainRequests;
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
 
@@ -46,19 +49,13 @@ public class DoctorsListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(DoctorsListViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+        doctorViewModel = new ViewModelProvider(requireActivity()).get(DoctorViewModel.class);
 
         final View root = inflater.inflate(R.layout.fragment_doctors_list, container, false);
         RecyclerView.LayoutManager doctorsLayoutManager = new LinearLayoutManager(root.getContext());
         RecyclerView doctorsView = root.findViewById(R.id.rcv_doctors);
         TextView title = root.findViewById(R.id.lbl_doc_list);
 
-        appViewModel.remoteRequests.observe(getViewLifecycleOwner(), new Observer<Requests>() {
-            @Override
-            public void onChanged(Requests requests) {
-                mainRequests = requests;
-                mainRequests.setAppViewModel(appViewModel);
-            }
-        });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
             @Override
             public void onChanged(NavController navController) {
@@ -78,15 +75,15 @@ public class DoctorsListFragment extends Fragment {
                 ActivePath activePath = pathMap.get(currentIndex);
                 if(activePath.remoteAction.trim().equals(RA_DOCTORS)){
                     title.setText("Doctors");
-                    mainRequests.doctorsAll();
+                    //mainRequests.doctorsAll();
                 }
                 if(activePath.remoteAction.trim().equals(RA_DOCTORS_BY_FACILITY)){
                     title.setText("Doctors in Facility " + activePath.baseItem);
-                    mainRequests.doctorsByFacility((String) activePath.baseItem);
+                    //mainRequests.doctorsByFacility((String) activePath.baseItem);
                 }
                 if(activePath.remoteAction.trim().equals(RA_DOCTORS_BY_SERVICE)){
                     title.setText("Doctors in Service " + activePath.baseItem);
-                    mainRequests.doctorsByService((String) activePath.baseItem);
+                    //mainRequests.doctorsByService((String) activePath.baseItem);
                 }
                 root.setOnKeyListener(new View.OnKeyListener() {
                     @Override
@@ -100,11 +97,12 @@ public class DoctorsListFragment extends Fragment {
                 });
             }
         });
-        appViewModel.allDoctors.observe(getViewLifecycleOwner(), new Observer<ArrayList<Object>>() {
+        doctorViewModel.doctors.observe(getViewLifecycleOwner(), new Observer<List<Doctor>>() {
             @Override
-            public void onChanged(ArrayList<Object> doctors) {
+            public void onChanged(List<Doctor> doctors) {
                 if(null==doctors || doctors.size() == 0) return;
-                RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> doctorsAdapter = new DoctorsAdapter(appViewModel, doctors, currentIndex, appNavController, pathMap);
+                RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> doctorsAdapter = new DoctorsAdapter(
+                        appViewModel, doctors, currentIndex, appNavController, pathMap);
                 doctorsView.setHasFixedSize(true);
                 doctorsView.setLayoutManager(doctorsLayoutManager);
                 doctorsView.setAdapter(doctorsAdapter);

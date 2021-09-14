@@ -22,16 +22,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> {
-    private final ArrayList<Object> doctors;
+    private final List<Doctor> doctors;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
     private final HashMap<Integer, ActivePath> activePathMap;
     public DoctorsAdapter(AppViewModel viewModel,
-                          ArrayList<Object> doctors,
+                          List<Doctor> doctors,
                           Integer currentIndex,
                           NavController navController,
                           HashMap<Integer, ActivePath> activePathMap){
@@ -53,11 +54,8 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
     @Override
     public void onBindViewHolder(@NonNull @NotNull DoctorViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if(null==doctors) return;
-        final Doctor thisDoctor = (doctors.get(position) instanceof Doctor) ?
+        final Doctor thisDoctor = (doctors.get(position) != null) ?
                 (Doctor)doctors.get(position) :
-                null;
-        final String thisDoctorString = (doctors.get(position) instanceof String) ?
-                (String) doctors.get(position) :
                 null;
         if(null!=thisDoctor){
             holder.txDoctorItemCounty.setText(thisDoctor.county);
@@ -65,23 +63,13 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
             holder.txDoctorItemName.setText(thisDoctor.name);
             holder.imgDoctorPhoto.setImageBitmap(Converter.stringToBitmap(thisDoctor.profilePhoto));
         }
-        if(null!=thisDoctorString){
-            holder.txDoctorItemName.setText(thisDoctorString);
-        }
 
         holder.crdDoctorItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
-                if(doctors.get(position) instanceof Doctor) {
+                if(doctors.get(position) != null) {
                         Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = thisDoctor;
-                        viewModel.setCurrentIndex(nextIndex);
-                        navController.navigate(R.id.nav_doctor_details);
-                    }
-                if(doctors.get(position) instanceof String) {
-                        Doctor doctor = new Doctor();
-                        doctor.name = thisDoctorString;
-                        Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = doctor;
                         viewModel.setCurrentIndex(nextIndex);
                         navController.navigate(R.id.nav_doctor_details);
                     }

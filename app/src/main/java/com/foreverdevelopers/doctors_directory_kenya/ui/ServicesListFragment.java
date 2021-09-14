@@ -24,16 +24,19 @@ import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.ServicesAdapter;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
+import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.ServiceViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ServicesListFragment extends Fragment {
 
     private ServicesListViewModel mViewModel;
     private AppViewModel appViewModel;
+    private ServiceViewModel serviceViewModel;
     private NavController appNavController = null;
-    private Requests mainRequests;
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
 
@@ -46,18 +49,13 @@ public class ServicesListFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         mViewModel = new ViewModelProvider(this).get(ServicesListViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+        serviceViewModel = new ViewModelProvider(requireActivity()).get(ServiceViewModel.class);
 
         final View root  = inflater.inflate(R.layout.fragment_services, container, false);
         RecyclerView.LayoutManager servicesLayoutManager = new LinearLayoutManager(root.getContext());
         RecyclerView servicesView = root.findViewById(R.id.rcv_services);
         TextView title = root.findViewById(R.id.lbl_service_list);
 
-        appViewModel.remoteRequests.observe(getViewLifecycleOwner(), new Observer<Requests>() {
-            @Override
-            public void onChanged(Requests requests) {
-                mainRequests = requests;
-            }
-        });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
             @Override
             public void onChanged(NavController navController) {
@@ -77,15 +75,15 @@ public class ServicesListFragment extends Fragment {
                 ActivePath activePath = pathMap.get(currentIndex);
                 if(activePath.remoteAction.trim().equals(RA_SERVICES)){
                     title.setText("Services");
-                    mainRequests.servicesAll();
+                    //mainRequests.servicesAll();
                 }
                 if(activePath.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)){
                     title.setText("Services in County " + activePath.baseItem);
-                    mainRequests.servicesByCounty((String) activePath.baseItem);
+                    //mainRequests.servicesByCounty((String) activePath.baseItem);
                 }
                 if(activePath.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)){
                     title.setText("Services in Facility " + activePath.baseItem);
-                    mainRequests.servicesByFacility((String) activePath.baseItem);
+                    //mainRequests.servicesByFacility((String) activePath.baseItem);
                 }
                 root.setOnKeyListener(new View.OnKeyListener() {
                     @Override
@@ -99,11 +97,12 @@ public class ServicesListFragment extends Fragment {
                 });
             }
         });
-        appViewModel.services.observe(getViewLifecycleOwner(), new Observer<ArrayList<String>>() {
+        serviceViewModel.services.observe(getViewLifecycleOwner(), new Observer<List<Service>>() {
             @Override
-            public void onChanged(ArrayList<String> strings) {
-                if(null==strings || strings.size() == 0) return;
-                RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder> servicesAdapter = new ServicesAdapter(appViewModel, strings, currentIndex, appNavController, pathMap);
+            public void onChanged(List<Service> services) {
+                if(null==services || services.size() == 0) return;
+                RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder> servicesAdapter = new ServicesAdapter(
+                        appViewModel, services, currentIndex, appNavController, pathMap);
                 servicesView.setHasFixedSize(true);
                 servicesView.setLayoutManager(servicesLayoutManager);
                 servicesView.setAdapter(servicesAdapter);

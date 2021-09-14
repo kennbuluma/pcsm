@@ -28,7 +28,6 @@ public class DoctorDetailFragment extends Fragment {
     private NavController appNavController;
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
-    private Requests mainRequests;
 
     public static DoctorDetailFragment newInstance() {
         return new DoctorDetailFragment();
@@ -53,12 +52,6 @@ public class DoctorDetailFragment extends Fragment {
                 facility = root.findViewById(R.id.txt_doc_detail_highlight_facility);
         title.setText("Doctor's Detail");
 
-        appViewModel.remoteRequests.observe(getViewLifecycleOwner(), new Observer<Requests>() {
-            @Override
-            public void onChanged(Requests requests) {
-                mainRequests = requests;
-            }
-        });
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
             @Override
             public void onChanged(NavController navController) {

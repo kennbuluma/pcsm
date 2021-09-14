@@ -16,21 +16,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> {
-    private final ArrayList<String> counties;
+    private final List<County> counties;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
     private final HashMap<Integer, ActivePath> activePathMap;
     public CountiesAdapter(AppViewModel viewModel,
-                           ArrayList<String> counties,
+                           List<County> counties,
                            Integer currentIndex,
                            NavController navController,
                            HashMap<Integer, ActivePath> activePathMap){
@@ -52,8 +54,8 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
     @Override
     public void onBindViewHolder(@NonNull @NotNull CountiesAdapter.CountyViewHolder holder, int position) {
         if(null==counties) return;
-        String thisCounty = counties.get(position);
-        holder.txCountyItemName.setText(thisCounty);
+        County thisCounty = counties.get(position);
+        holder.txCountyItemName.setText(thisCounty.name);
         holder.crdCountyItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -16,23 +16,25 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder>{
-    private final ArrayList<String> services;
+    private final List<Service> services;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
     private final HashMap<Integer, ActivePath> activePathMap;
 
     public ServicesAdapter(AppViewModel viewModel,
-                           ArrayList<String> services,
+                           List<Service> services,
                            Integer currentIndex,
                            NavController navController,
                            HashMap<Integer, ActivePath> activePathMap){
@@ -54,8 +56,8 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
     @Override
     public void onBindViewHolder(@NonNull @NotNull ServiceViewHolder holder, int position) {
         if(null==services) return;
-        String thisService = null == services.get(position) ? null : services.get(position);
-        holder.txServiceItemName.setText(thisService.toUpperCase(Locale.ROOT).trim());
+        Service thisService = null == services.get(position) ? null : services.get(position);
+        holder.txServiceItemName.setText(thisService.name.toUpperCase(Locale.ROOT).trim());
         holder.crdServiceItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
