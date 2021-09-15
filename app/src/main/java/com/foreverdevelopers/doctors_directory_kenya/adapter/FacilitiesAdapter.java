@@ -18,6 +18,7 @@ import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder>{
-    private final List<Facility> facilities;
+    private List<Facility> facilities;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
@@ -43,6 +44,11 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
         this.currentIndex = currentIndex;
         this.navController = navController;
         this.activePathMap = activePathMap;
+    }
+
+    public void filterFacilities(ArrayList<Facility> facilities){
+        this.facilities = facilities;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -62,21 +68,9 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
-                Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = thisFacility;
+                Objects.requireNonNull(activePathMap.get(nextIndex)).currentPath.data = thisFacility;
                 viewModel.setCurrentIndex(nextIndex);
-                switch(Objects.requireNonNull(activePathMap.get(nextIndex)).remoteAction.trim()){
-                    case RA_COUNTIES_BY_FACILITY: {
-                        navController.navigate(R.id.nav_counties);
-                        return;
-                    }
-                    case RA_SERVICES_BY_FACILITY: {
-                        navController.navigate(R.id.nav_services);
-                        return;
-                    }
-                    case RA_DOCTORS_BY_FACILITY:{
-                        navController.navigate(R.id.nav_doctors);
-                    }
-                }
+                navController.navigate(Objects.requireNonNull(activePathMap.get(currentIndex)).nextPath.path);
             }
         });
     }

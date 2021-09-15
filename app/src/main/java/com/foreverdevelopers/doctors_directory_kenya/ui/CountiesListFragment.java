@@ -5,6 +5,8 @@ import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNT
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_SERVICE;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +27,16 @@ import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.CountiesAdapter;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.CountyRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.CountyViewModel;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class CountiesListFragment extends Fragment {
 
@@ -41,6 +47,8 @@ public class CountiesListFragment extends Fragment {
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
     private CountyViewModel countyViewModel;
+    private List<County> currentCounties = new ArrayList<>();
+    private CountiesAdapter countiesAdapter;
 
     public static CountiesListFragment newInstance() {
         return new CountiesListFragment();
@@ -57,6 +65,23 @@ public class CountiesListFragment extends Fragment {
         RecyclerView.LayoutManager countiesLayoutManager = new LinearLayoutManager(root.getContext());
         RecyclerView countiesView = root.findViewById(R.id.rcv_counties);
         TextView title = root.findViewById(R.id.lbl_counties);
+        TextInputEditText countySearch = root.findViewById(R.id.et_county_search);
+        countySearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Do Nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //Do Nothing
+            }
+        });
 
         appViewModel.countyRepo.observe(getViewLifecycleOwner(), new Observer<CountyRepo>() {
             @Override
@@ -82,17 +107,14 @@ public class CountiesListFragment extends Fragment {
                 currentIndex = integer;
                 ActivePath activePath = pathMap.get(currentIndex);
                 assert activePath != null;
-                if(activePath.baseItem instanceof String){
-                    String titleStr = activePath.remoteAction.trim().equals(RA_COUNTIES) ?
-                            "Counties" :
-                            ( activePath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY) ?
-                                    "County with Facility " + activePath.baseItem :
-                                    (activePath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE) ?
-                                            "Counties with Service " + activePath.baseItem: "Counties"));
-                    title.setText(titleStr);
-                    if(activePath.remoteAction.trim().equals(RA_COUNTIES)) countyRepo.counties();
-                    if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)) countyRepo.countiesByFacility((String) activePath.baseItem);
-                    if(activePath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)) countyRepo.countiesByService((String) activePath.baseItem);
+                if(activePath.currentPath.remoteAction.trim().equals(RA_COUNTIES)) countyRepo.counties();
+                if(activePath.currentPath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)){
+                    Facility thisFacility = (Facility) activePath.currentPath.data;
+                    countyRepo.countiesByFacility(thisFacility.name);
+                }
+                if(activePath.currentPath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)){
+                    Service thisService = (Service) activePath.currentPath.data;
+                    countyRepo.countiesByService(thisService.name);
                 }
                 root.setOnKeyListener(new View.OnKeyListener() {
                     @Override
@@ -106,17 +128,12 @@ public class CountiesListFragment extends Fragment {
                 });
             }
         });
-        countyViewModel.counties.observe(getViewLifecycleOwner(), new Observer<List<County>>() {
+        countyViewModel.filteredCounties.observe(getViewLifecycleOwner(), new Observer<List<County>>() {
             @Override
             public void onChanged(List<County> counties) {
-                viewModel.setCurrentCounties(counties);
-            }
-        });
-        viewModel.currentCounties.observe(getViewLifecycleOwner(), new Observer<List<County>>() {
-            @Override
-            public void onChanged(List<County> counties) {
+                currentCounties = counties;
                 if(null==counties || counties.size() == 0) return;
-                RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> countiesAdapter = new CountiesAdapter(
+                countiesAdapter = new CountiesAdapter(
                         appViewModel, counties, currentIndex, appNavController, pathMap);
                 countiesView.setHasFixedSize(true);
                 countiesView.setLayoutManager(countiesLayoutManager);
@@ -126,5 +143,11 @@ public class CountiesListFragment extends Fragment {
 
         return root;
     }
-
+    private void filter(CharSequence searchValue){
+        ArrayList<County> counties = new ArrayList<>();
+        for(County county : currentCounties){
+            if(county.name.toLowerCase(Locale.ROOT).contains(searchValue.toString().toLowerCase(Locale.ROOT))) counties.add(county);
+        }
+        if(!counties.isEmpty()) countiesAdapter.filterCounties(counties);
+    }
 }

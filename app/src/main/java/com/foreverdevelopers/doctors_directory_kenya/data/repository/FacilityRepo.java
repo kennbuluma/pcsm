@@ -58,6 +58,7 @@ public class FacilityRepo {
                         facilities.add(facility);
                     }
                     facilityViewModel.addAll(facilities);
+                    facilityViewModel.setFilteredFacilities(facilities);
                 }catch (JSONException ex){
                     Log.e(SYSTAG, ex.getLocalizedMessage());
                 }

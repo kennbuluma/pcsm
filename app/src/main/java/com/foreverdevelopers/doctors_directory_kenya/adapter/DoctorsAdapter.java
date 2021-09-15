@@ -16,6 +16,7 @@ import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> {
-    private final List<Doctor> doctors;
+    private List<Doctor> doctors;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
@@ -41,6 +42,11 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         this.currentIndex = currentIndex;
         this.navController = navController;
         this.activePathMap = activePathMap;
+    }
+
+    public void filterDoctors(ArrayList<Doctor> doctors){
+        this.doctors = doctors;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -69,10 +75,10 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
                 if(doctors.get(position) != null) {
-                        Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = thisDoctor;
-                        viewModel.setCurrentIndex(nextIndex);
-                        navController.navigate(R.id.nav_doctor_details);
-                    }
+                    Objects.requireNonNull(activePathMap.get(nextIndex)).currentPath.data = thisDoctor;
+                    viewModel.setCurrentIndex(nextIndex);
+                    navController.navigate(Objects.requireNonNull(activePathMap.get(currentIndex)).nextPath.path);
+                }
             }
         });
     }

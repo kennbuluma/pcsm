@@ -1,5 +1,7 @@
 package com.foreverdevelopers.doctors_directory_kenya.util;
 
+import android.Manifest;
+
 import com.foreverdevelopers.doctors_directory_kenya.data.HttpClient;
 
 import java.util.List;
@@ -8,6 +10,15 @@ import okhttp3.MediaType;
 
 public class Common {
     public static final String SYSTAG = "MDkt";
+    public static final int PERMISSION_REQUESTCODE = 5;
+    public static final String[] REQUIRED_PERMISSIONS = {
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.CHANGE_NETWORK_STATE,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.SEND_SMS
+    };
     public static final String RA_COUNTIES = "counties",
             RA_COUNTIES_BY_SERVICE = "countyServices",
             RA_COUNTIES_BY_FACILITY = "countyFacilities",

@@ -1,9 +1,14 @@
 package com.foreverdevelopers.doctors_directory_kenya;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -17,11 +22,13 @@ import com.foreverdevelopers.doctors_directory_kenya.data.repository.DoctorRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.FacilityRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.ServiceRepo;
 import com.foreverdevelopers.doctors_directory_kenya.remote.Remote;
+import com.foreverdevelopers.doctors_directory_kenya.util.Common;
 import com.foreverdevelopers.doctors_directory_kenya.util.InitializeApp;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -36,9 +43,37 @@ public class AppActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initializeApp();
-        viewListeners();
+        if(permissionsGranted()){
+            initializeApp();
+            viewListeners();
+        }else{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(Common.REQUIRED_PERMISSIONS, Common.PERMISSION_REQUESTCODE);
+            }else{
+                ActivityCompat.requestPermissions(
+                        AppActivity.this,
+                        Common.REQUIRED_PERMISSIONS,
+                        Common.PERMISSION_REQUESTCODE
+                );
+            }
+        }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == Common.PERMISSION_REQUESTCODE){
+            for(int code : grantResults){
+                if(code != PackageManager.PERMISSION_GRANTED){
+                    killApp();
+                    return;
+                }
+            }
+            initializeApp();
+            viewListeners();
+        }
+    }
+
     private void loadComponents(){
         setContentView(R.layout.activity_app);
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_app);
@@ -94,5 +129,11 @@ public class AppActivity extends AppCompatActivity {
     private void killApp(){
         Process.killProcess(Process.myPid());
         this.finish();
+    }
+    private boolean permissionsGranted(){
+        for(String permission: Common.REQUIRED_PERMISSIONS){
+            if(ContextCompat.checkSelfPermission(getBaseContext(), permission) != PackageManager.PERMISSION_GRANTED) return false;
+        }
+        return true;
     }
 }

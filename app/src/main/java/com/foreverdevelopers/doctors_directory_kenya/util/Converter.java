@@ -92,6 +92,12 @@ public class Converter {
         }
     }
 
+    public static String phoneToString(Integer integer){
+        String val = integer.toString();
+        if(val.startsWith("0") || val.startsWith("7") || val.startsWith("1")) return "+254"+val;
+        return val;
+    }
+
     public static boolean stringToBoolean(String input) throws IllegalArgumentException{
         if(null==input || input.trim().length() == 0) throw new IllegalArgumentException("Invalid boolean string");
         if("true".equalsIgnoreCase(input.trim())) return true;

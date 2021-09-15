@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> {
-    private final List<County> counties;
+    private List<County> counties;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
@@ -41,6 +43,10 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
         this.currentIndex = currentIndex;
         this.navController = navController;
         this.activePathMap = activePathMap;
+    }
+    public void filterCounties(ArrayList<County> counties){
+        this.counties = counties;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -60,10 +66,9 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
-                Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = thisCounty;
+                Objects.requireNonNull(activePathMap.get(nextIndex)).currentPath.data = thisCounty;
                 viewModel.setCurrentIndex(nextIndex);
-                if(Objects.requireNonNull(activePathMap.get(nextIndex)).remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)) navController.navigate(R.id.nav_services);
-                if(Objects.requireNonNull(activePathMap.get(nextIndex)).remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)) navController.navigate(R.id.nav_facilities);
+                navController.navigate(Objects.requireNonNull(activePathMap.get(currentIndex)).nextPath.path);
             }
         });
     }

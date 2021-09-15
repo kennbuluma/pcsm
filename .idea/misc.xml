@@ -17,11 +17,12 @@
         <entry key="..\:/Projects/Features/Ext/pcsm/app/src/main/res/xml/backup_rules.xml" value="0.1" />
         <entry key="..\:/Projects/Features/Ext/pcsm/app/src/main/res/xml/network_config.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_app.xml" value="0.3498542274052478" />
-        <entry key="app/src/main/res/layout/fragment_counties_list.xml" value="0.1875" />
+        <entry key="app/src/main/res/layout/fragment_counties_list.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_doctor_detail.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_doctors_list.xml" value="0.2" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1875" />
-        <entry key="app/src/main/res/layout/fragment_services.xml" value="0.1875" />
+        <entry key="app/src/main/res/layout/fragment_doctors_list.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_facilities_list.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_services.xml" value="0.33" />
         <entry key="app/src/main/res/layout/list_item_county.xml" value="0.1875" />
         <entry key="app/src/main/res/layout/list_item_doctor.xml" value="0.67" />
         <entry key="app/src/main/res/layout/list_item_facility.xml" value="0.1875" />

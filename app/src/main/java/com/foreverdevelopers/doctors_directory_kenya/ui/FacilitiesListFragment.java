@@ -5,6 +5,8 @@ import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACIL
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,12 +27,17 @@ import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.FacilitiesAdapter;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
+import com.foreverdevelopers.doctors_directory_kenya.data.repository.FacilityRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.FacilityViewModel;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class FacilitiesListFragment extends Fragment {
 
@@ -40,6 +47,9 @@ public class FacilitiesListFragment extends Fragment {
     private NavController appNavController = null;
     private Integer currentIndex;
     private HashMap<Integer, ActivePath> pathMap;
+    private List<Facility> currentFacilities= new ArrayList<>();
+    private FacilitiesAdapter facilitiesAdapter;
+    private FacilityRepo facilitiesRepo;
 
     public static FacilitiesListFragment newInstance() {
         return new FacilitiesListFragment();
@@ -56,11 +66,34 @@ public class FacilitiesListFragment extends Fragment {
         RecyclerView.LayoutManager facilitiesLayoutManager = new LinearLayoutManager(root.getContext());
         RecyclerView facilitiesView = root.findViewById(R.id.rcv_facilities);
         TextView title = root.findViewById(R.id.lbl_facility_list);
+        TextInputEditText facilitySearch = root.findViewById(R.id.et_facility_search);
+        facilitySearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //Do Nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                //Do Nothing
+            }
+        });
 
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
             @Override
             public void onChanged(NavController navController) {
                 appNavController = navController;
+            }
+        });
+        appViewModel.facilityRepo.observe(getViewLifecycleOwner(), new Observer<FacilityRepo>() {
+            @Override
+            public void onChanged(FacilityRepo facilityRepo) {
+                facilitiesRepo = facilityRepo;
             }
         });
         appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
@@ -72,15 +105,12 @@ public class FacilitiesListFragment extends Fragment {
                     public void onChanged(Integer integer) {
                         currentIndex = integer;
                         ActivePath activePath = pathMap.get(currentIndex);
-                        if(activePath.remoteAction.trim().equals(RA_FACILITIES)){
-                            title.setText("Facilities");
-                            //mainRequests.facilitiesAll();
-                            Log.w(SYSTAG, "All Facilities");
+                        if(activePath.currentPath.remoteAction.trim().equals(RA_FACILITIES)){
+                            facilitiesRepo.facilities();
                         }
-                        if(activePath.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)){
-                            title.setText("Facilities in " + activePath.baseItem+ " County");
-                            //mainRequests.facilitiesByCounty((String)activePath.baseItem);
-                            Log.w(SYSTAG, "Facilities By County");
+                        if(activePath.currentPath.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)){
+                            County thisCounty = (County) activePath.currentPath.data;
+                            facilitiesRepo.facilityByCounty(thisCounty.name);
                         }
                         root.setOnKeyListener(new View.OnKeyListener() {
                             @Override
@@ -96,11 +126,12 @@ public class FacilitiesListFragment extends Fragment {
                 });
             }
         });
-        facilityViewModel.facilities.observe(getViewLifecycleOwner(), new Observer<List<Facility>>() {
+        facilityViewModel.filteredFacilities.observe(getViewLifecycleOwner(), new Observer<List<Facility>>() {
             @Override
             public void onChanged(List<Facility> facilities) {
+                currentFacilities = facilities;
                 if(null==facilities || facilities.size() == 0) return;
-                RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder> facilitiesAdapter = new FacilitiesAdapter(
+                facilitiesAdapter = new FacilitiesAdapter(
                         appViewModel, facilities, currentIndex, appNavController, pathMap);
                 facilitiesView.setHasFixedSize(true);
                 facilitiesView.setLayoutManager(facilitiesLayoutManager);
@@ -109,5 +140,12 @@ public class FacilitiesListFragment extends Fragment {
         });
 
         return root;
+    }
+    private void filter(CharSequence searchValue){
+        ArrayList<Facility> facilities = new ArrayList<>();
+        for(Facility facility : currentFacilities){
+            if(facility.name.toLowerCase(Locale.ROOT).contains(searchValue.toString().toLowerCase(Locale.ROOT))) facilities.add(facility);
+        }
+        if(!facilities.isEmpty()) facilitiesAdapter.filterFacilities(facilities);
     }
 }

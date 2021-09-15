@@ -60,6 +60,7 @@ public class ServiceRepo {
                         services.add(service);
                     }
                     serviceViewModel.addAll(services);
+                    serviceViewModel.setFilteredServices(services);
                 }catch (JSONException ex){
                     Log.e(SYSTAG, ex.getLocalizedMessage());
                 }

@@ -60,6 +60,7 @@ public class CountyRepo {
                         counties.add(county);
                     }
                     countyViewModel.addAll(counties);
+                    countyViewModel.setFilteredCounties(counties);
                 }catch (JSONException ex){
                     Log.e(SYSTAG, ex.getLocalizedMessage());
                 }

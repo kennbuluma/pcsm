@@ -63,6 +63,7 @@ public class DoctorRepo {
                         doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
                     }
                     doctorViewModel.addAll(doctors);
+                    doctorViewModel.setFilteredDoctors(doctors);
                 }catch (JSONException ex){
                     Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                 }

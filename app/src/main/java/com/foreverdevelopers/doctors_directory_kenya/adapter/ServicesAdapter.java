@@ -27,7 +27,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder>{
-    private final List<Service> services;
+    private List<Service> services;
     private final AppViewModel viewModel;
     private final Integer currentIndex;
     private final NavController navController;
@@ -43,6 +43,11 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         this.currentIndex = currentIndex;
         this.navController = navController;
         this.activePathMap = activePathMap;
+    }
+
+    public void filterServices(ArrayList<Service> services){
+        this.services = services;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -62,10 +67,9 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
-                Objects.requireNonNull(activePathMap.get(nextIndex)).baseItem = thisService;
+                Objects.requireNonNull(activePathMap.get(nextIndex)).currentPath.data = thisService;
                 viewModel.setCurrentIndex(nextIndex);
-                if(Objects.requireNonNull(activePathMap.get(nextIndex)).remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)) navController.navigate(R.id.nav_counties);
-                if(Objects.requireNonNull(activePathMap.get(nextIndex)).remoteAction.trim().equals(RA_DOCTORS_BY_SERVICE)) navController.navigate(R.id.nav_doctors);
+                navController.navigate(Objects.requireNonNull(activePathMap.get(currentIndex)).nextPath.path);
             }
         });
     }

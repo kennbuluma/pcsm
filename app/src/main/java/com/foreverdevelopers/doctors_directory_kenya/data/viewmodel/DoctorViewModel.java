@@ -18,7 +18,7 @@ public class DoctorViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Doctor>> _filteredDoctors = new MutableLiveData<>();
     private final MutableLiveData<Doctor> _doctor = new MutableLiveData<>();
     public final LiveData<List<Doctor>> doctors;
-    public final LiveData<List<Doctor>> filteredDoctors = this._filteredDoctors;
+    public LiveData<List<Doctor>> filteredDoctors = this._filteredDoctors;
 
     public DoctorViewModel(@NonNull Application application) {
         super(application);
@@ -58,6 +58,9 @@ public class DoctorViewModel extends AndroidViewModel {
     }
     public void setFilteredDoctors(List<Doctor> doctors){
         this._filteredDoctors.postValue(doctors);
+    }
+    public void setDoctor(Doctor doctor){
+        this._doctor.postValue(doctor);
     }
 
     public LiveData<List<Doctor>> getAll(){ return doctorDao.getAllDoctor();}
