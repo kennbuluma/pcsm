@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -86,10 +87,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadComponents(View root){
-        ConstraintLayout doctorsList = root.findViewById(R.id.cl_doctors_list),
-        homeView = root.findViewById(R.id.cl_home_components);
-        doctorsList.setVisibility(View.GONE);
-        MaterialButton btnDoctors = root.findViewById(R.id.btn_main_doctors),
+        CardView btnDoctors = root.findViewById(R.id.btn_main_doctors),
             btnCounties = root.findViewById(R.id.btn_main_counties),
             btnServices = root.findViewById(R.id.btn_main_services),
             btnFacilities = root.findViewById(R.id.btn_main_facilities);
@@ -249,18 +247,6 @@ public class HomeFragment extends Fragment {
                         appNavController.navigate(R.id.nav_doctors);
                     }
                 });
-            }
-        });
-        mViewModel.showHome.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if(aBoolean){
-                    homeView.setVisibility(View.VISIBLE);
-                    doctorsList.setVisibility(View.GONE);
-                }else{
-                    homeView.setVisibility(View.GONE);
-                    doctorsList.setVisibility(View.VISIBLE);
-                }
             }
         });
     }

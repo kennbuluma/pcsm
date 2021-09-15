@@ -1,6 +1,9 @@
 package com.foreverdevelopers.doctors_directory_kenya.adapter;
 
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
+
 import android.annotation.SuppressLint;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +20,7 @@ import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 
 import org.jetbrains.annotations.NotNull;
@@ -60,9 +64,7 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
     @Override
     public void onBindViewHolder(@NonNull @NotNull DoctorViewHolder holder, @SuppressLint("RecyclerView") int position) {
         if(null==doctors) return;
-        final Doctor thisDoctor = (doctors.get(position) != null) ?
-                (Doctor)doctors.get(position) :
-                null;
+        Doctor thisDoctor = null == doctors.get(position) ? null : doctors.get(position);
         if(null!=thisDoctor){
             holder.txDoctorItemCounty.setText(thisDoctor.county);
             holder.txDoctorItemFacility.setText(thisDoctor.facility);
@@ -74,11 +76,10 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
             @Override
             public void onClick(View v) {
                 Integer nextIndex = currentIndex + 1;
-                if(doctors.get(position) != null) {
-                    Objects.requireNonNull(activePathMap.get(nextIndex)).currentPath.data = thisDoctor;
-                    viewModel.setCurrentIndex(nextIndex);
-                    navController.navigate(Objects.requireNonNull(activePathMap.get(currentIndex)).nextPath.path);
-                }
+                Objects.requireNonNull(activePathMap.get(nextIndex)).currentPath.data = thisDoctor;
+                viewModel.setCurrentIndex(nextIndex);
+                Log.e(SYSTAG, "CurrentPath: "+activePathMap.get(currentIndex).nextPath.remoteAction);
+                navController.navigate(Objects.requireNonNull(activePathMap.get(currentIndex)).nextPath.path);
             }
         });
     }

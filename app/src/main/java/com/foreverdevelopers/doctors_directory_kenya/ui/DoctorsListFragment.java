@@ -109,11 +109,11 @@ public class DoctorsListFragment extends Fragment {
                 if(null ==activePath.currentPath || null==activePath.currentPath.remoteAction || activePath.currentPath.remoteAction.trim().equals(RA_DOCTORS)){
                     doctorsRepo.doctors();
                 }
-                if(activePath.currentPath.remoteAction.trim().equals(RA_DOCTORS_BY_FACILITY)){
+                if(activePath.currentPath.remoteAction.equals(RA_DOCTORS_BY_FACILITY)){
                     Facility thisFacility = (Facility) activePath.currentPath.data;
                     doctorsRepo.doctorsByFacility(thisFacility.name);
                 }
-                if(activePath.currentPath.remoteAction.trim().equals(RA_DOCTORS_BY_SERVICE)){
+                if(activePath.currentPath.remoteAction.equals(RA_DOCTORS_BY_SERVICE)){
                     Service thisService = (Service) activePath.currentPath.data;
                     doctorsRepo.doctorsByService(thisService.name);
                 }
