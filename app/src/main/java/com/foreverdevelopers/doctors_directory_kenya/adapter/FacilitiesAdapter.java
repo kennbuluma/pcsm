@@ -1,7 +1,8 @@
 package com.foreverdevelopers.doctors_directory_kenya.adapter;
 
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_FACILITY;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_DOCTORS_BY_FACILITY;
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACILITIES;
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACILITIES_BY_COUNTY;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_FACILITY;
 
 import android.view.LayoutInflater;
@@ -16,34 +17,28 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
-import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
-import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder>{
     private List<Facility> facilities;
     private final AppViewModel viewModel;
-    private final Integer currentIndex;
+    private final PathData currentPath;
     private final NavController navController;
-    private final HashMap<Integer, ActivePath> activePathMap;
 
     public FacilitiesAdapter(AppViewModel viewModel,
                              List<Facility> facilities,
-                             Integer currentIndex,
-                             NavController navController,
-                             HashMap<Integer, ActivePath> activePathMap){
+                             PathData currentPath,
+                             NavController navController){
         this.facilities = facilities;
         this.viewModel = viewModel;
-        this.currentIndex = currentIndex;
+        this.currentPath = currentPath;
         this.navController = navController;
-        this.activePathMap = activePathMap;
     }
 
     public void filterFacilities(ArrayList<Facility> facilities){
@@ -67,10 +62,21 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
         holder.crdFacilityItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Integer nextIndex = currentIndex + 1;
-                Objects.requireNonNull(activePathMap.get(nextIndex)).currentPath.data = thisFacility;
-                viewModel.setCurrentIndex(nextIndex);
-                navController.navigate(Objects.requireNonNull(activePathMap.get(currentIndex)).nextPath.path);
+                int path = -1;
+                String pathAction = null;
+                Object data = thisFacility;
+                if(currentPath.remoteAction.trim().equals(RA_FACILITIES)){
+                    pathAction = RA_COUNTIES_BY_FACILITY;
+                    path = R.id.nav_counties;
+                }
+                if(currentPath.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)){
+                    pathAction = RA_SERVICES_BY_FACILITY;
+                    path = R.id.nav_services;
+                }
+                viewModel.setCurrentPath(new PathData(pathAction, data, path));
+                viewModel.setPreviousPath(currentPath);
+                if(path<0) return;
+                navController.navigate(path);
             }
         });
     }

@@ -2,7 +2,8 @@
     <string name="app_name">Doctors Directory Kenya</string>
     <string name="et_search">Search…</string>
     <string name="btn_search">Search</string>
-    <string name="lbl_doctors">Let\'s find your doctor</string>
+    <string name="lbl_doctors">Doctors</string>
+    <string name="lbl_doctors_home">Let\'s find your doctor</string>
     <string name="lbl_counties">Counties</string>
     <string name="lbl_services">Services</string>
     <string name="lbl_facilities">Facilities</string>

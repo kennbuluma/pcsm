@@ -52,7 +52,6 @@ import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel mViewModel;
     private AppViewModel appViewModel;
     private NavController appNavController;
     private CountyViewModel countyViewModel;
@@ -69,7 +68,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
         countyViewModel = new ViewModelProvider(requireActivity()).get(CountyViewModel.class);
         facilityViewModel = new ViewModelProvider(requireActivity()).get(FacilityViewModel.class);
@@ -99,36 +97,10 @@ public class HomeFragment extends Fragment {
                 btnCounties.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        HashMap<Integer, ActivePath> pathMapper = new HashMap<>();
-                        pathMapper.put(0, new ActivePath(
-                                null,
-                                new PathData(RA_COUNTIES, null, R.id.nav_counties),
-                                new PathData(RA_FACILITIES_BY_COUNTY, null, R.id.nav_facilities)
-                        ));
-                        pathMapper.put(1, new ActivePath(
-                                new PathData(RA_COUNTIES, null, R.id.nav_counties),
-                                new PathData(RA_FACILITIES_BY_COUNTY, null, R.id.nav_facilities),
-                                new PathData(RA_SERVICES_BY_FACILITY, null, R.id.nav_services)
-                        ));
-                        pathMapper.put(2, new ActivePath(
-                                new PathData(RA_FACILITIES_BY_COUNTY, null, R.id.nav_facilities),
-                                new PathData(RA_SERVICES_BY_FACILITY, null, R.id.nav_services),
-                                new PathData(RA_DOCTORS_BY_SERVICE, null, R.id.nav_doctors)
-                        ));
-                        pathMapper.put(3, new ActivePath(
-                                new PathData(RA_SERVICES_BY_FACILITY, null, R.id.nav_services),
-                                new PathData(RA_DOCTORS_BY_SERVICE, null, R.id.nav_doctors),
-                                new PathData(null, null, R.id.nav_doctor_details)
-                        ));
-                        pathMapper.put(4, new ActivePath(
-                                new PathData(RA_DOCTORS_BY_SERVICE, null, R.id.nav_doctors),
-                                new PathData(null, null, R.id.nav_doctor_details),
-                                null
-                        ));
-                        appViewModel.setActivePathMap(pathMapper);
-                        appViewModel.setCurrentIndex(0);
+                        int path = R.id.nav_counties;
                         countyViewModel.setFilteredCounties(counties);
-                        appNavController.navigate(R.id.nav_counties);
+                        appViewModel.setCurrentPath(new PathData(RA_COUNTIES, null, path));
+                        appNavController.navigate(path);
                     }
                 });
             }
@@ -139,36 +111,10 @@ public class HomeFragment extends Fragment {
                 btnFacilities.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        HashMap<Integer, ActivePath> pathMapper = new HashMap<>();
-                        pathMapper.put(0, new ActivePath(
-                                null,
-                                new PathData(RA_FACILITIES, null, R.id.nav_facilities),
-                                new PathData(RA_COUNTIES_BY_FACILITY, null, R.id.nav_counties)
-                        ));
-                        pathMapper.put(1, new ActivePath(
-                                new PathData(RA_FACILITIES, null, R.id.nav_facilities),
-                                new PathData(RA_COUNTIES_BY_FACILITY, null, R.id.nav_counties),
-                                new PathData(RA_SERVICES_BY_COUNTY, null, R.id.nav_services)
-                        ));
-                        pathMapper.put(2, new ActivePath(
-                                new PathData(RA_COUNTIES_BY_FACILITY, null, R.id.nav_counties),
-                                new PathData(RA_SERVICES_BY_COUNTY, null, R.id.nav_services),
-                                new PathData(RA_DOCTORS_BY_SERVICE, null, R.id.nav_doctors)
-                        ));
-                        pathMapper.put(3, new ActivePath(
-                                new PathData(RA_SERVICES_BY_COUNTY, null, R.id.nav_services),
-                                new PathData(RA_DOCTORS_BY_SERVICE, null, R.id.nav_doctors),
-                                new PathData(null, null, R.id.nav_doctor_details)
-                                ));
-                        pathMapper.put(4, new ActivePath(
-                                new PathData(RA_DOCTORS_BY_SERVICE, null, R.id.nav_doctors),
-                                new PathData(null, null, R.id.nav_doctor_details),
-                                null
-                                ));
-                        appViewModel.setActivePathMap(pathMapper);
-                        appViewModel.setCurrentIndex(0);
+                        int path = R.id.nav_facilities;
                         facilityViewModel.setFilteredFacilities(facilities);
-                        appNavController.navigate(R.id.nav_facilities);
+                        appViewModel.setCurrentPath(new PathData(RA_FACILITIES, null, path));
+                        appNavController.navigate(path);
                     }
                 });
             }
@@ -179,36 +125,10 @@ public class HomeFragment extends Fragment {
                 btnServices.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        HashMap<Integer, ActivePath> pathMapper = new HashMap<>();
-                        pathMapper.put(0, new ActivePath(
-                                null,
-                                new PathData(RA_SERVICES, null, R.id.nav_services),
-                                new PathData(RA_COUNTIES_BY_SERVICE, null, R.id.nav_counties)
-                        ));
-                        pathMapper.put(1, new ActivePath(
-                                new PathData(RA_SERVICES, null, R.id.nav_services),
-                                new PathData(RA_COUNTIES_BY_SERVICE, null, R.id.nav_counties),
-                                new PathData(RA_FACILITIES_BY_COUNTY, null, R.id.nav_facilities)
-                                ));
-                        pathMapper.put(2, new ActivePath(
-                                new PathData(RA_COUNTIES_BY_SERVICE, null, R.id.nav_counties),
-                                new PathData(RA_FACILITIES_BY_COUNTY, null, R.id.nav_facilities),
-                                new PathData(RA_DOCTORS_BY_FACILITY, null, R.id.nav_doctors)
-                                ));
-                        pathMapper.put(3, new ActivePath(
-                                new PathData(RA_FACILITIES_BY_COUNTY, null, R.id.nav_facilities),
-                                new PathData(RA_DOCTORS_BY_FACILITY, null, R.id.nav_doctors),
-                                new PathData(null, null, R.id.nav_doctor_details)
-                        ));
-                        pathMapper.put(4, new ActivePath(
-                                new PathData(RA_DOCTORS_BY_FACILITY, null, R.id.nav_doctors),
-                                new PathData(null, null, R.id.nav_doctor_details),
-                                null
-                        ));
-                        appViewModel.setActivePathMap(pathMapper);
-                        appViewModel.setCurrentIndex(0);
+                        int path = R.id.nav_services;
                         serviceViewModel.setFilteredServices(services);
-                        appNavController.navigate(R.id.nav_services);
+                        appViewModel.setCurrentPath(new PathData(RA_SERVICES, null, path));
+                        appNavController.navigate(path);
                     }
                 });
             }
@@ -229,22 +149,10 @@ public class HomeFragment extends Fragment {
                 btnDoctors.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        HashMap<Integer, ActivePath> pathMapper = new HashMap<>();
-                        pathMapper = new HashMap<>();
-                        pathMapper.put(0, new ActivePath(
-                                null,
-                                new PathData(RA_DOCTORS, null, R.id.nav_doctors),
-                                new PathData(null, null, R.id.nav_doctor_details)
-                        ));
-                        pathMapper.put(1, new ActivePath(
-                                new PathData(RA_DOCTORS, null, R.id.nav_doctors),
-                                new PathData(null, null, R.id.nav_doctor_details),
-                                null
-                        ));
-                        appViewModel.setActivePathMap(pathMapper);
-                        appViewModel.setCurrentIndex(0);
+                        int path = R.id.nav_doctors;
                         doctorViewModel.setFilteredDoctors(doctors);
-                        appNavController.navigate(R.id.nav_doctors);
+                        appViewModel.setCurrentPath(new PathData(RA_DOCTORS, null, path));
+                        appNavController.navigate(path);
                     }
                 });
             }
