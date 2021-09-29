@@ -11,7 +11,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.ServicesAdapter;
-import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
@@ -34,21 +33,18 @@ import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.ServiceViewM
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 public class ServicesListFragment extends Fragment {
-
-    private ServicesListViewModel mViewModel;
     private AppViewModel appViewModel;
     private ServiceViewModel serviceViewModel;
     private NavController appNavController = null;
-    private Integer currentIndex;
-    private HashMap<Integer, ActivePath> pathMap;
+    private PathData currentPath;
     private List<Service> currentServices = new ArrayList<>();
     private ServicesAdapter servicesAdapter;
     private ServiceRepo servicesRepo;
+    private Boolean isReturning = false;
 
     public static ServicesListFragment newInstance() {
         return new ServicesListFragment();
@@ -57,14 +53,12 @@ public class ServicesListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mViewModel = new ViewModelProvider(this).get(ServicesListViewModel.class);
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
         serviceViewModel = new ViewModelProvider(requireActivity()).get(ServiceViewModel.class);
 
         final View root  = inflater.inflate(R.layout.fragment_services, container, false);
         RecyclerView.LayoutManager servicesLayoutManager = new LinearLayoutManager(root.getContext());
         RecyclerView servicesView = root.findViewById(R.id.rcv_services);
-        TextView title = root.findViewById(R.id.lbl_service_list);
         TextInputEditText serviceSearch = root.findViewById(R.id.et_service_search);
         serviceSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -89,39 +83,22 @@ public class ServicesListFragment extends Fragment {
                 appNavController = navController;
             }
         });
-        appViewModel.activePathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, ActivePath>>() {
-            @Override
-            public void onChanged(HashMap<Integer, ActivePath> integerActivePathHashMap) {
-                pathMap = integerActivePathHashMap;
-            }
-        });
         appViewModel.serviceRepo.observe(getViewLifecycleOwner(), new Observer<ServiceRepo>() {
             @Override
             public void onChanged(ServiceRepo serviceRepo) {
                 servicesRepo = serviceRepo;
             }
         });
-        appViewModel.currentIndex.observe(getViewLifecycleOwner(), new Observer<Integer>() {
+        appViewModel.previousPath.observe(getViewLifecycleOwner(), new Observer<PathData>() {
             @Override
-            public void onChanged(Integer integer) {
-                currentIndex = integer;
-                ActivePath activePath = pathMap.get(currentIndex);
-                if(activePath.currentPath.remoteAction.trim().equals(RA_SERVICES)){
-                    servicesRepo.services();
-                }
-                if(activePath.currentPath.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)){
-                    County thisCounty = (County) activePath.currentPath.data;
-                    servicesRepo.serviceByCounty(thisCounty.name);
-                }
-                if(activePath.currentPath.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)){
-                    Facility thisFacility = (Facility) activePath.currentPath.data;
-                    servicesRepo.serviceByFacility(thisFacility.name);
-                }
+            public void onChanged(PathData pathData) {
                 root.setOnKeyListener(new View.OnKeyListener() {
                     @Override
                     public boolean onKey(View view, int i, KeyEvent keyEvent) {
                         if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
-                            appViewModel.setCurrentIndex((currentIndex == 0) ? 0 : currentIndex-1);
+                            isReturning = true;
+                            appViewModel.setCurrentPath(pathData);
+                            appNavController.navigate(pathData.path);
                             return true;
                         }
                         return false;
@@ -129,19 +106,36 @@ public class ServicesListFragment extends Fragment {
                 });
             }
         });
-        serviceViewModel.filteredServices.observe(getViewLifecycleOwner(), new Observer<List<Service>>() {
+        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<PathData>() {
             @Override
-            public void onChanged(List<Service> services) {
-                currentServices = services;
-                if(null==services || services.size() == 0) return;
-                servicesAdapter = new ServicesAdapter(
-                        appViewModel, services, currentIndex, appNavController, pathMap);
-                servicesView.setHasFixedSize(true);
-                servicesView.setLayoutManager(servicesLayoutManager);
-                servicesView.setAdapter(servicesAdapter);
+            public void onChanged(PathData pathData) {
+                if(isReturning) return;
+                currentPath = pathData;
+                if(pathData.remoteAction.trim().equals(RA_SERVICES)){
+                    servicesRepo.services();
+                }
+                if(pathData.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)){
+                    County thisCounty = (County) pathData.data;
+                    servicesRepo.serviceByCounty(thisCounty.name);
+                }
+                if(pathData.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)){
+                    Facility thisFacility = (Facility) pathData.data;
+                    servicesRepo.serviceByFacility(thisFacility.name);
+                }
+                serviceViewModel.filteredServices.observe(getViewLifecycleOwner(), new Observer<List<Service>>() {
+                    @Override
+                    public void onChanged(List<Service> services) {
+                        currentServices = services;
+                        if(null==services || services.size() == 0) return;
+                        servicesAdapter = new ServicesAdapter(
+                                appViewModel, services, currentPath, appNavController);
+                        servicesView.setHasFixedSize(true);
+                        servicesView.setLayoutManager(servicesLayoutManager);
+                        servicesView.setAdapter(servicesAdapter);
+                    }
+                });
             }
         });
-
         return root;
     }
     private void filter(CharSequence searchValue){

@@ -7,6 +7,7 @@ import androidx.navigation.NavController;
 
 import com.foreverdevelopers.doctors_directory_kenya.data.ActivePath;
 import com.foreverdevelopers.doctors_directory_kenya.data.FireMessageSendError;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.CountyRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.DoctorRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.FacilityRepo;
@@ -21,9 +22,9 @@ public class AppViewModel extends ViewModel {
     private final MutableLiveData<FacilityRepo> _facilityRepo= new MutableLiveData<FacilityRepo>();
     private final MutableLiveData<ServiceRepo> _serviceRepo = new MutableLiveData<ServiceRepo>();
     private final MutableLiveData<DoctorRepo> _doctorRepo = new MutableLiveData<DoctorRepo>();
-    private final MutableLiveData<Integer> _currentIndex = new MutableLiveData<Integer>();
+    private final MutableLiveData<PathData> _currentPath = new MutableLiveData<PathData>();
+    private final MutableLiveData<PathData> _previousPath = new MutableLiveData<PathData>();
     private final MutableLiveData<NavController> _navController = new MutableLiveData<NavController>();
-    private final MutableLiveData<HashMap<Integer, ActivePath>> _activePathMap = new MutableLiveData<>();
     private final MutableLiveData<HashMap<String, FirebaseRemoteConfigValue>> _remoteSettings = new MutableLiveData<HashMap<String, FirebaseRemoteConfigValue>>();
     private final MutableLiveData<String> _fireMessageToken = new MutableLiveData<>();
     private final MutableLiveData<String> _fireMessage = new MutableLiveData<>();
@@ -34,9 +35,9 @@ public class AppViewModel extends ViewModel {
     public LiveData<FacilityRepo> facilityRepo = _facilityRepo;
     public LiveData<ServiceRepo> serviceRepo = _serviceRepo;
     public LiveData<DoctorRepo> doctorRepo = _doctorRepo;
-    public LiveData<Integer> currentIndex = _currentIndex;
+    public LiveData<PathData> currentPath = _currentPath;
+    public LiveData<PathData> previousPath = _previousPath;
     public LiveData<NavController> navController = _navController;
-    public LiveData<HashMap<Integer, ActivePath>> activePathMap = _activePathMap;
     public LiveData<HashMap<String, FirebaseRemoteConfigValue>> remoteSettings = _remoteSettings;
     public LiveData<String> fireMessageToken = _fireMessageToken;
     public LiveData<String> fireMessage = _fireMessage;
@@ -47,9 +48,9 @@ public class AppViewModel extends ViewModel {
     public void setFacilityRepo(FacilityRepo facilityRepo){ this._facilityRepo.postValue(facilityRepo); }
     public void setServiceRepo(ServiceRepo serviceRepo){ this._serviceRepo.postValue(serviceRepo); }
     public void setDoctorRepo(DoctorRepo doctorRepo){ this._doctorRepo.postValue(doctorRepo); }
-    public void setCurrentIndex(Integer currentIndex){ this._currentIndex.postValue(currentIndex); }
+    public void setCurrentPath(PathData currentPath){ this._currentPath.postValue(currentPath); }
+    public void setPreviousPath(PathData previousPath){ this._previousPath.postValue(previousPath); }
     public void setNavController(NavController controller){ this._navController.postValue(controller); }
-    public void setActivePathMap(HashMap<Integer, ActivePath> pathMap){ this._activePathMap.postValue(pathMap); }
     public void setRemoteSettings(HashMap<String, FirebaseRemoteConfigValue> settings){ this._remoteSettings.postValue(settings); }
     public void setFireMessageToken(String token){ this._fireMessageToken.postValue(token); }
     public void setFireMessageSent(String message){ this._fireMessage.postValue(message); }
