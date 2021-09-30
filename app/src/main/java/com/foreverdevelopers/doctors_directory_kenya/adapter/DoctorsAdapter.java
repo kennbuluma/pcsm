@@ -9,14 +9,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
+import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
-import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 
 import org.jetbrains.annotations.NotNull;
@@ -27,20 +25,14 @@ import java.util.List;
 public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> {
     private List<Doctor> doctors;
     private final AppViewModel viewModel;
-    private final DoctorViewModel doctorViewModel;
-    private final NavController navController;
-    private final PathData currentPath;
+    private final int currentIndex;
     public DoctorsAdapter(
             AppViewModel viewModel,
-            DoctorViewModel doctorViewModel,
             List<Doctor> doctors,
-            PathData currentPath,
-            NavController navController){
+            int currentIndex){
         this.doctors = doctors;
         this.viewModel = viewModel;
-        this.doctorViewModel = doctorViewModel;
-        this.currentPath = currentPath;
-        this.navController = navController;
+        this.currentIndex = currentIndex;
     }
 
     public void filterDoctors(ArrayList<Doctor> doctors){
@@ -65,19 +57,13 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         holder.txDoctorItemFacility.setText(thisDoctor.facility);
         holder.txDoctorItemName.setText(thisDoctor.name);
         holder.imgDoctorPhoto.setImageBitmap(Converter.stringToBitmap(thisDoctor.profilePhoto));
-        holder.crdDoctorItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                doctorViewModel.setDoctor(thisDoctor);
-                viewModel.setPreviousPath(currentPath);
-                navController.navigate(R.id.nav_doctor_details);
-            }
+        holder.crdDoctorItem.setOnClickListener(v -> {
+            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisDoctor));
         });
     }
     @Override
     public int getItemCount() {
-        if(null==doctors) return 0;
-        return doctors.size();
+        return null==doctors ?  0 : doctors.size();
     }
 
     public static class DoctorViewHolder extends RecyclerView.ViewHolder{

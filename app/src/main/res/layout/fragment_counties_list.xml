@@ -44,8 +44,7 @@
             android:id="@+id/et_county_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hintTextColor="#757575" />
+            android:layout_weight="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -131,7 +131,7 @@ public class InitializeApp {
         remoteConfigs.put("counties_title", context.getResources().getString(R.string.lbl_counties));
         remoteConfigs.put("facilities_title", context.getResources().getString(R.string.lbl_facilities));
         remoteConfigs.put("services_title", context.getResources().getString(R.string.lbl_services));
-        remoteConfigs.put("doctors_title", context.getResources().getString(R.string.lbl_doctors));
+        remoteConfigs.put("doctors_title", context.getResources().getString(R.string.lbl_doctors_list));
         return remoteConfigs;
     }
     private static void updateRemoteConfig(FirebaseRemoteConfig remoteConfig, AppViewModel appViewModel){

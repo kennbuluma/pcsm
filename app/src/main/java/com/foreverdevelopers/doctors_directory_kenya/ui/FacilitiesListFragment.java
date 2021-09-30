@@ -2,10 +2,12 @@ package com.foreverdevelopers.doctors_directory_kenya.ui;
 
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACILITIES;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACILITIES_BY_COUNTY;
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
 
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +19,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.FacilitiesAdapter;
+import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
 import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
@@ -32,19 +34,19 @@ import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.FacilityView
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class FacilitiesListFragment extends Fragment {
 
     private AppViewModel appViewModel;
     private FacilityViewModel facilityViewModel;
-    private NavController appNavController = null;
-    private PathData currentPath;
     private List<Facility> currentFacilities= new ArrayList<>();
     private FacilitiesAdapter facilitiesAdapter;
     private FacilityRepo facilitiesRepo;
-    private Boolean isReturning = false;
+    private int currentIndex = -1;
 
     public static FacilitiesListFragment newInstance() {
         return new FacilitiesListFragment();
@@ -77,62 +79,55 @@ public class FacilitiesListFragment extends Fragment {
                 //Do Nothing
             }
         });
-
-        appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
-            @Override
-            public void onChanged(NavController navController) {
-                appNavController = navController;
-            }
-        });
         appViewModel.facilityRepo.observe(getViewLifecycleOwner(), new Observer<FacilityRepo>() {
             @Override
             public void onChanged(FacilityRepo facilityRepo) {
                 facilitiesRepo = facilityRepo;
             }
         });
-        appViewModel.previousPath.observe(getViewLifecycleOwner(), new Observer<PathData>() {
+        appViewModel.currentPathIndex.observe(getViewLifecycleOwner(), new Observer<Indexor>() {
             @Override
-            public void onChanged(PathData pathData) {
-                root.setOnKeyListener(new View.OnKeyListener() {
-                    @Override
-                    public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                        if(keyEvent.getKeyCode() == KeyEvent.KEYCODE_BACK){
-                            isReturning = true;
-                            appViewModel.setCurrentPath(pathData);
-                            appNavController.navigate(pathData.path);
-                            return true;
+            public void onChanged(Indexor indexor) {
+                if(null==indexor) return;
+                currentIndex = indexor.index;
+            }
+        });
+        appViewModel.currentPathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, PathData>>() {
+            @Override
+            public void onChanged(HashMap<Integer, PathData> integerPathDataHashMap) {
+                if(currentIndex > 0){
+                    try{
+                    PathData currentPath = integerPathDataHashMap.get(currentIndex);
+                    if(null==currentPath ||
+                            null==currentPath.remoteAction ||
+                            currentPath.remoteAction.trim().length() == 0
+                    ) return;
+                    if(currentPath.remoteAction.trim().equals(RA_FACILITIES)){
+                        facilitiesRepo.facilities();
+                    }
+                    if(currentPath.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)){
+                        County thisCounty = (County) currentPath.data;
+                        facilitiesRepo.facilityByCounty(thisCounty.name);
+                    }
+                    facilityViewModel.filteredFacilities.observe(getViewLifecycleOwner(), new Observer<List<Facility>>() {
+                        @Override
+                        public void onChanged(List<Facility> facilities) {
+                            currentFacilities = facilities;
+                            if(null==facilities || facilities.size() == 0) return;
+                            facilitiesAdapter = new FacilitiesAdapter(
+                                    appViewModel, facilities, currentIndex);
+                            facilitiesView.setHasFixedSize(true);
+                            facilitiesView.setLayoutManager(facilitiesLayoutManager);
+                            facilitiesView.setAdapter(facilitiesAdapter);
                         }
-                        return false;
+                    });
+                    }catch(ClassCastException ex){
+                        Log.e(SYSTAG, ex.getLocalizedMessage());
                     }
-                });
+                }
             }
         });
-        appViewModel.currentPath.observe(getViewLifecycleOwner(), new Observer<PathData>() {
-            @Override
-            public void onChanged(PathData pathData) {
-                if(isReturning) return;
-                currentPath = pathData;
-                if(pathData.remoteAction.trim().equals(RA_FACILITIES)){
-                    facilitiesRepo.facilities();
-                }
-                if(pathData.remoteAction.trim().equals(RA_FACILITIES_BY_COUNTY)){
-                    County thisCounty = (County) pathData.data;
-                    facilitiesRepo.facilityByCounty(thisCounty.name);
-                }
-                facilityViewModel.filteredFacilities.observe(getViewLifecycleOwner(), new Observer<List<Facility>>() {
-                    @Override
-                    public void onChanged(List<Facility> facilities) {
-                        currentFacilities = facilities;
-                        if(null==facilities || facilities.size() == 0) return;
-                        facilitiesAdapter = new FacilitiesAdapter(
-                                appViewModel, facilities, currentPath, appNavController);
-                        facilitiesView.setHasFixedSize(true);
-                        facilitiesView.setLayoutManager(facilitiesLayoutManager);
-                        facilitiesView.setAdapter(facilitiesAdapter);
-                    }
-                });
-            }
-        });
+
         return root;
     }
     private void filter(CharSequence searchValue){

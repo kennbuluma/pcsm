@@ -1,11 +1,5 @@
 package com.foreverdevelopers.doctors_directory_kenya.adapter;
 
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_SERVICE;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_DOCTORS_BY_SERVICE;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_COUNTY;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_FACILITY;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +7,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
+import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 
 import org.jetbrains.annotations.NotNull;
@@ -30,17 +23,14 @@ import java.util.Locale;
 public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.ServiceViewHolder>{
     private List<Service> services;
     private final AppViewModel viewModel;
-    private final PathData currentPath;
-    private final NavController navController;
+    private final int currentIndex;
 
     public ServicesAdapter(AppViewModel viewModel,
                            List<Service> services,
-                           PathData currentPath,
-                           NavController navController){
+                           int currentIndex){
         this.services = services;
         this.viewModel = viewModel;
-        this.currentPath = currentPath;
-        this.navController = navController;
+        this.currentIndex = currentIndex;
     }
 
     public void filterServices(ArrayList<Service> services){
@@ -58,35 +48,16 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
     }
     @Override
     public void onBindViewHolder(@NonNull @NotNull ServiceViewHolder holder, int position) {
-        if(null==services) return;
-        Service thisService = null == services.get(position) ? null : services.get(position);
+        if(null==services || null == services.get(position)) return;
+        Service thisService = services.get(position);
         holder.txServiceItemName.setText(thisService.name.toUpperCase(Locale.ROOT).trim());
-        holder.crdServiceItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int path = -1;
-                String pathAction = null;
-                Object data = thisService;
-                if(currentPath.remoteAction.trim().equals(RA_SERVICES)){
-                    pathAction = RA_COUNTIES_BY_SERVICE;
-                    path = R.id.nav_counties;
-                }
-                if(currentPath.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY) ||
-                        currentPath.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)){
-                    pathAction = RA_DOCTORS_BY_SERVICE;
-                    path = R.id.nav_doctors;
-                }
-                viewModel.setCurrentPath(new PathData(pathAction, data, path));
-                viewModel.setPreviousPath(currentPath);
-                if(path<0) return;
-                navController.navigate(path);
-            }
+        holder.crdServiceItem.setOnClickListener(v -> {
+            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisService));
         });
     }
     @Override
     public int getItemCount() {
-        if(null==services) return 0;
-        return services.size();
+        return null==services ? 0 : services.size();
     }
 
     public static class ServiceViewHolder extends RecyclerView.ViewHolder{
