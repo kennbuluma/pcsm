@@ -17,6 +17,7 @@
         <entry key="..\:/Projects/Features/Ext/pcsm/app/src/main/res/xml/backup_rules.xml" value="0.1" />
         <entry key="..\:/Projects/Features/Ext/pcsm/app/src/main/res/xml/network_config.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/back.xml" value="0.10104166666666667" />
+        <entry key="app/src/main/res/drawable/bg_lister.xml" value="0.3953125" />
         <entry key="app/src/main/res/drawable/ic_eye.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_location.xml" value="0.20364583333333333" />
         <entry key="app/src/main/res/drawable/ic_time.xml" value="0.20364583333333333" />
@@ -25,6 +26,7 @@
         <entry key="app/src/main/res/layout/fragment_counties_list.xml" value="0.1875" />
         <entry key="app/src/main/res/layout/fragment_doctor_detail.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_doctors_list.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/fragment_facilities_list.xml" value="0.3423913043478261" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_services.xml" value="0.1875" />
         <entry key="app/src/main/res/layout/list_item_county.xml" value="0.1875" />
