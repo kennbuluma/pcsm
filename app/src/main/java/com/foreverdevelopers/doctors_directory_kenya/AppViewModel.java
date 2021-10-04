@@ -52,8 +52,8 @@ public class AppViewModel extends ViewModel {
     public void setFacilityRepo(FacilityRepo facilityRepo){ this._facilityRepo.postValue(facilityRepo); }
     public void setServiceRepo(ServiceRepo serviceRepo){ this._serviceRepo.postValue(serviceRepo); }
     public void setDoctorRepo(DoctorRepo doctorRepo){ this._doctorRepo.postValue(doctorRepo); }
-    public void setCurrentPathMap(HashMap<Integer, PathData> pathMap){ this._currentPathMap.postValue(pathMap); }
-    public void setCurrentIndexor(Indexor indexor){
+    public void setCurrentIndexor(Indexor indexor, HashMap<Integer, PathData> pathMap){
+        this._currentPathMap.postValue(pathMap);
         this._currentPathIndex.postValue(indexor);
         if(null!=this._currentPathMap.getValue() &&
             null!=this._navController.getValue() &&

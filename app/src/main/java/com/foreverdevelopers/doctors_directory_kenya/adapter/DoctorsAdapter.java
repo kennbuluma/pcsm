@@ -14,25 +14,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> {
     private List<Doctor> doctors;
     private final AppViewModel viewModel;
     private final int currentIndex;
+    private final HashMap<Integer, PathData> pathMap;
     public DoctorsAdapter(
             AppViewModel viewModel,
             List<Doctor> doctors,
-            int currentIndex){
+            int currentIndex,
+            HashMap<Integer, PathData> pathMap){
         this.doctors = doctors;
         this.viewModel = viewModel;
         this.currentIndex = currentIndex;
+        this.pathMap = pathMap;
     }
 
     public void filterDoctors(ArrayList<Doctor> doctors){
@@ -58,7 +63,7 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         holder.txDoctorItemName.setText(thisDoctor.name);
         holder.imgDoctorPhoto.setImageBitmap(Converter.stringToBitmap(thisDoctor.profilePhoto));
         holder.crdDoctorItem.setOnClickListener(v -> {
-            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisDoctor));
+            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisDoctor), pathMap);
         });
     }
     @Override

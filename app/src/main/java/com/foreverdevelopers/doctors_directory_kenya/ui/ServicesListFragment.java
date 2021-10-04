@@ -118,7 +118,7 @@ public class ServicesListFragment extends Fragment {
                             currentServices = services;
                             if(null==services || services.size() == 0) return;
                             servicesAdapter = new ServicesAdapter(
-                                    appViewModel, services, currentIndex);
+                                    appViewModel, services, currentIndex, integerPathDataHashMap);
                             servicesView.setHasFixedSize(true);
                             servicesView.setLayoutManager(servicesLayoutManager);
                             servicesView.setAdapter(servicesAdapter);

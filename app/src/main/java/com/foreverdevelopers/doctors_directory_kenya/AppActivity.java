@@ -123,7 +123,7 @@ public class AppActivity extends AppCompatActivity {
                             return;
                         }
                         Object data = integerPathDataHashMap.get(currentIndex).data;
-                        appViewModel.setCurrentIndexor(new Indexor(currentIndex, data));
+                        appViewModel.setCurrentIndexor(new Indexor(currentIndex, data), integerPathDataHashMap);
                     }
                 }
             }

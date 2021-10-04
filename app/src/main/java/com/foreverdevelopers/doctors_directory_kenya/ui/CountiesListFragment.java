@@ -126,7 +126,7 @@ public class CountiesListFragment extends Fragment {
                             currentCounties = counties;
                             if(null==counties || counties.size() == 0) return;
                             countiesAdapter = new CountiesAdapter(
-                                    appViewModel, counties, currentIndex);
+                                    appViewModel, counties, currentIndex, integerPathDataHashMap);
                             countiesView.setHasFixedSize(true);
                             countiesView.setLayoutManager(countiesLayoutManager);
                             countiesView.setAdapter(countiesAdapter);

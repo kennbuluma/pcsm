@@ -12,23 +12,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> {
     private List<County> counties;
     private final AppViewModel viewModel;
     private final int currentIndex;
+    private final HashMap<Integer, PathData> pathMap;
     public CountiesAdapter(AppViewModel viewModel,
                            List<County> counties,
-                           int currentIndex){
+                           int currentIndex,
+                           HashMap<Integer, PathData> pathMap){
         this.counties = counties;
         this.viewModel = viewModel;
         this.currentIndex = currentIndex;
+        this.pathMap = pathMap;
     }
     public void filterCounties(ArrayList<County> counties){
         this.counties = counties;
@@ -49,7 +54,7 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
         County thisCounty = counties.get(position);
         holder.txCountyItemName.setText(thisCounty.name);
         holder.crdCountyItem.setOnClickListener(v -> {
-            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisCounty));
+            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisCounty),pathMap);
         });
     }
     @Override

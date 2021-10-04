@@ -115,7 +115,7 @@ public class FacilitiesListFragment extends Fragment {
                             currentFacilities = facilities;
                             if(null==facilities || facilities.size() == 0) return;
                             facilitiesAdapter = new FacilitiesAdapter(
-                                    appViewModel, facilities, currentIndex);
+                                    appViewModel, facilities, currentIndex, integerPathDataHashMap);
                             facilitiesView.setHasFixedSize(true);
                             facilitiesView.setLayoutManager(facilitiesLayoutManager);
                             facilitiesView.setAdapter(facilitiesAdapter);

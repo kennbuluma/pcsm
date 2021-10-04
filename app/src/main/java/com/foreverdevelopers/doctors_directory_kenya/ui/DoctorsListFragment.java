@@ -125,7 +125,7 @@ public class DoctorsListFragment extends Fragment {
                         public void onChanged(List<Doctor> doctors) {
                             currentDoctors = doctors;
                             if(null==doctors || doctors.size() == 0) return;
-                            doctorsAdapter = new DoctorsAdapter(appViewModel, doctors, currentIndex);
+                            doctorsAdapter = new DoctorsAdapter(appViewModel, doctors, currentIndex, integerPathDataHashMap);
                             doctorsView.setHasFixedSize(true);
                             doctorsView.setLayoutManager(doctorsLayoutManager);
                             doctorsView.setAdapter(doctorsAdapter);

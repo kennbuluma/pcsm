@@ -27,7 +27,6 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
@@ -44,11 +43,8 @@ import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.FacilityView
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.ServiceViewModel;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class HomeFragment extends Fragment {
 
@@ -99,8 +95,7 @@ public class HomeFragment extends Fragment {
                 pathDataHashMap.put(4, new PathData(RA_DOCTORS_BY_SERVICE,null,R.id.nav_doctors));
                 pathDataHashMap.put(5, new PathData(RA_DOCTOR_DETAILS,null,R.id.nav_doctor_details));
                 countyViewModel.setFilteredCounties(counties);
-                appViewModel.setCurrentPathMap(pathDataHashMap);
-                appViewModel.setCurrentIndexor(new Indexor(1,null));
+                appViewModel.setCurrentIndexor(new Indexor(1,null), pathDataHashMap);
             }
         });
         btnFacilities.setOnClickListener(new View.OnClickListener() {
@@ -114,8 +109,7 @@ public class HomeFragment extends Fragment {
                 pathDataHashMap.put(4, new PathData(RA_DOCTORS_BY_SERVICE,null,R.id.nav_doctors));
                 pathDataHashMap.put(5, new PathData(RA_DOCTOR_DETAILS,null,R.id.nav_doctor_details));
                 facilityViewModel.setFilteredFacilities(facilities);
-                appViewModel.setCurrentPathMap(pathDataHashMap);
-                appViewModel.setCurrentIndexor(new Indexor(1,null));
+                appViewModel.setCurrentIndexor(new Indexor(1,null), pathDataHashMap);
             }
         });
         btnServices.setOnClickListener(new View.OnClickListener() {
@@ -129,8 +123,7 @@ public class HomeFragment extends Fragment {
                 pathDataHashMap.put(4, new PathData(RA_DOCTORS_BY_FACILITY,null,R.id.nav_doctors));
                 pathDataHashMap.put(5, new PathData(RA_DOCTOR_DETAILS,null,R.id.nav_doctor_details));
                 serviceViewModel.setFilteredServices(services);
-                appViewModel.setCurrentPathMap(pathDataHashMap);
-                appViewModel.setCurrentIndexor(new Indexor(1,null));
+                appViewModel.setCurrentIndexor(new Indexor(1,null), pathDataHashMap);
             }
         });
         btnDoctors.setOnClickListener(new View.OnClickListener() {
@@ -141,8 +134,7 @@ public class HomeFragment extends Fragment {
                 pathDataHashMap.put(1, new PathData(RA_DOCTORS,null,R.id.nav_doctors));
                 pathDataHashMap.put(2, new PathData(RA_DOCTOR_DETAILS,null,R.id.nav_doctor_details));
                 doctorViewModel.setFilteredDoctors(doctors);
-                appViewModel.setCurrentPathMap(pathDataHashMap);
-                appViewModel.setCurrentIndexor(new Indexor(1,null));
+                appViewModel.setCurrentIndexor(new Indexor(1,null), pathDataHashMap);
             }
         });
         countyViewModel.counties.observe(getViewLifecycleOwner(), new Observer<List<County>>() {
@@ -177,8 +169,7 @@ public class HomeFragment extends Fragment {
                         pathDataHashMap.put(0, new PathData(null,null,R.id.nav_home));
                         pathDataHashMap.put(1, new PathData(RA_DOCTOR_DETAILS,doctor,R.id.nav_doctor_details));
                         doctorViewModel.setFilteredDoctors(doctors);
-                        appViewModel.setCurrentPathMap(pathDataHashMap);
-                        appViewModel.setCurrentIndexor(new Indexor(1,null));
+                        appViewModel.setCurrentIndexor(new Indexor(1,null), pathDataHashMap);
                     }
                 });
             }

@@ -12,24 +12,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder>{
     private List<Facility> facilities;
     private final AppViewModel viewModel;
     private final int currentIndex;
+    private final HashMap<Integer, PathData> pathMap;
 
     public FacilitiesAdapter(AppViewModel viewModel,
                              List<Facility> facilities,
-                             int currentIndex){
+                             int currentIndex,
+                             HashMap<Integer, PathData> pathMap){
         this.facilities = facilities;
         this.viewModel = viewModel;
         this.currentIndex = currentIndex;
+        this.pathMap = pathMap;
     }
 
     public void filterFacilities(ArrayList<Facility> facilities){
@@ -51,7 +56,7 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
         Facility thisFacility = facilities.get(position);
         holder.txFacilityItemName.setText(thisFacility.name);
         holder.crdFacilityItem.setOnClickListener(v -> {
-            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisFacility));
+            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisFacility), pathMap);
         });
     }
     @Override

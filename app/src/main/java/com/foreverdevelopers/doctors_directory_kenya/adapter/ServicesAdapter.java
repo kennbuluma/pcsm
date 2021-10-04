@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -24,13 +26,16 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
     private List<Service> services;
     private final AppViewModel viewModel;
     private final int currentIndex;
+    private final HashMap<Integer, PathData> pathMap;
 
     public ServicesAdapter(AppViewModel viewModel,
                            List<Service> services,
-                           int currentIndex){
+                           int currentIndex,
+                           HashMap<Integer, PathData> pathMap){
         this.services = services;
         this.viewModel = viewModel;
         this.currentIndex = currentIndex;
+        this.pathMap = pathMap;
     }
 
     public void filterServices(ArrayList<Service> services){
@@ -52,7 +57,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         Service thisService = services.get(position);
         holder.txServiceItemName.setText(thisService.name.toUpperCase(Locale.ROOT).trim());
         holder.crdServiceItem.setOnClickListener(v -> {
-            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisService));
+            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisService), pathMap);
         });
     }
     @Override
