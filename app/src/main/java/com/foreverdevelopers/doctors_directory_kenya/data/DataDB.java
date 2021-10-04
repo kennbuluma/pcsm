@@ -24,11 +24,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Database(entities = {
-        County.class,
-        Doctor.class,
-        Facility.class,
-        Service.class
-}, version = 1)
+            County.class,
+            Doctor.class,
+            Facility.class,
+            Service.class
+        },
+        version = 1,
+        exportSchema = true)
 @TypeConverters({Converter.class})
 public abstract class DataDB extends RoomDatabase {
     public abstract CountyDao countyDao();

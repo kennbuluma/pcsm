@@ -1,9 +1,16 @@
 package com.foreverdevelopers.doctors_directory_kenya;
 
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES;
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_FACILITY;
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_SERVICE;
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
+
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.util.Log;
+import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +22,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
 
+import com.foreverdevelopers.doctors_directory_kenya.adapter.CountiesAdapter;
 import com.foreverdevelopers.doctors_directory_kenya.data.DataDB;
 import com.foreverdevelopers.doctors_directory_kenya.data.HttpClient;
+import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
+import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.CountyRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.DoctorRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.FacilityRepo;
@@ -28,14 +41,15 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class AppActivity extends AppCompatActivity {
 
     private NavController navController;
     private AppViewModel appViewModel;
+    private Indexor currentIndexor = null;
 
     private final FirebaseAnalytics firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     private final FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
@@ -72,6 +86,48 @@ public class AppActivity extends AppCompatActivity {
             initializeApp();
             viewListeners();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        backer();
+        //super.onBackPressed();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            backer();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void backer(){
+        if(null==appViewModel) {
+            super.onBackPressed();
+            return;
+        }
+        appViewModel.currentPathMap.observe(AppActivity.this, new Observer<HashMap<Integer, PathData>>() {
+            @Override
+            public void onChanged(HashMap<Integer, PathData> integerPathDataHashMap) {
+                if(null == integerPathDataHashMap || null == currentIndexor) {
+                    AppActivity.super.onBackPressed();
+                    return;
+                }else{
+
+                    if(currentIndexor.index > 0){
+                        int currentIndex = currentIndexor.index - 1;
+                        if(null == integerPathDataHashMap.get(currentIndex)) {
+                            AppActivity.super.onBackPressed();
+                            return;
+                        }
+                        Object data = integerPathDataHashMap.get(currentIndex).data;
+                        appViewModel.setCurrentIndexor(new Indexor(currentIndex, data));
+                    }
+                }
+            }
+        });
     }
 
     private void loadComponents(){
@@ -123,6 +179,12 @@ public class AppActivity extends AppCompatActivity {
                 appViewModel.setServiceRepo(serviceRepo);
                 appViewModel.setDoctorRepo(doctorRepo);
                 loadComponents();
+            }
+        });
+        appViewModel.currentPathIndex.observe(AppActivity.this, new Observer<Indexor>() {
+            @Override
+            public void onChanged(Indexor indexor) {
+                currentIndexor = indexor;
             }
         });
     }

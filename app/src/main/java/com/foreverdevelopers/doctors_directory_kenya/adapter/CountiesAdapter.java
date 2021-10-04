@@ -1,11 +1,5 @@
 package com.foreverdevelopers.doctors_directory_kenya.adapter;
 
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_FACILITY;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_SERVICE;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACILITIES_BY_COUNTY;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_COUNTY;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +7,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
+import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,16 +22,13 @@ import java.util.List;
 public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> {
     private List<County> counties;
     private final AppViewModel viewModel;
-    private final PathData currentPath;
-    private final NavController navController;
+    private final int currentIndex;
     public CountiesAdapter(AppViewModel viewModel,
                            List<County> counties,
-                           PathData currentPath,
-                           NavController navController){
+                           int currentIndex){
         this.counties = counties;
         this.viewModel = viewModel;
-        this.currentPath = currentPath;
-        this.navController = navController;
+        this.currentIndex = currentIndex;
     }
     public void filterCounties(ArrayList<County> counties){
         this.counties = counties;
@@ -58,35 +48,13 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
         if(null==counties) return;
         County thisCounty = counties.get(position);
         holder.txCountyItemName.setText(thisCounty.name);
-        holder.crdCountyItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int path = -1;
-                String pathAction = null;
-                Object data = thisCounty;
-               if(currentPath.remoteAction.trim().equals(RA_COUNTIES)){
-                   pathAction = RA_FACILITIES_BY_COUNTY;
-                    path = R.id.nav_facilities;
-               }
-               if(currentPath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)){
-                    pathAction = RA_SERVICES_BY_COUNTY;
-                    path = R.id.nav_services;
-               }
-               if(currentPath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)){
-                    pathAction = RA_FACILITIES_BY_COUNTY;
-                    path = R.id.nav_facilities;
-               }
-               viewModel.setCurrentPath(new PathData(pathAction, data, path));
-               viewModel.setPreviousPath(currentPath);
-                if(path<0) return;
-                navController.navigate(path);
-            }
+        holder.crdCountyItem.setOnClickListener(v -> {
+            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisCounty));
         });
     }
     @Override
     public int getItemCount() {
-        if(null==counties) return 0;
-        return counties.size();
+        return null==counties ? 0 : counties.size();
     }
 
     public static class CountyViewHolder extends RecyclerView.ViewHolder {

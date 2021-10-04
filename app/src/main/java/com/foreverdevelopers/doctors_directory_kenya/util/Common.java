@@ -29,7 +29,8 @@ public class Common {
             RA_SERVICES_BY_FACILITY = "servicesFacility",
             RA_DOCTORS = "doctors",
             RA_DOCTORS_BY_FACILITY = "doctorsFacility",
-            RA_DOCTORS_BY_SERVICE = "doctorsService";
+            RA_DOCTORS_BY_SERVICE = "doctorsService",
+            RA_DOCTOR_DETAILS = "doctordetails";
 
     public static int stringSearch(List<String> objects, String value){
         int low = 0;

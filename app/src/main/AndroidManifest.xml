@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.foreverdevelopers.doctors_directory_kenya">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -33,8 +32,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/black" />
-        <!--github token : "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"-->
-        <!--github token : "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"-->
+        <!--github token : "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"-->
         <service
             android:name="com.foreverdevelopers.doctors_directory_kenya.util.Messaging"
             android:exported="false">

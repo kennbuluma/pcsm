@@ -34,7 +34,7 @@ public class DoctorsArrayAdapter  extends ArrayAdapter<Doctor> {
     }
 
     public int getCount(){
-        return doctorsFiltered.size();
+        return null==doctorsFiltered ? 0 : doctorsFiltered.size();
     }
     public Doctor getItem(int position){
         return doctorsFiltered.get(position);
