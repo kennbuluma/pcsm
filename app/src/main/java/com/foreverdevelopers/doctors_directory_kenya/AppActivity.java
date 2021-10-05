@@ -5,6 +5,7 @@ import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNT
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_SERVICE;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -108,7 +109,8 @@ public class AppActivity extends AppCompatActivity {
             super.onBackPressed();
             return;
         }
-        appViewModel.currentPathMap.observe(AppActivity.this, new Observer<HashMap<Integer, PathData>>() {
+        navController.navigate(R.id.nav_home);
+        /*appViewModel.currentPathMap.observe(AppActivity.this, new Observer<HashMap<Integer, PathData>>() {
             @Override
             public void onChanged(HashMap<Integer, PathData> integerPathDataHashMap) {
                 if(null == integerPathDataHashMap || null == currentIndexor) {
@@ -127,7 +129,7 @@ public class AppActivity extends AppCompatActivity {
                     }
                 }
             }
-        });
+        });*/
     }
 
     private void loadComponents(){
@@ -179,12 +181,6 @@ public class AppActivity extends AppCompatActivity {
                 appViewModel.setServiceRepo(serviceRepo);
                 appViewModel.setDoctorRepo(doctorRepo);
                 loadComponents();
-            }
-        });
-        appViewModel.currentPathIndex.observe(AppActivity.this, new Observer<Indexor>() {
-            @Override
-            public void onChanged(Indexor indexor) {
-                currentIndexor = indexor;
             }
         });
     }

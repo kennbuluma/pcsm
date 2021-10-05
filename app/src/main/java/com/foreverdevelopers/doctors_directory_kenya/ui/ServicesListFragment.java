@@ -3,13 +3,12 @@ package com.foreverdevelopers.doctors_directory_kenya.ui;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_COUNTY;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_FACILITY;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,34 +18,32 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.ServicesAdapter;
-import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.ServiceRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.ServiceViewModel;
+import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class ServicesListFragment extends Fragment {
     private AppViewModel appViewModel;
-    private ServiceViewModel serviceViewModel;
     private List<Service> currentServices = new ArrayList<>();
     private ServicesAdapter servicesAdapter;
-    private ServiceRepo servicesRepo;
-    private int currentIndex = -1;
+    private SharedPreferences sharedPreferences;
+    private String nextAction,nextData;
+    private NavController navController;
 
     public static ServicesListFragment newInstance() {
         return new ServicesListFragment();
@@ -56,7 +53,15 @@ public class ServicesListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        serviceViewModel = new ViewModelProvider(requireActivity()).get(ServiceViewModel.class);
+        ServiceViewModel serviceViewModel = new ViewModelProvider(requireActivity()).get(ServiceViewModel.class);
+
+        sharedPreferences = requireContext().getSharedPreferences("router", Context.MODE_PRIVATE);
+        int nextRoute = sharedPreferences.getInt("nextRoute", -1);
+        nextAction = sharedPreferences.getString("nextAction","");
+        nextData = sharedPreferences.getString("nextData", "");
+        int prevRoute = sharedPreferences.getInt("prevRoute", -1);
+        String prevAction = sharedPreferences.getString("prevAction", "");
+        String prevData = sharedPreferences.getString("prevData", "");
 
         final View root  = inflater.inflate(R.layout.fragment_services, container, false);
         RecyclerView.LayoutManager servicesLayoutManager = new LinearLayoutManager(root.getContext());
@@ -78,58 +83,48 @@ public class ServicesListFragment extends Fragment {
                 //Do Nothing
             }
         });
+
         appViewModel.serviceRepo.observe(getViewLifecycleOwner(), new Observer<ServiceRepo>() {
             @Override
             public void onChanged(ServiceRepo serviceRepo) {
-                servicesRepo = serviceRepo;
-            }
-        });
-        appViewModel.currentPathIndex.observe(getViewLifecycleOwner(), new Observer<Indexor>() {
-            @Override
-            public void onChanged(Indexor indexor) {
-                if(null==indexor) return;
-                currentIndex = indexor.index;
-            }
-        });
-        appViewModel.currentPathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, PathData>>() {
-            @Override
-            public void onChanged(HashMap<Integer, PathData> integerPathDataHashMap) {
-                if(currentIndex > 0){
-                    try{
-                    PathData currentPath = integerPathDataHashMap.get(currentIndex);
-                    if(null==currentPath ||
-                            null==currentPath.remoteAction ||
-                            currentPath.remoteAction.trim().length() == 0
-                    ) return;
-                    if(currentPath.remoteAction.trim().equals(RA_SERVICES)){
-                        servicesRepo.services();
-                    }
-                    if(currentPath.remoteAction.trim().equals(RA_SERVICES_BY_COUNTY)){
-                        County thisCounty = (County) currentPath.data;
-                        servicesRepo.serviceByCounty(thisCounty.name);
-                    }
-                    if(currentPath.remoteAction.trim().equals(RA_SERVICES_BY_FACILITY)){
-                        Facility thisFacility = (Facility) currentPath.data;
-                        servicesRepo.serviceByFacility(thisFacility.name);
-                    }
-                    serviceViewModel.filteredServices.observe(getViewLifecycleOwner(), new Observer<List<Service>>() {
-                        @Override
-                        public void onChanged(List<Service> services) {
-                            currentServices = services;
-                            if(null==services || services.size() == 0) return;
-                            servicesAdapter = new ServicesAdapter(
-                                    appViewModel, services, currentIndex, integerPathDataHashMap);
-                            servicesView.setHasFixedSize(true);
-                            servicesView.setLayoutManager(servicesLayoutManager);
-                            servicesView.setAdapter(servicesAdapter);
+                if(null!=serviceRepo){
+                    switch(nextAction){
+                        case RA_SERVICES:{
+                            serviceRepo.services();
+                            break;
                         }
-                    });
-                    }catch(ClassCastException ex){
-                        Log.e(SYSTAG, ex.getLocalizedMessage());
+                        case RA_SERVICES_BY_COUNTY:{
+                            County county = Converter.stringToCounty(nextData);
+                            serviceRepo.serviceByCounty(county.name);
+                            break;
+                        }
+                        case RA_SERVICES_BY_FACILITY:{
+                            Facility facility = Converter.stringToFacility(nextData);
+                            serviceRepo.serviceByFacility(facility.name);
+                            break;
+                        }
                     }
                 }
             }
         });
+        appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
+            @Override
+            public void onChanged(NavController controller) {
+                navController = controller;
+            }
+        });
+        serviceViewModel.filteredServices.observe(getViewLifecycleOwner(), new Observer<List<Service>>() {
+            @Override
+            public void onChanged(List<Service> services) {
+                currentServices = services;
+                if(null==services || services.size() == 0) return;
+                servicesAdapter = new ServicesAdapter(services, nextAction, nextData, sharedPreferences, navController);
+                servicesView.setHasFixedSize(true);
+                servicesView.setLayoutManager(servicesLayoutManager);
+                servicesView.setAdapter(servicesAdapter);
+            }
+        });
+
 
         return root;
     }

@@ -1,15 +1,25 @@
 package com.foreverdevelopers.doctors_directory_kenya.util;
 
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.room.TypeConverter;
 
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
+import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.security.SecureRandom;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -103,5 +113,153 @@ public class Converter {
         if("true".equalsIgnoreCase(input.trim())) return true;
         if("false".equalsIgnoreCase(input.trim())) return false;
         throw new IllegalArgumentException("Invalid boolean string");
+    }
+
+    /**
+     * Doctor
+     * */
+    public static Doctor stringToDoctor(String input){
+        if(null==input || input.trim().length() == 0) return null;
+        try{
+            JSONObject jsonObject = new JSONObject(input);
+            return jsonToDoctor(jsonObject);
+        }
+        catch (JSONException ex){
+            return null;
+        }
+    }
+    public static Doctor jsonToDoctor(JSONObject input){
+        if(null==input) return null;
+        try{
+            Doctor doctor = new Doctor();
+            if(input.has("id")) doctor.id = input.getString("id");
+            if(input.has("name")) doctor.name = input.getString("name");
+            if(input.has("phone")) doctor.phone = input.getInt("phone");
+            if(input.has("email")) doctor.email = input.getString("email");
+            if(input.has("county")) doctor.county = input.getString("county");
+            if(input.has("facility")) doctor.facility = input.getString("facility");
+            if(input.has("specialty")) doctor.specialty = jsonList(input.getJSONArray("specialty"));
+            if(input.has("profilePhoto")) doctor.profilePhoto = input.getString("profilePhoto");
+            return doctor;
+        }
+        catch (JSONException ex){
+            return null;
+        }
+    }
+
+    /**
+     * County
+     * */
+    public static County stringToCounty(String input){
+        if(null==input || input.trim().length() == 0) return null;
+        try{
+            JSONObject jsonObject = new JSONObject(input);
+            return jsonToCounty(jsonObject);
+        }
+        catch (JSONException ex){
+            return null;
+        }
+    }
+    public static County jsonToCounty(JSONObject input){
+        if(null==input) return null;
+        try{
+            County county = new County();
+            if(input.has("name")) county.name = input.getString("name");
+            return county;
+        }
+        catch (JSONException ex){
+            return null;
+        }
+    }
+    /**
+     * Facility
+     * */
+    public static Facility stringToFacility(String input){
+        if(null==input || input.trim().length() == 0) return null;
+        try{
+            JSONObject jsonObject = new JSONObject(input);
+            return jsonToFacility(jsonObject);
+        }
+        catch (JSONException ex){
+            return null;
+        }
+    }
+    public static Facility jsonToFacility(JSONObject input){
+        if(null==input) return null;
+        try{
+            Facility facility = new Facility();
+            if(input.has("name")) facility.name = input.getString("name");
+            return facility;
+        }
+        catch (JSONException ex){
+            return null;
+        }
+    }
+    /**
+     * Service
+     * */
+    public static Service stringToService(String input){
+        if(null==input || input.trim().length() == 0) return null;
+        try{
+            JSONObject jsonObject = new JSONObject(input);
+            return jsonToService(jsonObject);
+        }
+        catch (JSONException ex){
+            return null;
+        }
+    }
+    public static Service jsonToService(JSONObject input){
+        if(null==input) return null;
+        try{
+            Service service = new Service();
+            if(input.has("name")) service.name = input.getString("name");
+            return service;
+        }
+        catch (JSONException ex){
+            return null;
+        }
+    }
+
+    /**
+     * Others
+     * */
+    public static JSONObject objectToJSON(Object input){
+        if(null==input) return null;
+        try{
+            JSONObject jsonObject = new JSONObject();
+            if(input instanceof County) jsonObject.put("name", ((County) input).name);
+            if(input instanceof Service) jsonObject.put("name", ((Service) input).name);
+            if(input instanceof Facility) jsonObject.put("name", ((Facility) input).name);
+            if(input instanceof Doctor){
+                Doctor doctor = (Doctor) input;
+                jsonObject.put("id", doctor.id);
+                jsonObject.put("name", doctor.name);
+                jsonObject.put("phone", doctor.phone);
+                jsonObject.put("email", doctor.email);
+                jsonObject.put("county", doctor.county);
+                jsonObject.put("facility", doctor.facility);
+                jsonObject.put("specialty", doctor.specialty);
+                jsonObject.put("profilePhoto", doctor.profilePhoto);
+            }
+            return jsonObject;
+        }catch (JSONException ex){
+            return null;
+        }
+    }
+    public static String objectToString(Object input){
+        return objectToJSON(input).toString();
+    }
+
+    private static List<String> jsonList(JSONArray input){
+        if(null == input || input.length() == 0) return null;
+        ArrayList<String> retVal = new ArrayList<>();
+        for(int x = 0; x < input.length(); x++){
+            try{
+                retVal.add(input.getString(x));}
+            catch (JSONException ex){
+                Log.e(SYSTAG, "Invalid value");
+            }
+        }
+        return retVal;
     }
 }

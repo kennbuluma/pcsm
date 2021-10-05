@@ -1,12 +1,10 @@
 package com.foreverdevelopers.doctors_directory_kenya.ui;
 
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
-
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,20 +18,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
-import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.HashMap;
-import java.util.Objects;
-
 public class DoctorDetailFragment extends Fragment {
-    private AppViewModel appViewModel;
-    private Doctor currentDoctor;
-    private int currentIndex = -1;
+    private String nextData;
+    private DoctorViewModel doctorViewModel;
 
     public static DoctorDetailFragment newInstance() {
         return new DoctorDetailFragment();
@@ -42,8 +34,14 @@ public class DoctorDetailFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-
+        doctorViewModel = new ViewModelProvider(requireActivity()).get(DoctorViewModel.class);
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("router", Context.MODE_PRIVATE);
+        int nextRoute = sharedPreferences.getInt("nextRoute", -1);
+        String nextAction = sharedPreferences.getString("nextAction", "");
+        nextData = sharedPreferences.getString("nextData", "");
+        int prevRoute = sharedPreferences.getInt("prevRoute", -1);
+        String prevAction = sharedPreferences.getString("prevAction", "");
+        String prevData = sharedPreferences.getString("prevData", "");
         final View root = inflater.inflate(R.layout.fragment_doctor_detail, container, false);
         loadUI(root);
 
@@ -61,48 +59,30 @@ public class DoctorDetailFragment extends Fragment {
                 mail = root.findViewById(R.id.fab_docdet_mail);
         title.setText("Doctor's Detail");
 
-        appViewModel.currentPathIndex.observe(getViewLifecycleOwner(), new Observer<Indexor>() {
+        doctorViewModel.getDoctor.observe(getViewLifecycleOwner(), new Observer<Doctor>() {
             @Override
-            public void onChanged(Indexor indexor) {
-                if(null==indexor) return;
-                currentIndex = indexor.index;
-            }
-        });
-        appViewModel.currentPathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, PathData>>() {
-            @Override
-            public void onChanged(HashMap<Integer, PathData> integerPathDataHashMap) {
-                if(currentIndex > 0){
-                    try{
-                    PathData currentPath = integerPathDataHashMap.get(currentIndex);
-                    if(null==currentPath ||
-                            null==currentPath.remoteAction ||
-                            currentPath.remoteAction.trim().length() == 0
-                    ) return;
-                    Doctor doctor = (Doctor) currentPath.data;
-                    if(null == doctor) return;
-                    currentDoctor = doctor;
-                    if(null != name) name.setText(currentDoctor.name);
-                    if(null!=county && null!=currentDoctor.county) county.setText(currentDoctor.county);
-                    if(null!=facility && null!=currentDoctor.facility) facility.setText(currentDoctor.facility);
-                    if(null!=facility && null!=currentDoctor.facility) facility.setText(currentDoctor.facility);
-                    if(null!=phone && null!=currentDoctor.phone){
-                        String phoneConv = Converter.phoneToString(currentDoctor.phone);
-                        phone.setText(phoneConv);
-                        call.setOnClickListener(view -> {
-                            Intent callIntent = new Intent(Intent.ACTION_CALL);
-                            callIntent.setData(Uri.parse("tel:"+phoneConv));
-                            startActivity(callIntent);
-                        });
-                    }
-                    if(null!=email && null!=currentDoctor.email){
-                        email.setText(currentDoctor.email);
-                        mail.setOnClickListener(view -> {
-                            //TODO: Add Email Procedure
-                        });
-                    }
-                    }catch(ClassCastException ex){
-                        Log.e(SYSTAG, ex.getLocalizedMessage());
-                    }
+            public void onChanged(Doctor doctori) {
+
+                Doctor doctor = null!=doctori ? doctori : Converter.stringToDoctor(nextData);
+                if(null ==  doctori) return;
+                if(null != name) name.setText(doctor.name);
+                if(null!=county && null!=doctor.county) county.setText(doctor.county);
+                if(null!=facility && null!=doctor.facility) facility.setText(doctor.facility);
+                if(null!=facility && null!=doctor.facility) facility.setText(doctor.facility);
+                if(null!=phone && null!=doctor.phone){
+                    String phoneConv = Converter.phoneToString(doctor.phone);
+                    phone.setText(phoneConv);
+                    call.setOnClickListener(view -> {
+                        Intent callIntent = new Intent(Intent.ACTION_CALL);
+                        callIntent.setData(Uri.parse("tel:"+phoneConv));
+                        startActivity(callIntent);
+                    });
+                }
+                if(null!=email && null!=doctor.email){
+                    email.setText(doctor.email);
+                    mail.setOnClickListener(view -> {
+                        //TODO: Add Email Procedure
+                    });
                 }
             }
         });

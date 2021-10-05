@@ -1,6 +1,9 @@
 package com.foreverdevelopers.doctors_directory_kenya.adapter;
 
+import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_DOCTOR_DETAILS;
+
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,35 +12,39 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
-import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
+import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorViewHolder> {
     private List<Doctor> doctors;
-    private final AppViewModel viewModel;
-    private final int currentIndex;
-    private final HashMap<Integer, PathData> pathMap;
-    public DoctorsAdapter(
-            AppViewModel viewModel,
-            List<Doctor> doctors,
-            int currentIndex,
-            HashMap<Integer, PathData> pathMap){
+    private final SharedPreferences sharedPreferences;
+    private final NavController navController;
+    private final String currentAction, currentData;
+    private final DoctorViewModel doctorViewModel;
+    public DoctorsAdapter(DoctorViewModel doctorViewModel,
+                          List<Doctor> doctors,
+                          String currentAction,
+                          String currentData,
+                          SharedPreferences sharedPreferences,
+                          NavController navController
+    ){
         this.doctors = doctors;
-        this.viewModel = viewModel;
-        this.currentIndex = currentIndex;
-        this.pathMap = pathMap;
+        this.doctorViewModel = doctorViewModel;
+        this.currentAction = currentAction;
+        this.currentData = currentData;
+        this.sharedPreferences = sharedPreferences;
+        this.navController = navController;
     }
 
     public void filterDoctors(ArrayList<Doctor> doctors){
@@ -63,7 +70,10 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         holder.txDoctorItemName.setText(thisDoctor.name);
         holder.imgDoctorPhoto.setImageBitmap(Converter.stringToBitmap(thisDoctor.profilePhoto));
         holder.crdDoctorItem.setOnClickListener(v -> {
-            viewModel.setCurrentIndexor(new Indexor(currentIndex+1, thisDoctor), pathMap);
+            String nextData = Converter.objectToString(thisDoctor);
+            int nextPath = R.id.nav_doctor_details;
+            doctorViewModel.setDoctor(thisDoctor);
+            setPrefData(nextPath, nextData);
         });
     }
     @Override
@@ -83,5 +93,17 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
             txDoctorItemCounty= (TextView) itemView.findViewById(R.id.tx_doctor_item_county);
             imgDoctorPhoto= (ImageView) itemView.findViewById(R.id.img_doctor_item_photo);
         }
+    }
+
+    private void setPrefData(int nextRoute, String nextData){
+        SharedPreferences.Editor sharedEditor = sharedPreferences.edit();
+        sharedEditor.putInt("nextRoute", nextRoute);
+        sharedEditor.putString("nextAction", RA_DOCTOR_DETAILS);
+        sharedEditor.putString("nextData", nextData);
+        sharedEditor.putInt("prevRoute", R.id.nav_doctor_details);
+        sharedEditor.putString("prevAction",currentAction);
+        sharedEditor.putString("prevData", currentData);
+        if(!sharedEditor.commit() || null==navController) return;
+        navController.navigate(nextRoute < 0 ? R.id.nav_doctor_details : nextRoute);
     }
 }

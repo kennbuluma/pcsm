@@ -3,13 +3,12 @@ package com.foreverdevelopers.doctors_directory_kenya.ui;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_FACILITY;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_SERVICE;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,35 +19,32 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.CountiesAdapter;
-import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.CountyRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.CountyViewModel;
+import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class CountiesListFragment extends Fragment {
 
-    private AppViewModel appViewModel;
-    private CountyRepo countyRepo;
-    private CountyViewModel countyViewModel;
     private List<County> currentCounties = new ArrayList<>();
     private CountiesAdapter countiesAdapter;
-    private int currentIndex = -1;
+    private SharedPreferences sharedPreferences;
+    private String nextAction,nextData;
+    private NavController navController;
 
     public static CountiesListFragment newInstance() {
         return new CountiesListFragment();
@@ -57,8 +53,16 @@ public class CountiesListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        countyViewModel = new ViewModelProvider(requireActivity()).get(CountyViewModel.class);
+        AppViewModel appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
+        CountyViewModel countyViewModel = new ViewModelProvider(requireActivity()).get(CountyViewModel.class);
+
+        sharedPreferences = requireContext().getSharedPreferences("router", Context.MODE_PRIVATE);
+        int nextRoute = sharedPreferences.getInt("nextRoute", -1);
+        nextAction = sharedPreferences.getString("nextAction","");
+        nextData = sharedPreferences.getString("nextData", "");
+        int prevRoute = sharedPreferences.getInt("prevRoute", -1);
+        String prevAction = sharedPreferences.getString("prevAction", "");
+        String prevData = sharedPreferences.getString("prevData", "");
 
         final View root = inflater.inflate(R.layout.fragment_counties_list, container, false);
         RecyclerView.LayoutManager countiesLayoutManager = new LinearLayoutManager(root.getContext());
@@ -85,56 +89,44 @@ public class CountiesListFragment extends Fragment {
         appViewModel.countyRepo.observe(getViewLifecycleOwner(), new Observer<CountyRepo>() {
             @Override
             public void onChanged(CountyRepo repo) {
-                countyRepo = repo;
-            }
-        });
-        appViewModel.currentPathIndex.observe(getViewLifecycleOwner(), new Observer<Indexor>() {
-            @Override
-            public void onChanged(Indexor indexor) {
-                if(null==indexor) return;
-                currentIndex = indexor.index;
-            }
-        });
-        appViewModel.currentPathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, PathData>>() {
-            @Override
-            public void onChanged(HashMap<Integer, PathData> integerPathDataHashMap) {
-                if(currentIndex > 0){
-                    PathData currentPath = integerPathDataHashMap.get(currentIndex);
-                    if(null==currentPath ||
-                            null==currentPath.remoteAction ||
-                            currentPath.remoteAction.trim().length() == 0
-                    ) return;
-                    try{
-                        if(null == currentPath.remoteAction ||
-                                currentPath.remoteAction.trim().equals(RA_COUNTIES)
-                        ) countyRepo.counties();
-                        if(currentPath.remoteAction.trim().equals(RA_COUNTIES_BY_FACILITY)) {
-                            Facility thisFacility =  null==currentPath.data ? null : (Facility) currentPath.data;
-                            if(null!=thisFacility) countyRepo.countiesByFacility(thisFacility.name);
+                if(null!=repo){
+                    switch(nextAction){
+                        case RA_COUNTIES:{
+                            repo.counties();
+                            break;
                         }
-                        if(currentPath.remoteAction.trim().equals(RA_COUNTIES_BY_SERVICE)){
-                            Service thisService = null==currentPath.data ? null : (Service) currentPath.data;
-                            if(null!=thisService) countyRepo.countiesByService(thisService.name);
+                        case RA_COUNTIES_BY_FACILITY:{
+                            Facility facility = Converter.stringToFacility(nextData);
+                            repo.countiesByFacility(facility.name);
+                            break;
                         }
-                    }catch(ClassCastException ex){
-                        Log.e(SYSTAG, ex.getLocalizedMessage());
+                        case RA_COUNTIES_BY_SERVICE:{
+                            Service service = Converter.stringToService(nextData);
+                            repo.countiesByService(service.name);
+                            break;
+                        }
                     }
-
-                    countyViewModel.filteredCounties.observe(getViewLifecycleOwner(), new Observer<List<County>>() {
-                        @Override
-                        public void onChanged(List<County> counties) {
-                            currentCounties = counties;
-                            if(null==counties || counties.size() == 0) return;
-                            countiesAdapter = new CountiesAdapter(
-                                    appViewModel, counties, currentIndex, integerPathDataHashMap);
-                            countiesView.setHasFixedSize(true);
-                            countiesView.setLayoutManager(countiesLayoutManager);
-                            countiesView.setAdapter(countiesAdapter);
-                        }
-                    });
                 }
             }
         });
+        appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
+            @Override
+            public void onChanged(NavController controller) {
+                navController = controller;
+            }
+        });
+        countyViewModel.filteredCounties.observe(getViewLifecycleOwner(), new Observer<List<County>>() {
+            @Override
+            public void onChanged(List<County> counties) {
+                currentCounties = counties;
+                if(null==counties || counties.size() == 0) return;
+                countiesAdapter = new CountiesAdapter(counties, nextAction, nextData, sharedPreferences, navController);
+                countiesView.setHasFixedSize(true);
+                countiesView.setLayoutManager(countiesLayoutManager);
+                countiesView.setAdapter(countiesAdapter);
+            }
+        });
+
 
         return root;
     }

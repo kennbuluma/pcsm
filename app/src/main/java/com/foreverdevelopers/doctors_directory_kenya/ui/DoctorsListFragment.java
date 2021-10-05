@@ -3,13 +3,12 @@ package com.foreverdevelopers.doctors_directory_kenya.ui;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_DOCTORS;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_DOCTORS_BY_FACILITY;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_DOCTORS_BY_SERVICE;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,30 +25,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.adapter.DoctorsAdapter;
-import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.DoctorRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewModel;
+import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
 public class DoctorsListFragment extends Fragment {
 
     private AppViewModel appViewModel;
-    private DoctorViewModel doctorViewModel;
-    private NavController appNavController = null;
+    private NavController navController;
     private List<Doctor> currentDoctors = new ArrayList<>();
     private DoctorsAdapter doctorsAdapter;
-    private DoctorRepo doctorsRepo;
-    private int currentIndex = -1;
+    private SharedPreferences sharedPreferences;
+    private String nextAction, nextData;
 
 
     public static DoctorsListFragment newInstance() {
@@ -60,7 +55,15 @@ public class DoctorsListFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         appViewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        doctorViewModel = new ViewModelProvider(requireActivity()).get(DoctorViewModel.class);
+        DoctorViewModel doctorViewModel = new ViewModelProvider(requireActivity()).get(DoctorViewModel.class);
+
+        sharedPreferences = requireContext().getSharedPreferences("router", Context.MODE_PRIVATE);
+        int nextRoute = sharedPreferences.getInt("nextRoute", -1);
+        nextAction = sharedPreferences.getString("nextAction","");
+        nextData = sharedPreferences.getString("nextData", "");
+        int prevRoute = sharedPreferences.getInt("prevRoute", -1);
+        String prevAction = sharedPreferences.getString("prevAction", "");
+        String prevData = sharedPreferences.getString("prevData", "");
 
         final View root = inflater.inflate(R.layout.fragment_doctors_list, container, false);
         RecyclerView.LayoutManager doctorsLayoutManager = new LinearLayoutManager(root.getContext());
@@ -85,58 +88,45 @@ public class DoctorsListFragment extends Fragment {
 
         appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
             @Override
-            public void onChanged(NavController navController) {
-                appNavController = navController;
+            public void onChanged(NavController controller) {
+                navController = controller;
             }
         });
         appViewModel.doctorRepo.observe(getViewLifecycleOwner(), new Observer<DoctorRepo>() {
             @Override
             public void onChanged(DoctorRepo doctorRepo) {
-                doctorsRepo = doctorRepo;
-            }
-        });
-        appViewModel.currentPathIndex.observe(getViewLifecycleOwner(), new Observer<Indexor>() {
-            @Override
-            public void onChanged(Indexor indexor) {
-                if(null==indexor) return;
-                currentIndex = indexor.index;
-            }
-        });
-        appViewModel.currentPathMap.observe(getViewLifecycleOwner(), new Observer<HashMap<Integer, PathData>>() {
-            @Override
-            public void onChanged(HashMap<Integer, PathData> integerPathDataHashMap) {
-                if(currentIndex > 0){
-                    try{
-                    PathData currentPath = integerPathDataHashMap.get(currentIndex);
-                    if(null==currentPath ||
-                            null==currentPath.remoteAction ||
-                            currentPath.remoteAction.trim().length() == 0
-                    ) return;
-                    if(currentPath.remoteAction.equals(RA_DOCTORS_BY_FACILITY)){
-                        Facility thisFacility = (Facility) currentPath.data;
-                        doctorsRepo.doctorsByFacility(thisFacility.name);
-                    }
-                    if(currentPath.remoteAction.equals(RA_DOCTORS_BY_SERVICE)){
-                        Service thisService = (Service) currentPath.data;
-                        doctorsRepo.doctorsByService(thisService.name);
-                    }
-                    doctorViewModel.filteredDoctors.observe(getViewLifecycleOwner(), new Observer<List<Doctor>>() {
-                        @Override
-                        public void onChanged(List<Doctor> doctors) {
-                            currentDoctors = doctors;
-                            if(null==doctors || doctors.size() == 0) return;
-                            doctorsAdapter = new DoctorsAdapter(appViewModel, doctors, currentIndex, integerPathDataHashMap);
-                            doctorsView.setHasFixedSize(true);
-                            doctorsView.setLayoutManager(doctorsLayoutManager);
-                            doctorsView.setAdapter(doctorsAdapter);
+                if(null!=doctorRepo){
+                    switch(nextAction){
+                        case RA_DOCTORS:{
+                            doctorRepo.doctors();
+                            break;
                         }
-                    });
-                    }catch(ClassCastException ex){
-                        Log.e(SYSTAG, ex.getLocalizedMessage());
+                        case RA_DOCTORS_BY_FACILITY:{
+                            Facility facility = Converter.stringToFacility(nextData);
+                            doctorRepo.doctorsByFacility(facility.name);
+                            break;
+                        }
+                        case RA_DOCTORS_BY_SERVICE:{
+                            Service service = Converter.stringToService(nextData);
+                            doctorRepo.doctorsByService(service.name);
+                            break;
+                        }
                     }
                 }
             }
         });
+        doctorViewModel.filteredDoctors.observe(getViewLifecycleOwner(), new Observer<List<Doctor>>() {
+            @Override
+            public void onChanged(List<Doctor> doctors) {
+                currentDoctors = doctors;
+                if(null==doctors || doctors.size() == 0) return;
+                doctorsAdapter = new DoctorsAdapter(doctorViewModel, doctors, nextAction, nextData, sharedPreferences, navController);
+                doctorsView.setHasFixedSize(true);
+                doctorsView.setLayoutManager(doctorsLayoutManager);
+                doctorsView.setAdapter(doctorsAdapter);
+            }
+        });
+
 
         return root;
     }

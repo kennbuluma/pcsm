@@ -2,6 +2,7 @@ package com.foreverdevelopers.doctors_directory_kenya;
 
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -26,51 +27,35 @@ public class AppViewModel extends ViewModel {
     private final MutableLiveData<FacilityRepo> _facilityRepo= new MutableLiveData<FacilityRepo>();
     private final MutableLiveData<ServiceRepo> _serviceRepo = new MutableLiveData<ServiceRepo>();
     private final MutableLiveData<DoctorRepo> _doctorRepo = new MutableLiveData<DoctorRepo>();
-    private final MutableLiveData<HashMap<Integer, PathData>> _currentPathMap = new MutableLiveData<HashMap<Integer, PathData> >();
-    private final MutableLiveData<Indexor> _currentPathIndex = new MutableLiveData<Indexor>();
     private final MutableLiveData<NavController> _navController = new MutableLiveData<NavController>();
     private final MutableLiveData<HashMap<String, FirebaseRemoteConfigValue>> _remoteSettings = new MutableLiveData<HashMap<String, FirebaseRemoteConfigValue>>();
     private final MutableLiveData<String> _fireMessageToken = new MutableLiveData<>();
     private final MutableLiveData<String> _fireMessage = new MutableLiveData<>();
     private final MutableLiveData<RemoteMessage> _fireRemoteMessage = new MutableLiveData<>();
     private final MutableLiveData<FireMessageSendError> _fireMessageSendError = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> _showProgress = new MutableLiveData<>();
 
     public LiveData<CountyRepo> countyRepo = this._countyRepo;
     public LiveData<FacilityRepo> facilityRepo = this._facilityRepo;
     public LiveData<ServiceRepo> serviceRepo = this._serviceRepo;
     public LiveData<DoctorRepo> doctorRepo = this._doctorRepo;
-    public LiveData<HashMap<Integer, PathData> > currentPathMap = this._currentPathMap;
-    public LiveData<Indexor> currentPathIndex = this._currentPathIndex;
     public LiveData<NavController> navController = this._navController;
     public LiveData<HashMap<String, FirebaseRemoteConfigValue>> remoteSettings = this._remoteSettings;
     public LiveData<String> fireMessageToken = this._fireMessageToken;
     public LiveData<String> fireMessage = this._fireMessage;
     public LiveData<RemoteMessage> fireRemoteMessage = this._fireRemoteMessage;
     public LiveData<FireMessageSendError> fireMessageSendError = this._fireMessageSendError;
+    public LiveData<Boolean> showProgress = this._showProgress;
 
     public void setCountyRepo(CountyRepo countyRepo){ this._countyRepo.postValue(countyRepo); }
     public void setFacilityRepo(FacilityRepo facilityRepo){ this._facilityRepo.postValue(facilityRepo); }
     public void setServiceRepo(ServiceRepo serviceRepo){ this._serviceRepo.postValue(serviceRepo); }
     public void setDoctorRepo(DoctorRepo doctorRepo){ this._doctorRepo.postValue(doctorRepo); }
-    public void setCurrentIndexor(Indexor indexor, HashMap<Integer, PathData> pathMap){
-        this._currentPathMap.postValue(pathMap);
-        this._currentPathIndex.postValue(indexor);
-        if(null!=this._currentPathMap.getValue() &&
-            null!=this._navController.getValue() &&
-            null!=this._currentPathMap.getValue().get(indexor.index)
-        ){
-            PathData currentPath = this._currentPathMap.getValue().get(indexor.index);
-            if(null == currentPath) return;
-            currentPath.data = indexor.data;
-            this._currentPathMap.getValue().put(indexor.index, currentPath);
-            Log.e(SYSTAG, "Current Path: "+currentPath.remoteAction+"Index: "+indexor.index);
-            this._navController.getValue().navigate(currentPath.path);
-        }
-    }
     public void setNavController(NavController controller){ this._navController.postValue(controller); }
     public void setRemoteSettings(HashMap<String, FirebaseRemoteConfigValue> settings){ this._remoteSettings.postValue(settings); }
     public void setFireMessageToken(String token){ this._fireMessageToken.postValue(token); }
     public void setFireMessageSent(String message){ this._fireMessage.postValue(message); }
     public void setFireMessage(RemoteMessage remoteMessage){ this._fireRemoteMessage.postValue(remoteMessage); }
     public void setFireMessageSendError(FireMessageSendError fireSendError){ this._fireMessageSendError.postValue(fireSendError); }
+    public void setShowProgress(Boolean show){ this._showProgress.postValue(show);}
 }
