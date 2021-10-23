@@ -15,7 +15,6 @@ import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewModel;
@@ -47,6 +46,7 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         this.navController = navController;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void filterDoctors(ArrayList<Doctor> doctors){
         this.doctors = doctors;
         notifyDataSetChanged();
@@ -87,11 +87,11 @@ public class DoctorsAdapter extends RecyclerView.Adapter<DoctorsAdapter.DoctorVi
         public final ImageView imgDoctorPhoto;
         public DoctorViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            crdDoctorItem = (CardView) itemView.findViewById(R.id.crd_doctor_item);
-            txDoctorItemName = (TextView) itemView.findViewById(R.id.tx_doctor_item_name);
-            txDoctorItemFacility= (TextView) itemView.findViewById(R.id.tx_doctor_item_facility);
-            txDoctorItemCounty= (TextView) itemView.findViewById(R.id.tx_doctor_item_county);
-            imgDoctorPhoto= (ImageView) itemView.findViewById(R.id.img_doctor_item_photo);
+            crdDoctorItem = itemView.findViewById(R.id.crd_doctor_item);
+            txDoctorItemName = itemView.findViewById(R.id.tx_doctor_item_name);
+            txDoctorItemFacility= itemView.findViewById(R.id.tx_doctor_item_facility);
+            txDoctorItemCounty= itemView.findViewById(R.id.tx_doctor_item_county);
+            imgDoctorPhoto= itemView.findViewById(R.id.img_doctor_item_photo);
         }
     }
 

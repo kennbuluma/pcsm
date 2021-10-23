@@ -1,6 +1,5 @@
 package com.foreverdevelopers.doctors_directory_kenya.adapter;
 
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_FACILITY;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_SERVICE;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_DOCTORS_BY_FACILITY;
@@ -8,6 +7,7 @@ import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACIL
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACILITIES_BY_COUNTY;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_FACILITY;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,17 +19,13 @@ import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
-import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder>{
@@ -53,6 +49,7 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
         this.previousData = previousData;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void filterFacilities(ArrayList<Facility> facilities){
         this.facilities = facilities;
         notifyDataSetChanged();
@@ -104,8 +101,8 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
         public final TextView txFacilityItemName;
         public FacilityViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            crdFacilityItem = (CardView) itemView.findViewById(R.id.crd_item_name);
-            txFacilityItemName = (TextView) itemView.findViewById(R.id.tx_item_name);
+            crdFacilityItem = itemView.findViewById(R.id.crd_item_name);
+            txFacilityItemName = itemView.findViewById(R.id.tx_item_name);
         }
     }
 

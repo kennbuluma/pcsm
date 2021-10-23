@@ -21,4 +21,51 @@
     <string name="services_all_ep">/doc/fetch-specialties</string>
     <string name="services_county_ep">/doc/fetch-specialty-by-county</string>
     <string name="services_facility_ep">/doc/fetch-specialty</string>
+
+    <string name="first_slide_title">Find A Doctor</string>
+    <string name="second_slide_title">Hospital Info</string>
+    <string name="third_slide_title">Quick Search</string>
+
+    <string name="first_slide_desc">A database of doctors and their details has been availed. Connecting patients and the right profile doctors has never been easier. </string>
+    <string name="second_slide_desc">Clarifications and specifics on health facilities within your region is now within reach. Patients will be able to find suitable hospitals next to no time.</string>
+    <string name="third_slide_desc">Find any detail on doctors, hospitals, facilities and services using a fast and efficient search feature. </string>
+
+    <string name="start">Let\'s Get Started </string>
+
+    <string name="search">Search </string>
+    <string name="dash">Dashboard</string>
+    <string name="stay">Stay Home</string>
+    <string name="home">Schedule one e-visit and discuss plan with a doctor </string>
+    <string name="need">Search doctor by </string>
+    <string name="county">County </string>
+    <string name="services">Services </string>
+    <string name="facility">Facilities </string>
+    <string name="find">Let\'s Find Your Doctor </string>
+    <string name="view">view doctor list </string>
+
+    <string name="covid">About covid-19</string>
+    <string name="vaccine">covid-19 vaccine</string>
+
+    <string name="top">Top Doctors </string>
+    <string name="doc">Dr. Lungu Olani</string>
+    <string name="doc2">Surgeon</string>
+    <string name="nai">Nairobi</string>
+    <string name="time">10:00 AM - 4:00 PM</string>
+
+    <string name="details">Doctor Details </string>
+    <string name="doc3">Surgeon, Nairobi, Aga Khan</string>
+    <string name="patient">Patients</string>
+    <string name="patient2">200+</string>
+    <string name="exp">Experience</string>
+    <string name="exp2">10+ yrs</string>
+    <string name="about">About Doctor</string>
+    <string name="about2">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. </string>
+    <string name="contact">Doctor\'s Contact</string>
+    <string name="phone">+254 712 314 567</string>
+    <string name="mail">lungu.olani@mail.com</string>
+
+    <string name="todo">todo</string>
+    <string name="doc_list">View doctors\' list</string>
+    <string name="main_dash">Dashboard</string>
+    <string name="main_opts">What are you looking for?</string>
 </resources>

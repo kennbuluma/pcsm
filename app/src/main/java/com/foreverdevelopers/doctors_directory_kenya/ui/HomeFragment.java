@@ -41,7 +41,9 @@ import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewMo
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.FacilityViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.ServiceViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,113 +80,88 @@ public class HomeFragment extends Fragment {
 
     private void loadComponents(View root){
         ProgressBar progressBar = root.findViewById(R.id.prg_home);
-        CardView btnDoctors = root.findViewById(R.id.btn_main_doctors),
-                btnCounties = root.findViewById(R.id.btn_main_counties),
+        CardView btnCounties = root.findViewById(R.id.btn_main_counties),
                 btnServices = root.findViewById(R.id.btn_main_services),
                 btnFacilities = root.findViewById(R.id.btn_main_facilities),
                 btnDashboard = root.findViewById(R.id.crd_home_dasher);
+        MaterialButton btnDoctors = root.findViewById(R.id.btn_home_doctors);
+        FloatingActionButton btnHeart = root.findViewById(R.id.fab_home_heart),
+                btnLungs = root.findViewById(R.id.fab_home_lungs),
+                btnEye = root.findViewById(R.id.fab_home_eye),
+                btnTooth = root.findViewById(R.id.fab_home_tooth);
         atvSearch = root.findViewById(R.id.atv_main_search);
-        appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
-            @Override
-            public void onChanged(NavController controller) {
-                navController = controller;
-            }
-        });
-        appViewModel.showProgress.observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                progressBar.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
-                progressBar.setIndeterminate(aBoolean);
-            }
+        appViewModel.navController.observe(getViewLifecycleOwner(), controller -> navController = controller);
+        appViewModel.showProgress.observe(getViewLifecycleOwner(), aBoolean -> {
+            progressBar.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
+            progressBar.setIndeterminate(aBoolean);
         });
         sharedPreferences = requireContext().getSharedPreferences("router", Context.MODE_PRIVATE);
 
-        btnDashboard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new MaterialAlertDialogBuilder(requireContext(),R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered)
-                        .setMessage("Covid 19 Information store")
-                        .setNegativeButton("Cancel", null)
-                        .setPositiveButton("More info", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(getContext(), "More information loaded", Toast.LENGTH_LONG).show();
-                            }
-                        })
-                        .show();
-            }
-        });
+        btnDashboard.setOnClickListener(view -> new MaterialAlertDialogBuilder(requireContext(),R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog_Centered)
+                .setMessage("Covid 19 Information store")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("More info", (dialogInterface, i) -> Toast.makeText(getContext(), "More information loaded", Toast.LENGTH_LONG).show())
+                .show());
 
-        countyViewModel.counties.observe(getViewLifecycleOwner(), new Observer<List<County>>() {
-            @Override
-            public void onChanged(List<County> dbCounties) {
-                c = true;
-                boolean all = null != f && null != d && null != s && f && d && s;
-                if(null!= appViewModel) appViewModel.setShowProgress(all);
-                btnCounties.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        countyViewModel.setFilteredCounties(dbCounties);
-                        setPrefData(R.id.nav_counties, RA_COUNTIES, "");
-                    }
-                });
-            }
+        countyViewModel.counties.observe(getViewLifecycleOwner(), dbCounties -> {
+            c = true;
+            boolean all = null != f && null != d && null != s && f && d && s;
+            if(null!= appViewModel) appViewModel.setShowProgress(all);
+            btnCounties.setOnClickListener(view -> {
+                countyViewModel.setFilteredCounties(dbCounties);
+                setPrefData(R.id.nav_counties, RA_COUNTIES, "");
+            });
         });
-        facilityViewModel.facilities.observe(getViewLifecycleOwner(), new Observer<List<Facility>>() {
-            @Override
-            public void onChanged(List<Facility> dbFacilities) {
-                f = true;
-                boolean all = null != c && null != d && null != s && c && d && s;
-                if(null!= appViewModel) appViewModel.setShowProgress(all);
-                btnFacilities.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        facilityViewModel.setFilteredFacilities(dbFacilities);
-                        setPrefData(R.id.nav_facilities, RA_FACILITIES, "");
-                    }
-                });
-            }
+        facilityViewModel.facilities.observe(getViewLifecycleOwner(), dbFacilities -> {
+            f = true;
+            boolean all = null != c && null != d && null != s && c && d && s;
+            if(null!= appViewModel) appViewModel.setShowProgress(all);
+            btnFacilities.setOnClickListener(view -> {
+                facilityViewModel.setFilteredFacilities(dbFacilities);
+                setPrefData(R.id.nav_facilities, RA_FACILITIES, "");
+            });
         });
-        serviceViewModel.services.observe(getViewLifecycleOwner(), new Observer<List<Service>>() {
-            @Override
-            public void onChanged(List<Service> dbServices) {
-                s = true;
-                boolean all = null != c && null != d && null != f && c && f && d;
-                if(null!= appViewModel) appViewModel.setShowProgress(all);
-                btnServices.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        serviceViewModel.setFilteredServices(dbServices);
-                        setPrefData(R.id.nav_services, RA_SERVICES, "");
-                    }
-                });
-            }
+        serviceViewModel.services.observe(getViewLifecycleOwner(), dbServices -> {
+            s = true;
+            boolean all = null != c && null != d && null != f && c && f && d;
+            if(null!= appViewModel) appViewModel.setShowProgress(all);
+            btnServices.setOnClickListener(view -> {
+                serviceViewModel.setFilteredServices(dbServices);
+                setPrefData(R.id.nav_services, RA_SERVICES, "");
+            });
         });
-        doctorViewModel.doctors.observe(getViewLifecycleOwner(), new Observer<List<Doctor>>() {
-            @Override
-            public void onChanged(List<Doctor> dbDoctors) {
-                d = true;
-                boolean all = null != c && null != f && null != s && c && f && s;
-                if(null!= appViewModel) appViewModel.setShowProgress(all);
-                doctors = dbDoctors;
-                btnDoctors.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        doctorViewModel.setFilteredDoctors(dbDoctors);
-                        setPrefData(R.id.nav_doctors, RA_DOCTORS, "");
-                    }
-                });
-                doctorAdapter = new DoctorsArrayAdapter(requireContext(), R.layout.list_item_name, doctors);
-                atvSearch.setAdapter(doctorAdapter);
-                atvSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        Doctor doctor = (Doctor) adapterView.getAdapter().getItem(i);
-                        doctorViewModel.setDoctor(doctor);
-                        setPrefData(R.id.nav_doctor_details, RA_DOCTOR_DETAILS, Converter.objectToString(doctor));
-                    }
-                });
-            }
+        doctorViewModel.doctors.observe(getViewLifecycleOwner(), dbDoctors -> {
+            d = true;
+            boolean all = null != c && null != f && null != s && c && f && s;
+            if(null!= appViewModel) appViewModel.setShowProgress(all);
+            doctors = dbDoctors;
+            btnDoctors.setOnClickListener(view -> {
+                doctorViewModel.setFilteredDoctors(dbDoctors);
+                setPrefData(R.id.nav_doctors, RA_DOCTORS, "");
+            });
+            btnHeart.setOnClickListener(view -> {
+                doctorViewModel.setFilteredDoctors(dbDoctors);
+                setPrefData(R.id.nav_doctors, RA_DOCTORS, "");
+            });
+            btnLungs.setOnClickListener(view -> {
+                doctorViewModel.setFilteredDoctors(dbDoctors);
+                setPrefData(R.id.nav_doctors, RA_DOCTORS, "");
+            });
+            btnTooth.setOnClickListener(view -> {
+                doctorViewModel.setFilteredDoctors(dbDoctors);
+                setPrefData(R.id.nav_doctors, RA_DOCTORS, "");
+            });
+            btnEye.setOnClickListener(view -> {
+                doctorViewModel.setFilteredDoctors(dbDoctors);
+                setPrefData(R.id.nav_doctors, RA_DOCTORS, "");
+            });
+            doctorAdapter = new DoctorsArrayAdapter(requireContext(), R.layout.list_item_name, doctors);
+            atvSearch.setAdapter(doctorAdapter);
+            atvSearch.setOnItemClickListener((adapterView, view, i, l) -> {
+                Doctor doctor = (Doctor) adapterView.getAdapter().getItem(i);
+                doctorViewModel.setDoctor(doctor);
+                setPrefData(R.id.nav_doctor_details, RA_DOCTOR_DETAILS, Converter.objectToString(doctor));
+            });
         });
     }
 
