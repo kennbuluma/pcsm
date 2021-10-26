@@ -229,6 +229,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/gdl_main_docs_v25"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.25" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/gdl_main_docs_v50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5" />
+
+                    <androidx.constraintlayout.widget.Guideline
+                        android:id="@+id/gdl_main_docs_v75"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.75" />
+
                     <ImageView
                         android:id="@+id/img_btn_doctors"
                         android:layout_width="72dp"
@@ -256,67 +277,79 @@
                         android:id="@+id/fab_home_heart"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginLeft="24dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:clickable="true"
                         android:contentDescription="@string/todo"
+                        android:focusable="true"
                         android:src="@drawable/ic_heart"
-                        app:tint="@color/red"
                         app:layout_constraintBottom_toBottomOf="@+id/fab_home_lungs"
+                        app:layout_constraintEnd_toStartOf="@+id/gdl_main_docs_v25"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/fab_home_lungs"
-                        tools:ignore="SpeakableTextPresentCheck"
-                        android:focusable="true" />
+                        app:tint="@color/red"
+                        tools:ignore="SpeakableTextPresentCheck" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fab_home_lungs"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="24dp"
-                        android:layout_marginLeft="24dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:clickable="true"
-                        android:src="@drawable/ic_lungs"
                         android:contentDescription="@string/todo"
-                        app:tint="@color/blueSeven"
+                        android:focusable="true"
+                        android:src="@drawable/ic_lungs"
                         app:layout_constraintBottom_toBottomOf="@+id/fab_home_tooth"
-                        app:layout_constraintStart_toEndOf="@+id/fab_home_heart"
+                        app:layout_constraintEnd_toStartOf="@+id/gdl_main_docs_v50"
+                        app:layout_constraintStart_toStartOf="@+id/gdl_main_docs_v25"
                         app:layout_constraintTop_toTopOf="@+id/fab_home_tooth"
-                        tools:ignore="SpeakableTextPresentCheck"
-                        android:focusable="true" />
+                        app:tint="@color/blueSeven"
+                        tools:ignore="SpeakableTextPresentCheck" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fab_home_tooth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginRight="24dp"
-                        android:contentDescription="@string/todo"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:clickable="true"
+                        android:contentDescription="@string/todo"
+                        android:focusable="true"
                         android:src="@drawable/ic_tooth"
-                        app:tint="@color/yellow"
                         app:layout_constraintBottom_toBottomOf="@+id/fab_home_eye"
-                        app:layout_constraintEnd_toStartOf="@+id/fab_home_eye"
+                        app:layout_constraintEnd_toStartOf="@+id/gdl_main_docs_v75"
+                        app:layout_constraintStart_toStartOf="@+id/gdl_main_docs_v50"
                         app:layout_constraintTop_toTopOf="@+id/fab_home_eye"
-                        tools:ignore="SpeakableTextPresentCheck"
-                        android:focusable="true" />
+                        app:tint="@color/yellow"
+                        tools:ignore="SpeakableTextPresentCheck" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fab_home_eye"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:layout_marginTop="16dp"
-                        android:contentDescription="@string/todo"
-                        android:layout_marginEnd="24dp"
-                        android:layout_marginRight="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:layout_marginBottom="16dp"
                         android:clickable="true"
-                        app:srcCompat="@drawable/ic_eye"
-                        app:tint="@color/pink"
+                        android:contentDescription="@string/todo"
+                        android:focusable="true"
                         app:layout_constraintBottom_toTopOf="@+id/btn_home_doctors"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/gdl_main_docs_v75"
                         app:layout_constraintTop_toBottomOf="@+id/img_btn_doctors"
-                        tools:ignore="SpeakableTextPresentCheck"
-                        android:focusable="true" />
+                        app:srcCompat="@drawable/ic_eye"
+                        app:tint="@color/pink"
+                        tools:ignore="SpeakableTextPresentCheck" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_home_doctors"
