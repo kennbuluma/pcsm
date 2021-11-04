@@ -8,6 +8,7 @@
     <string name="lbl_counties">Counties</string>
     <string name="lbl_services">Services</string>
     <string name="lbl_facilities">Facilities</string>
+    <string name="lbl_specialties">Specialties</string>
     <string name="base_url">http://52.213.11.45:8080</string>
     <string name="doctors_all_ep">/doc/fetch-doctors</string>
     <string name="doctors_facility_ep">/doc/fetch-doctors-by-facility</string>

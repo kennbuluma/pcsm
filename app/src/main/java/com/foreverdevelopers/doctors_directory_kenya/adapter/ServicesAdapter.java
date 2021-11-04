@@ -69,11 +69,11 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
             String nextAction = "", nextData = Converter.objectToString(thisService);
             int nextPath = -1;
             switch (currentAction){
-                case RA_SERVICES:{
+                case RA_SERVICES:/*{
                     nextAction = RA_COUNTIES_BY_SERVICE;
                     nextPath = R.id.nav_counties;
                     break;
-                }
+                }*/
                 case RA_SERVICES_BY_COUNTY:
                 case RA_SERVICES_BY_FACILITY: {
                     nextAction = RA_DOCTORS_BY_SERVICE;

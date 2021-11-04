@@ -1,16 +1,9 @@
 package com.foreverdevelopers.doctors_directory_kenya;
 
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_FACILITY;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNTIES_BY_SERVICE;
-import static com.foreverdevelopers.doctors_directory_kenya.util.Common.SYSTAG;
-
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
@@ -23,14 +16,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.room.Room;
 
-import com.foreverdevelopers.doctors_directory_kenya.adapter.CountiesAdapter;
 import com.foreverdevelopers.doctors_directory_kenya.data.DataDB;
 import com.foreverdevelopers.doctors_directory_kenya.data.HttpClient;
 import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
-import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
-import com.foreverdevelopers.doctors_directory_kenya.data.entity.Facility;
-import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.CountyRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.DoctorRepo;
 import com.foreverdevelopers.doctors_directory_kenya.data.repository.FacilityRepo;
@@ -43,7 +31,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigValue;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 public class AppActivity extends AppCompatActivity {

@@ -15,9 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
+import com.foreverdevelopers.doctors_directory_kenya.adapter.CountiesAdapter;
+import com.foreverdevelopers.doctors_directory_kenya.adapter.SpecialtiesAdapter;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
@@ -26,6 +30,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class DoctorDetailFragment extends Fragment {
     private String nextData;
     private DoctorViewModel doctorViewModel;
+    private SpecialtiesAdapter specialtiesAdapter;
 
     public static DoctorDetailFragment newInstance() {
         return new DoctorDetailFragment();
@@ -55,14 +60,15 @@ public class DoctorDetailFragment extends Fragment {
                 facility = root.findViewById(R.id.txt_doc_detail_highlight_facility),
         phone = root.findViewById(R.id.txt_det_phone),
         email = root.findViewById(R.id.txt_det_email);
+        RecyclerView specialtiesRcv = root.findViewById(R.id.rcv_doc_details_specialties);
+        RecyclerView.LayoutManager specialtiesLayoutManager = new LinearLayoutManager(root.getContext());
         FloatingActionButton call = root.findViewById(R.id.fab_docdet_call),
                 mail = root.findViewById(R.id.fab_docdet_mail);
-        title.setText("Doctor's Detail");
+        title.setText(requireContext().getResources().getString(R.string.lbl_doctors_details));
 
         doctorViewModel.getDoctor.observe(getViewLifecycleOwner(), new Observer<Doctor>() {
             @Override
             public void onChanged(Doctor doctori) {
-
                 Doctor doctor = null!=doctori ? doctori : Converter.stringToDoctor(nextData);
                 if(null ==  doctori) return;
                 if(null != name) name.setText(doctor.name);
@@ -83,6 +89,12 @@ public class DoctorDetailFragment extends Fragment {
                     mail.setOnClickListener(view -> {
                         //TODO: Add Email Procedure
                     });
+                }
+                if(null!=specialtiesRcv){
+                    specialtiesAdapter = new SpecialtiesAdapter(doctor.specialty);
+                    specialtiesRcv.setHasFixedSize(true);
+                    specialtiesRcv.setLayoutManager(specialtiesLayoutManager);
+                    specialtiesRcv.setAdapter(specialtiesAdapter);
                 }
             }
         });

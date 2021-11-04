@@ -12,7 +12,9 @@ import com.foreverdevelopers.doctors_directory_kenya.data.entity.Doctor;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.CountyViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.data.viewmodel.DoctorViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.remote.Remote;
+import com.foreverdevelopers.doctors_directory_kenya.remote.Requests;
 import com.foreverdevelopers.doctors_directory_kenya.remote.Responses;
+import com.foreverdevelopers.doctors_directory_kenya.util.Common;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,10 +106,9 @@ public class DoctorRepo {
                 try{
                     ArrayList<Doctor> doctors = new ArrayList<>();
                     for(int i = 0; i < mainResponse.data.length(); i ++){
-                        Doctor doctor = new Doctor();
-                        doctor.name = mainResponse.data.getString(i);
-                        doctors.add(doctor);
+                        doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
                     }
+                    doctorViewModel.addAll(doctors);
                     doctorViewModel.setFilteredDoctors(doctors);
                 }catch (JSONException ex){
                     Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
@@ -148,14 +149,51 @@ public class DoctorRepo {
                 try{
                     ArrayList<Doctor> doctors = new ArrayList<>();
                     for(int i = 0; i < mainResponse.data.length(); i ++){
-                        Doctor doctor = new Doctor();
-                        doctor.name = mainResponse.data.getString(i);
-                        doctors.add(doctor);
+                        doctors.add(Responses.doctorsResponse(mainResponse.data.getJSONObject(i)));
                     }
+                    doctorViewModel.addAll(doctors);
                     doctorViewModel.setFilteredDoctors(doctors);
                 }catch (JSONException ex){
                     Log.e(SYSTAG, "DocFac\t"+ex.getLocalizedMessage());
                 }
+            }
+
+            @Override
+            public void onIOException(IOException ioException) {
+                Log.e(SYSTAG, ioException.getLocalizedMessage());
+            }
+
+            @Override
+            public void onServerError(JSONObject serverError) {
+                Log.e(SYSTAG, serverError.toString());
+            }
+
+            @Override
+            public void onJSONException(JSONException jsonException) {
+                Log.e(SYSTAG, jsonException.getLocalizedMessage());
+            }
+        });
+    }
+    public void doctor(String id){
+        if(!Common.sanitizeString(id)) return;
+        String url = baseUrl+doctorsAll;
+        requestProcessor = url.trim().startsWith("https://") ?
+                remote.secureRequest :
+                (url.trim().startsWith("http://") ?
+                        remote.unsecureRequest :
+                        null
+                );
+        if(null==requestProcessor) return;
+        JSONObject doctorBody = Requests.doctorDetail(id);
+        if(null==doctorBody) return;
+        requestProcessor.processRequest("post", url, doctorBody, null, new RemoteCallback() {
+            @Override
+            public void onSuccess(String result) {
+                if(null==result || result.trim().length() == 0) return;
+                Responses.MainResponseObject mainResponse = Responses.mainResponseObject(result);
+                if(null==mainResponse || mainResponse.code < 0) return;
+                Doctor docItem =  Responses.doctorsResponse(mainResponse.data);
+                doctorViewModel.setDoctor(docItem);
             }
 
             @Override

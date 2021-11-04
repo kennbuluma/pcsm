@@ -127,7 +127,6 @@ public class DoctorsListFragment extends Fragment {
             }
         });
 
-
         return root;
     }
 
