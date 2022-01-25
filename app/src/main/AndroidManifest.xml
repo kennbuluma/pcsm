@@ -31,7 +31,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/black" />
-        <!--github token : "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"-->
         <service
             android:name="com.foreverdevelopers.doctors_directory_kenya.util.Messaging"
             android:exported="false">
