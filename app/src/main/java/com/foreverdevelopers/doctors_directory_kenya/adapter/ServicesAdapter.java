@@ -6,6 +6,7 @@ import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVI
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_COUNTY;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_FACILITY;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,6 @@ import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.Service;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
@@ -46,6 +46,7 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         this.navController = navController;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void filterServices(ArrayList<Service> services){
         this.services = services;
         notifyDataSetChanged();
@@ -68,11 +69,11 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
             String nextAction = "", nextData = Converter.objectToString(thisService);
             int nextPath = -1;
             switch (currentAction){
-                case RA_SERVICES:{
+                case RA_SERVICES:/*{
                     nextAction = RA_COUNTIES_BY_SERVICE;
                     nextPath = R.id.nav_counties;
                     break;
-                }
+                }*/
                 case RA_SERVICES_BY_COUNTY:
                 case RA_SERVICES_BY_FACILITY: {
                     nextAction = RA_DOCTORS_BY_SERVICE;
@@ -93,8 +94,8 @@ public class ServicesAdapter extends RecyclerView.Adapter<ServicesAdapter.Servic
         public final TextView txServiceItemName;
         public ServiceViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            crdServiceItem = (CardView) itemView.findViewById(R.id.crd_item_name);
-            txServiceItemName = (TextView) itemView.findViewById(R.id.tx_item_name);
+            crdServiceItem = itemView.findViewById(R.id.crd_item_name);
+            txServiceItemName = itemView.findViewById(R.id.tx_item_name);
         }
     }
 

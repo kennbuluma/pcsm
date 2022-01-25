@@ -45,14 +45,20 @@
 
             <ImageView
                 android:id="@+id/img_doc_detail_highlight_profpic"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
                 android:contentDescription="@string/lbl_doctors_details"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/gdl_doc_detail_highlight_v30"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars" />
+                android:background="@drawable/card_circle"
+                android:backgroundTint="@color/anada1"
+                android:src="@drawable/doc_one"
+                tools:targetApi="lollipop" />
 
             <TextView
                 android:id="@+id/txt_doc_detail_highlight_name"
@@ -89,6 +95,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/gdl_doc_detail_highlight_v30"
                 app:layout_constraintTop_toBottomOf="@+id/txt_doc_detail_highlight_county" />
@@ -131,11 +139,12 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:clickable="true"
-                android:contentDescription="Call"
+                android:contentDescription="@string/todo"
                 android:src="@android:drawable/stat_sys_phone_call"
                 app:layout_constraintBottom_toTopOf="@+id/fab_docdet_mail"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:focusable="true" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_docdet_mail"
@@ -150,7 +159,8 @@
                 app:layout_constraintEnd_toEndOf="@+id/fab_docdet_call"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:ignore="SpeakableTextPresentCheck"
-                android:contentDescription="TODO" />
+                android:contentDescription="@string/todo"
+                android:focusable="true" />
 
             <TextView
                 android:id="@+id/txt_det_phone"
@@ -198,21 +208,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/crd_doc_highlight">
 
-        <ScrollView
-            android:id="@+id/scr_doc_detail"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="SpeakableTextPresentCheck">
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <ScrollView
+                android:id="@+id/scr_doc_detail"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txt_doc_detail_specialties"
+                tools:ignore="SpeakableTextPresentCheck">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rcv_doc_details_specialties"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp" />
+                </LinearLayout>
+            </ScrollView>
+
+            <TextView
+                android:id="@+id/txt_doc_detail_specialties"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_conversion_absoluteWidth="0dp"
-                tools:layout_editor_absoluteX="24dp"
-                tools:layout_editor_absoluteY="230dp" />
-        </ScrollView>
+                android:layout_marginStart="24dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="24dp"
+                android:text="@string/lbl_specialties"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

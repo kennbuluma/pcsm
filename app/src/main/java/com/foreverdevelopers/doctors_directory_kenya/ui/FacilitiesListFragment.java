@@ -35,7 +35,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
+ 
 public class FacilitiesListFragment extends Fragment {
 
     private AppViewModel appViewModel;
@@ -70,55 +70,38 @@ public class FacilitiesListFragment extends Fragment {
         TextInputEditText facilitySearch = root.findViewById(R.id.et_facility_search);
         facilitySearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                //Do Nothing
-            }
-
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 filter(charSequence);
             }
-
             @Override
-            public void afterTextChanged(Editable editable) {
-                //Do Nothing
-            }
+            public void afterTextChanged(Editable editable) { }
         });
 
-        appViewModel.facilityRepo.observe(getViewLifecycleOwner(), new Observer<FacilityRepo>() {
-            @Override
-            public void onChanged(FacilityRepo facilityRepo) {
-                if(null!=facilityRepo){
-                    switch(nextAction){
-                        case RA_FACILITIES:{
-                            facilityRepo.facilities();
-                            break;
-                        }
-                        case RA_FACILITIES_BY_COUNTY:{
-                            County county = Converter.stringToCounty(nextData);
-                            facilityRepo.facilityByCounty(county.name);
-                            break;
-                        }
+        appViewModel.facilityRepo.observe(getViewLifecycleOwner(), facilityRepo -> {
+            if(null!=facilityRepo){
+                switch(nextAction){
+                    case RA_FACILITIES:{
+                        facilityRepo.facilities();
+                        break;
+                    }
+                    case RA_FACILITIES_BY_COUNTY:{
+                        County county = Converter.stringToCounty(nextData);
+                        facilityRepo.facilityByCounty(county.name);
+                        break;
                     }
                 }
             }
         });
-        appViewModel.navController.observe(getViewLifecycleOwner(), new Observer<NavController>() {
-            @Override
-            public void onChanged(NavController controller) {
-                navController = controller;
-            }
-        });
-        facilityViewModel.filteredFacilities.observe(getViewLifecycleOwner(), new Observer<List<Facility>>() {
-            @Override
-            public void onChanged(List<Facility> facilities) {
-                currentFacilities = facilities;
-                if(null==facilities || facilities.size() == 0) return;
-                facilitiesAdapter = new FacilitiesAdapter(facilities, nextAction, nextData, prevData, sharedPreferences, navController);
-                facilitiesView.setHasFixedSize(true);
-                facilitiesView.setLayoutManager(facilitiesLayoutManager);
-                facilitiesView.setAdapter(facilitiesAdapter);
-            }
+        appViewModel.navController.observe(getViewLifecycleOwner(), controller -> navController = controller);
+        facilityViewModel.filteredFacilities.observe(getViewLifecycleOwner(), facilities -> {
+            currentFacilities = facilities;
+            if(null==facilities || facilities.size() == 0) return;
+            facilitiesAdapter = new FacilitiesAdapter(facilities, nextAction, nextData, prevData, sharedPreferences, navController);
+            facilitiesView.setHasFixedSize(true);
+            facilitiesView.setLayoutManager(facilitiesLayoutManager);
+            facilitiesView.setAdapter(facilitiesAdapter);
         });
 
 

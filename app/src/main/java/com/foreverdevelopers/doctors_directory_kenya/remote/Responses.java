@@ -33,6 +33,21 @@ public class Responses {
             this.data = data;
         }
     }
+    public static class MainResponseObject{
+        public Integer code;
+        public String message, status;
+        public JSONObject data;
+        public MainResponseObject(){}
+        public MainResponseObject(Integer code,
+                            String message,
+                            String status,
+                            JSONObject data){
+            this.code = code;
+            this.message = message;
+            this.status = status;
+            this.data = data;
+        }
+    }
 
     public static MainResponse mainResponse(String result){
         try{
@@ -49,6 +64,29 @@ public class Responses {
             }
             if ((responseObject.has("data"))) {
                 response.data = responseObject.getJSONArray("data");
+            }
+            return response;
+        }catch (JSONException ex){
+            Log.e(SYSTAG, ex.getLocalizedMessage());
+            return null;
+        }
+
+    }
+    public static MainResponseObject mainResponseObject(String result){
+        try{
+            JSONObject responseObject = new JSONObject(result);
+            MainResponseObject response = new MainResponseObject();
+            if ((responseObject.has("code"))) {
+                response.code = responseObject.getInt("code");
+            }
+            if ((responseObject.has("message"))) {
+                response.message = responseObject.getString("message");
+            }
+            if ((responseObject.has("status"))) {
+                response.status = responseObject.getString("status");
+            }
+            if ((responseObject.has("data"))) {
+                response.data = responseObject.getJSONObject("data");
             }
             return response;
         }catch (JSONException ex){

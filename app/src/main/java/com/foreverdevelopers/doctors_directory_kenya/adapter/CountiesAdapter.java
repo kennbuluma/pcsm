@@ -6,6 +6,7 @@ import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_COUNT
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_FACILITIES_BY_COUNTY;
 import static com.foreverdevelopers.doctors_directory_kenya.util.Common.RA_SERVICES_BY_COUNTY;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,17 +18,13 @@ import androidx.cardview.widget.CardView;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.foreverdevelopers.doctors_directory_kenya.AppViewModel;
 import com.foreverdevelopers.doctors_directory_kenya.R;
-import com.foreverdevelopers.doctors_directory_kenya.data.Indexor;
-import com.foreverdevelopers.doctors_directory_kenya.data.PathData;
 import com.foreverdevelopers.doctors_directory_kenya.data.entity.County;
 import com.foreverdevelopers.doctors_directory_kenya.util.Converter;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.CountyViewHolder> {
@@ -47,6 +44,7 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
         this.sharedPreferences = sharedPreferences;
         this.navController = navController;
     }
+    @SuppressLint("NotifyDataSetChanged")
     public void filterCounties(ArrayList<County> counties){
         this.counties = counties;
         notifyDataSetChanged();
@@ -94,8 +92,8 @@ public class CountiesAdapter extends RecyclerView.Adapter<CountiesAdapter.County
         public final TextView txCountyItemName;
         public CountyViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
-            crdCountyItem = (CardView) itemView.findViewById(R.id.crd_item_name);
-            txCountyItemName = (TextView) itemView.findViewById(R.id.tx_item_name);
+            crdCountyItem = itemView.findViewById(R.id.crd_item_name);
+            txCountyItemName = itemView.findViewById(R.id.tx_item_name);
         }
     }
 
